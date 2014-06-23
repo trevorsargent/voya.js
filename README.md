@@ -14,7 +14,7 @@ right now there's not a lot of funcitonality. wander around if you like, it's pr
 
 ##Credits
 
-Code: Trevor   
-Plot and Concept Consultation: Rachel   
-Background Image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)   
-For: Seth   
+code, plot, concept: Trevor   
+plot and concept consultation: Rachel   
+background image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)   
+for: seth   
