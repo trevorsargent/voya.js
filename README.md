@@ -1,8 +1,8 @@
-#[Carnival](trevorsargent.github.io/carnival)
+#[Carnival](http://trevorsargent.github.io/carnival)
 
 carnival is a text based, interactive fiction adventure game. 
 
-[trevorsargent.github.io/carnival](trevorsargent.github.io/carnival)
+[trevorsargent.github.io/carnival](http://trevorsargent.github.io/carnival)
 
 ##Scenario
 
