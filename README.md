@@ -10,4 +10,11 @@ you're dropped off in the parking lot of what looks to be a very sad carnival.  
 
 ##Roadmap
 
-right now there's not a lot of funcitonality. wander around if you lil
+right now there's not a lot of funcitonality. wander around if you like, it's pretty empty.
+
+##Credits
+
+Code: Trevor
+Plot and Concept Consultation: Rachel
+Background Image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)
+For: Seth
