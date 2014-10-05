@@ -1,11 +1,20 @@
+//Carnival
+//main logic and text-parsing for the game
+//Made by, and copyright, @trevorsargent 2014, licenced under 
+
+
+//prints 'line' to the "console" on a new line
 function println(line) {
     $("<p>" + line + "</p>").insertBefore("#placeholder");
 }
 
+//adds a blank line
 function line() {
     $("<p></br></p>").insertBefore("#placeholder");
 }
 
+
+//adds the gramatically appropriate article to the string passed
 function addArticle(string) {
     var article;
     if (string.charAt(0) == 'a' || string.charAt(0) == 'e' || string.charAt(0) == 'i' || string.charAt(0) == 'o' || string.charAt(0) == 'u') {
@@ -16,6 +25,7 @@ function addArticle(string) {
     return article + " " + string;
 }
 
+//prints the welcome message
 function welcome() {
     line();
     line();
@@ -33,6 +43,7 @@ function welcome() {
     line();
 }
 
+//player object
 function Person() {
     this.name = "";
     this.age = 0;
@@ -50,11 +61,13 @@ function Person() {
     };
     this.paid = false;
 
+    //walks to the place
     this.walkTo = function(Place) {
         this.currentLocation.beenHere = true;
         this.currentLocation = Place;
     }
 
+    //takes an item out of the current room and adds it to the person's pockets
     this.take = function(string) {
         if(this.currentLocation.removeItem(string)){
             this.addItem(string);
@@ -64,6 +77,7 @@ function Person() {
         
     }
 
+    //drops an item out of the person's pockets into the current room. 
     this.drop = function(string) {
         
         if (this.pockets2[string] > 0) {
@@ -74,6 +88,7 @@ function Person() {
         return false;
     }
 
+    //returns a list of everything in the persons's pockets
     this.emptyPockets = function() {
         var toReturn = "your pockets contain: </br>";
         for(var item in this.pockets2){
@@ -83,6 +98,7 @@ function Person() {
         return toReturn;
     }
 
+    //adds an item to the person's 'pockets'
     this.addItem = function(string){
         if(this.pockets2[string] != undefined){
             this.pockets2[string] ++;
@@ -92,7 +108,10 @@ function Person() {
     }
 }
 
+//location object
 function Place() {
+
+    //field declarations
     this.name = "";
     this.left = {};
     this.ahead = {};
@@ -111,6 +130,7 @@ function Place() {
     this.prize = "";
     this.played = false;
 
+    //returns a description of the room, including what's around you.
     this.description = function() {
         var toReturn = "you're standing in the " + this.name + ".";
         if (this.left.name != undefined) {
@@ -131,6 +151,7 @@ function Place() {
         return toReturn;
     }
 
+    //lists the items present in the room
     this.listObjects = function() {
         var toReturn = "";
         if (Object.keys(this.objects).length > 0) {
@@ -144,7 +165,7 @@ function Place() {
         }
         return toReturn;
     }
-
+    //adds an item to the room
     this.addItem = function(string){
         if(this.objects[string] != undefined){
             this.objects[string] ++;
@@ -153,10 +174,12 @@ function Place() {
         }
     }
 
-    this.addPrize = function(string){
+    //sets the prize variable
+    this.setPrize = function(string){
         this.prize = string;
     }
 
+    //returnes the prize
     this.retrievePrize = function(){
         if(this.isGame){
             return this.prize
@@ -165,6 +188,7 @@ function Place() {
         }
     }
 
+    //removes an item from the room
     this.removeItem = function(string){
         if (this.objects[string] != undefined && this.objects[string] > 0) {
             if(!this.isShop){
@@ -270,19 +294,19 @@ function setUp() {
     whackaMole.name = "whack-a-mole";
     whackaMole.behind = arcade;
     whackaMole.isGame = true;
-    whackaMole.addPrize("helmet");
+    whackaMole.setPrize("helmet");
 
     //skeeBall
     skeeBall.name = "skeeball";
     skeeBall.behind = arcade;
     skeeBall.isGame = true;
-    skeeBall.addPrize("bottomless bucket");
+    skeeBall.setPrize("bottomless bucket");
 
     //pinBall
     pinBall.name = "pinball";
     pinBall.behind = arcade;
     pinBall.isGame = true;
-    pinBall.addPrize("pair of seven league boots");
+    pinBall.setPrize("pair of seven league boots");
 
     //UNDERGROUND CASTLE
 
