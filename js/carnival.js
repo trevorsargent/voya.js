@@ -41,7 +41,7 @@ function Person() {
     this.currentLocation = {};
     this.pockets2 = {
         dollar: 3,
-        quater: 10,
+        quarter: 10,
         phone: 1,
         flashlight: 1,
         wrench: 1,
@@ -56,15 +56,12 @@ function Person() {
     }
 
     this.take = function take(string) {
-        if (this.currentLocation.objects[string] != undefined && this.currentLocation.objects[string] > 0) {
-            if(!this.currentLocation.isShop){
-                this.currentLocation.objects[string]--;
-            }
+        if(this.currentLocation.removeItem(string)){
             this.addItem(string);
             return true;
-        } else {
-            return false;
         }
+       return false;
+        
     }
 
     this.drop = function drop(string) {
@@ -73,9 +70,8 @@ function Person() {
             this.pockets2[string]--;
             this.currentLocation.addItem(string);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     this.emptyPockets = function emptyPockets() {
@@ -112,6 +108,10 @@ function Place() {
     this.isShop = false;
     this.canClimb = false;
     this.lights = true;
+    this.prizes = {};
+    this.played = false;
+
+
 
     this.description = function() {
         var toReturn = "you're standing in the " + this.name + ".";
@@ -154,8 +154,36 @@ function Place() {
             this.objects[string] = 1;
         }
     }
+
+    this.addPrize = function addPrize(string){
+        if(this.prizes[string] != undefined){
+            this.prizes[string] ++;
+        }else{
+            this.prizes[string] = 1;
+        }
+    }
+
+    this.retrievePrize = function retrievePrize(){
+        if(this.isGame){
+
+        }else{
+            return "";
+        }
+    }
+
+    this.removeItem = function removeItem(string){
+        if (this.objects[string] != undefined && this.objects[string] > 0) {
+            if(!this.isShop){
+                this.objects[string]--;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 
+//sets up the environment, creates all the places, adds their items. 
 function setUp() {
     parkingLot = new Place();
     ticketEntrance = new Place();
@@ -248,6 +276,7 @@ function setUp() {
     whackaMole.name = "whack-a-mole";
     whackaMole.behind = arcade;
     whackaMole.isGame = true;
+    whackaMole.addPrize("helmet");
 
     //skeeBall
     skeeBall.name = "skeeball";
@@ -302,6 +331,10 @@ function setUp() {
     westWing.name = "west wing";
     westWing.behind = mainHall;
     westWing.lights = false;
+    westWing.addItem("sword");
+    westWing.addItem("shield");
+    westWing.addItem("hand mirror");
+    westWing.addItem("broken chair");
 
     //northStairsBottom
     northStairsBottom.name = "bottom of the north stairs";
@@ -309,6 +342,7 @@ function setUp() {
     northStairsBottom.above = northStairsTop;
     northStairsBottom.canClimb = true;
     northStairsBottom.lights = false;
+    northStairsBottom.newText = "climb "
 
     //northStairsTop
     northStairsTop.name = "top of the north stairs";
@@ -341,6 +375,8 @@ $(document).ready(function() {
     var numInputs = 0;
     var selectInput;
 
+
+    //on pressing enter after providing a command
     $("form").submit(function() {
         var input = $('#command_line').val();
         inputHistory.push(input);
@@ -351,6 +387,7 @@ $(document).ready(function() {
         line();
         //var inputArray = input.split(" "); 
 
+        //ask for help
         if (input.indexOf("help") > -1) {
             println('possible commands:');
             println('- look around');
@@ -362,8 +399,11 @@ $(document).ready(function() {
             println('- drop [item]');
             println('- take [item]');
 
+        //look around describe where you are
         } else if (input.indexOf("look around") > -1) {
             println(player.currentLocation.description());
+
+        //walk places
         } else if (input.indexOf("walk to") > -1) {
             // input = input.replace("walk to", "").trim().input.replace("the", "").trim();
             input = input.replace("walk to", "");
@@ -398,6 +438,8 @@ $(document).ready(function() {
                 //line();
                 //println(player.currentLocation.description());
             }
+
+        //take items
         } else if (input.indexOf("take") > -1) {
             input = input.replace("take", "");
             input = input.trim();
@@ -409,6 +451,8 @@ $(document).ready(function() {
             else if (player.paid && !player.take(input)) {
                 println("there isn't " + addArticle(input) + " so you can't take it.")
             }
+
+        //drop items
         } else if (input.indexOf("drop") > -1) {
             input = input.replace("drop", "");
             input = input.trim();
@@ -421,19 +465,29 @@ $(document).ready(function() {
             if (!player.drop(input)) {
                 println("you dont have " + addArticle(input) + " so you can't drop one.")
             }
+
+        //take inventory 
         } else if (input.indexOf("pockets") > -1) {
             println(player.emptyPockets());
+
+        //see what items are in the room.
         } else if (input.indexOf("items") > -1) {
             // println("HI");
             println(player.currentLocation.listObjects());
+
+        //climb stairs, if that's where you are
         } else if(input.indexOf("climb") > -1){
             if(player.currentLocation.canClimb && player.currentLocation.above != undefined){
                 player.walkTo(player.currentLocation.above)
             }
+
+        //go down stairs if that's where you are
         } else if(input.indexOf("go down")> -1){
             if(player.currentLocation.canClimb && player.currentLocation.below != undefined){
                 player.walkTo(player.currentLocation.below);
             }
+
+        //dig, if you have a shovel, and there's something under you
         } else if(input.indexOf("dig")> -1){
             if(player.currentLocation.below != undefined && player.pockets2["shovel"] > 0){
                 player.currentLocation = player.currentLocation.below;
