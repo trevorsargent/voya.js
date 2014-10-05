@@ -10,4 +10,8 @@ you're dropped off in the parking lot of what looks to be a very sad carnival.  
 
 ##Roadmap
 
-right now there's not a lot of funcitonality. wander around if you lil
+right now there's not a lot of funcitonality. wander around if you will
+- recently added prizes to the arcade games
+- plan to implement flashlights, and the necessity thereof
+- plan to implement randomness in the prize mechanism
+- plan to expand the world
