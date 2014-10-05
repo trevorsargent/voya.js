@@ -50,12 +50,12 @@ function Person() {
     };
     this.paid = false;
 
-    this.walkTo = function valkTo(Place) {
+    this.walkTo = function(Place) {
         this.currentLocation.beenHere = true;
         this.currentLocation = Place;
     }
 
-    this.take = function take(string) {
+    this.take = function(string) {
         if(this.currentLocation.removeItem(string)){
             this.addItem(string);
             return true;
@@ -64,7 +64,7 @@ function Person() {
         
     }
 
-    this.drop = function drop(string) {
+    this.drop = function(string) {
         
         if (this.pockets2[string] > 0) {
             this.pockets2[string]--;
@@ -74,7 +74,7 @@ function Person() {
         return false;
     }
 
-    this.emptyPockets = function emptyPockets() {
+    this.emptyPockets = function() {
         var toReturn = "your pockets contain: </br>";
         for(var item in this.pockets2){
             console.log(item);
@@ -83,7 +83,7 @@ function Person() {
         return toReturn;
     }
 
-    this.addItem = function addItem(string){
+    this.addItem = function(string){
         if(this.pockets2[string] != undefined){
             this.pockets2[string] ++;
         }else{
@@ -108,10 +108,8 @@ function Place() {
     this.isShop = false;
     this.canClimb = false;
     this.lights = true;
-    this.prizes = {};
+    this.prize = "";
     this.played = false;
-
-
 
     this.description = function() {
         var toReturn = "you're standing in the " + this.name + ".";
@@ -133,7 +131,7 @@ function Place() {
         return toReturn;
     }
 
-    this.listObjects = function listObjects() {
+    this.listObjects = function() {
         var toReturn = "";
         if (Object.keys(this.objects).length > 0) {
             toReturn += "you see: </br>"
@@ -147,7 +145,7 @@ function Place() {
         return toReturn;
     }
 
-    this.addItem = function addItem(string){
+    this.addItem = function(string){
         if(this.objects[string] != undefined){
             this.objects[string] ++;
         }else{
@@ -155,23 +153,19 @@ function Place() {
         }
     }
 
-    this.addPrize = function addPrize(string){
-        if(this.prizes[string] != undefined){
-            this.prizes[string] ++;
-        }else{
-            this.prizes[string] = 1;
-        }
+    this.addPrize = function(string){
+        this.prize = string;
     }
 
-    this.retrievePrize = function retrievePrize(){
+    this.retrievePrize = function(){
         if(this.isGame){
-
+            return this.prize
         }else{
             return "";
         }
     }
 
-    this.removeItem = function removeItem(string){
+    this.removeItem = function(string){
         if (this.objects[string] != undefined && this.objects[string] > 0) {
             if(!this.isShop){
                 this.objects[string]--;
@@ -282,11 +276,13 @@ function setUp() {
     skeeBall.name = "skeeball";
     skeeBall.behind = arcade;
     skeeBall.isGame = true;
+    skeeBall.addPrize("bottomless bucket");
 
     //pinBall
     pinBall.name = "pinball";
     pinBall.behind = arcade;
     pinBall.isGame = true;
+    pinBall.addPrize("pair of seven league boots");
 
     //UNDERGROUND CASTLE
 
@@ -306,8 +302,8 @@ function setUp() {
     entryHall.name = "entrance hall";
     entryHall.ahead = antiChamber;
     entryHall.lights = false;
-    entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you"
-    // entryHall.addItem("");
+    entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you";
+
     //antiChamber
     antiChamber.name = "antichamber";
     antiChamber.behind = entryHall;
@@ -493,7 +489,14 @@ $(document).ready(function() {
                 player.currentLocation = player.currentLocation.below;
                 println("you dropped down into the " + player.currentLocation.name);
             }
-        } else if(false){
+        } else if(input.indexOf("play")>-1){
+            if(player.currentLocation.isGame){
+                var prize = player.currentLocation.retrievePrize();
+                player.addItem(prize);
+                println("you won " + addArticle(prize) + "! keep it safe!");
+            }else{
+                println("this isn't a game... you cant 'play' it...");
+            }
 
         } else {
             if(input.length>0){println("command invalid");}
