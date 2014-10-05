@@ -12,9 +12,13 @@ you're dropped off in the parking lot of what looks to be a very sad carnival.  
 
 right now there's not a lot of funcitonality. wander around if you like, it's pretty empty.
 
+- recently added prizes to the arcade games
+- plan to implement flashlights, and the necessity thereof
+- plan to implement randomness in the prize mechanism
+- plan to expand the world
+
 ##Credits
 
 code, plot, concept: Trevor   
 plot and concept consultation: Rachel   
-background image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)   
-for: seth   
+background image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)
