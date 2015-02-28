@@ -1,6 +1,6 @@
 //Carnival
 //main logic and text-parsing for the game
-//Made by, and copyright, @trevorsargent 2014, licenced under 
+//Made by, and copyright, @trevorsargent 2014, licenced under
 
 
 //prints 'line' to the "console" on a new line
@@ -62,30 +62,66 @@ function Person() {
     this.paid = false;
 
     //walks to the place
-    this.walkTo = function(Place) {
+    this.walkTo = function(placeName) {
         this.currentLocation.beenHere = true;
-        this.currentLocation = Place;
+
+        if(this.currentLocation == ticketEntrance && placeName.indexOf("main square") > -1 && !this.paid){
+            return "it looks like you have to have a ticket to enter";
+        }
+        console.log("yay!")
+        if (this.currentLocation.name.indexOf(placeName)>-1) {
+            return "you are already at the " + this.currentLocation.name;
+        }
+        if (this.currentLocation.left.name != undefined && this.currentLocation.left.name.indexOf(placeName)>-1) {
+          this.currentLocation = this.currentLocation.left;
+        } else if (this.currentLocation.right.name != undefined && this.currentLocation.right.name.indexOf(placeName)>-1) {
+          this.currentLocation = this.currentLocation.right;
+        } else if (this.currentLocation.ahead.name != undefined && this.currentLocation.ahead.name.indexOf(placeName)>-1) {
+          this.currentLocation = this.currentLocation.ahead;
+        } else if (this.currentLocation.behind.name != undefined && this.currentLocation.behind.name.indexOf(placeName)>-1) {
+          this.currentLocation = this.currentLocation.behind;
+        } else {
+            return "that's not a place you can walk to from here";
+        }
+        return "you walk to the " + this.currentLocation.name;
     }
 
-    //takes an item out of the current room and adds it to the person's pockets
-    this.take = function(string) {
-        if(this.currentLocation.removeItem(string)){
-            this.addItem(string);
-            return true;
+    //takes an item out of the current place and adds it to the person's pockets
+    this.take = function(item) {
+        //special cases
+        if(this.currentLocation == ticketEntrance){
+          if(!this.paid){
+            return "you have to pay for your ticket";
+          }
+          this.addItem(item)
+          return 'the attendant opens the gate';
         }
-       return false;
-        
+        //catch all / normal
+        if(this.currentLocation.removeItem(item)){
+            this.addItem(item);
+            return "you picked up " + addArticle(item);
+        }
+       return "there's not " + addArticle(item);
+
     }
 
-    //drops an item out of the person's pockets into the current room. 
-    this.drop = function(string) {
-        
-        if (this.pockets2[string] > 0) {
-            this.pockets2[string]--;
-            this.currentLocation.addItem(string);
-            return true;
+    //drops an item out of the person's pockets into the current room.
+    this.drop = function(item) {
+        if (this.pockets2[item] > 0) {
+          this.pockets2[item]--;
+          this.currentLocation.addItem(item);
+
+          //special cases
+          if(this.currentLocation == ticketEntrance){
+            if(item == "dollar"){
+              this.paid = true;
+              return 'the attendant says, "thank you, please take your ticket."';
+            }
+          }
+          //catch all / normal
+          return "you dropped " + addArticle(item);
         }
-        return false;
+        return "you don't have " + addArticle(item);
     }
 
     //returns a list of everything in the persons's pockets
@@ -129,6 +165,8 @@ function Place() {
     this.lights = true;
     this.prize = "";
     this.played = false;
+    this.rideText;
+    this.playText;
 
     //returns a description of the room, including what's around you.
     this.description = function() {
@@ -199,9 +237,27 @@ function Place() {
             return false;
         }
     }
+
+    this.play = function(player){
+      if(this.isGame){
+        player.addItem(this.prize);
+        return "you won " + addArticle(this.prize) + "! keep it safe!";
+      }
+      return "'" + player.currentLocation.name + "' isn't a game... you cant ... 'play' it";
+
+    }
+
+    this.ride = function(player){
+      if(this.isRide){
+        return this.rideText;
+      }
+      return "'" + player.currentLocation.name + "' isn't a ride... dont just jump onto things that aren't meant to be ridden...";
+    }
+
+
 }
 
-//sets up the environment, creates all the places, adds their items. 
+//sets up the environment, creates all the places, adds their items.
 function setUp() {
     parkingLot = new Place();
     ticketEntrance = new Place();
@@ -234,6 +290,8 @@ function setUp() {
     //parking lot
     parkingLot.name = "parking lot";
     parkingLot.ahead = ticketEntrance;
+    parkingLot.newText = "yikes. is that a knife over there?";
+    parkingLot.addItem("knife");
 
     //ticketEntrance
     ticketEntrance.name = "ticket entrance";
@@ -256,6 +314,7 @@ function setUp() {
     ferrisWheel.behind = mainSquare;
     ferrisWheel.below = southStairsTop;
     ferrisWheel.isRide = true;
+    ferrisWheel.rideText = "wow the view is great from up here. make sure you don't drop anything...";
 
     //lawn
     lawn.name = "lawn";
@@ -275,13 +334,14 @@ function setUp() {
     cornDogs.name = "corn dog stand";
     cornDogs.behind = lawn;
     cornDogs.isShop = true;
-    //
+    //items
     cornDogs.addItem("corn dog");
 
     //tiltaWhirl
     tiltaWhirl.name = "tilt-a-whirl";
     tiltaWhirl.behind = lawn;
     tiltaWhirl.isRide = true;
+    tiltaWhirl.rideText = "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick";
 
     //arcade
     arcade.name = "arcade entrance";
@@ -295,18 +355,21 @@ function setUp() {
     whackaMole.behind = arcade;
     whackaMole.isGame = true;
     whackaMole.setPrize("helmet");
+    whackaMole.playText = "whack...whack... wow you're good at this."
 
     //skeeBall
     skeeBall.name = "skeeball";
     skeeBall.behind = arcade;
     skeeBall.isGame = true;
     skeeBall.setPrize("bottomless bucket");
+    skeeBall.playText = "fwoomp. crack. boink. clunk. ding ding ding!";
 
     //pinBall
     pinBall.name = "pinball";
     pinBall.behind = arcade;
     pinBall.isGame = true;
     pinBall.setPrize("pair of seven league boots");
+    pinBall.playText = "fwap. fwap. zing. broing. shatchatchatchatcha. dinnnng dinnng!";
 
     //UNDERGROUND CASTLE
 
@@ -369,7 +432,7 @@ function setUp() {
     northStairsTop.below = northStairsBottom;
     northStairsTop.ahead = owlry;
     northStairsTop.canClimb = true;
-    
+
 
     //owlry
     owlry.name = "owlry";
@@ -405,7 +468,7 @@ $(document).ready(function() {
 
         if(input.length>0){ println(">> " + input);}
         line();
-        //var inputArray = input.split(" "); 
+        //var inputArray = input.split(" ");
 
         //ask for help
         if (input.indexOf("help") > -1) {
@@ -430,34 +493,7 @@ $(document).ready(function() {
             input = input.trim();
             input = input.replace("the", "");
             input = input.trim();
-            var walking = false;
-            if(player.currentLocation == ticketEntrance && input.indexOf("main square") > -1 && !player.paid){
-                println("it looks like you have to have a ticket to enter");
-            }else{
-                if (player.currentLocation.name.indexOf(input)>-1) {
-                    println("you are already at the " + player.currentLocation.name);
-                } else if (player.currentLocation.left.name != undefined && player.currentLocation.left.name.indexOf(input)>-1) {
-                    player.walkTo(player.currentLocation.left);
-                    walking = true;
-                } else if (player.currentLocation.right.name != undefined && player.currentLocation.right.name.indexOf(input)>-1) {
-                    player.walkTo(player.currentLocation.right);
-                    walking = true;
-                } else if (player.currentLocation.ahead.name != undefined && player.currentLocation.ahead.name.indexOf(input)>-1) {
-                    player.walkTo(player.currentLocation.ahead);
-                    walking = true;
-                } else if (player.currentLocation.behind.name != undefined && player.currentLocation.behind.name.indexOf(input)>-1) {
-                    player.walkTo(player.currentLocation.behind);
-                    walking = true;
-                } else {
-                    println("that's not a place you can walk to from here");
-                }
-            }
-
-            if (walking) {
-                println("walking to the " + player.currentLocation.name);
-                //line();
-                //println(player.currentLocation.description());
-            }
+            println(player.walkTo(input));
 
         //take items
         } else if (input.indexOf("take") > -1) {
@@ -465,12 +501,7 @@ $(document).ready(function() {
             input = input.trim();
             input = input.replace("the", "");
             input = input.trim();
-            if(player.currentLocation == ticketEntrance && input.indexOf("ticket") > -1 && !player.paid){
-                println("you have to pay for your ticket")
-            }
-            else if (player.paid && !player.take(input)) {
-                println("there isn't " + addArticle(input) + " so you can't take it.")
-            }
+            println(player.take(input));
 
         //drop items
         } else if (input.indexOf("drop") > -1) {
@@ -478,15 +509,9 @@ $(document).ready(function() {
             input = input.trim();
             input = input.replace("the", "");
             input = input.trim();
-            if(player.currentLocation == ticketEntrance && input.indexOf("dollar") > -1){
-                player.paid = true;
-                println('the attendant says, "thank you - here is your ticket..." ');
-            }
-            if (!player.drop(input)) {
-                println("you dont have " + addArticle(input) + " so you can't drop one.")
-            }
+            println(player.drop(input));
 
-        //take inventory 
+        //take inventory
         } else if (input.indexOf("pockets") > -1) {
             println(player.emptyPockets());
 
@@ -514,14 +539,10 @@ $(document).ready(function() {
                 println("you dropped down into the " + player.currentLocation.name);
             }
         } else if(input.indexOf("play")>-1){
-            if(player.currentLocation.isGame){
-                var prize = player.currentLocation.retrievePrize();
-                player.addItem(prize);
-                println("you won " + addArticle(prize) + "! keep it safe!");
-            }else{
-                println("this isn't a game... you cant 'play' it...");
-            }
+          println(player.currentLocation.play(player));
 
+        } else if(input.indexOf("ride")>-1){
+          println(player.currentLocation.ride(player));
         } else {
             if(input.length>0){println("command invalid");}
         }
