@@ -251,8 +251,7 @@ function Place() {
       if(this.isRide){
         return this.rideText;
       }
-      return "'" + player.currentLocation.name + "' isn't a ride...
-      don't just jump onto things that aren't meant to be ridden...";
+      return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
     }
 
 
