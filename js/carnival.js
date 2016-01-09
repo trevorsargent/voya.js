@@ -2,7 +2,6 @@
 //main logic and text-parsing for the game
 //Made by, and copyright, @trevorsargent 2014, licenced under
 
-
 //prints 'line' to the "console" on a new line
 function println(line) {
     $("<p>" + line + "</p>").insertBefore("#placeholder");
@@ -251,8 +250,7 @@ function Place() {
       if(this.isRide){
         return this.rideText;
       }
-      return "'" + player.currentLocation.name + "' isn't a ride...
-      don't just jump onto things that aren't meant to be ridden...";
+      return "'" + player.currentLocation.name + "' isn't a ride...don't just jump onto things that aren't meant to be ridden...";
     }
 
 
@@ -447,6 +445,8 @@ function setUp() {
 
 $(document).ready(function() {
 
+    var root = new Firebase('https://carnival.firebaseio.com/web/data');
+    root.push("hello");
     welcome();
 
     setUp();
