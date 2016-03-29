@@ -19,7 +19,5 @@ right now there's not a lot of funcitonality. wander around if you like, it's pr
 
 ##Credits
 
-code, plot, concept: Trevor   
-plot and concept consultation: Rachel   
 background image: [Jordy Meow](http://www.totorotimes.com/urban-exploration/nara-dreamland-abandoned-rollercoasters/)
 
