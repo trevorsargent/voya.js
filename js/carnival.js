@@ -12,12 +12,11 @@ function line() {
     $("<p></br></p>").insertBefore("#placeholder");
 }
 
-function line(int){
+function lineNum(int){
     for(var i = 0; i < int; i++){
         line();
     }
 }
-
 
 //adds the gramatically appropriate article to the string passed
 function addArticle(string) {
@@ -32,14 +31,7 @@ function addArticle(string) {
 
 //prints the welcome message
 function welcome() {
-    line();
-    line();
-    line();
-    line();
-    line();
-    line();
-    line();
-    line();
+    lineNum(8);
     println('-----------------------------');
     println('| welcome to the carnival!! |');
     println('-----------------------------');
@@ -69,45 +61,41 @@ function Person() {
     //walks to the place
     this.walkTo = function(placeName) {
         this.currentLocation.beenHere = true;
-
-        if(this.currentLocation == ticketEntrance && placeName.indexOf("main square") > -1 && !this.paid){
-            return "it looks like you have to have a ticket to enter";
-        }
-        console.log("yay!")
+        destination = {};
+        
         if (this.currentLocation.name.indexOf(placeName)>-1) {
-            return "you are already at the " + this.currentLocation.name;
+            return messages.moveRedundancy + this.currentLocation.name;
         }
+
         if (this.currentLocation.left.name != undefined && this.currentLocation.left.name.indexOf(placeName)>-1) {
-          this.currentLocation = this.currentLocation.left;
+            destination = this.currentLocation.left;
         } else if (this.currentLocation.right.name != undefined && this.currentLocation.right.name.indexOf(placeName)>-1) {
-          this.currentLocation = this.currentLocation.right;
+            destination = this.currentLocation.right;
         } else if (this.currentLocation.ahead.name != undefined && this.currentLocation.ahead.name.indexOf(placeName)>-1) {
-          this.currentLocation = this.currentLocation.ahead;
+            destination = this.currentLocation.ahead;
         } else if (this.currentLocation.behind.name != undefined && this.currentLocation.behind.name.indexOf(placeName)>-1) {
-          this.currentLocation = this.currentLocation.behind;
+            destination = this.currentLocation.behind;
         } else {
-            return "that's not a place you can walk to from here";
+            return messages.moveError;
         }
-        return "you walk to the " + this.currentLocation.name;
+
+        if(destination.isEntryLocked){
+            return destination.messages.errorEntryLocked;
+        }
+
+        //implement system for unlocking thing.....
+
+        this.currentLocation = destination;
+        return messages.moveMessage + this.currentLocation.name;
     }
 
     //takes an item out of the current place and adds it to the person's pockets
     this.take = function(item) {
-        //special cases
-        if(this.currentLocation == ticketEntrance){
-          if(!this.paid){
-            return "you have to pay for your ticket";
-          }
-          this.addItem(item)
-          return 'the attendant opens the gate';
-        }
-        //catch all / normal
         if(this.currentLocation.removeItem(item)){
             this.addItem(item);
             return "you picked up " + addArticle(item);
         }
        return "there's not " + addArticle(item);
-
     }
 
     //drops an item out of the person's pockets into the current room.
@@ -115,15 +103,6 @@ function Person() {
         if (this.pockets2[item] > 0) {
           this.pockets2[item]--;
           this.currentLocation.addItem(item);
-
-          //special cases
-          if(this.currentLocation == ticketEntrance){
-            if(item == "dollar"){
-              this.paid = true;
-              return 'the attendant says, "thank you, please take your ticket."';
-            }
-          }
-          //catch all / normal
           return "you dropped " + addArticle(item);
         }
         return "you don't have " + addArticle(item);
@@ -152,7 +131,7 @@ function Person() {
 //location object
 function Place() {
 
-    //field declarations
+    //field declarations with defaults
     this.name = "";
     this.left = {};
     this.ahead = {};
@@ -162,6 +141,7 @@ function Place() {
     this.above = {};
     this.objects = {};
     this.newText = "";
+    this.isEntryLocked = false;
     this.beenHere = false;
     this.isRide = false;
     this.isGame = false;
@@ -172,6 +152,12 @@ function Place() {
     this.played = false;
     this.rideText;
     this.playText;
+    this.key = ""
+
+    this.messages = {
+        errorEntryLocked: ""
+
+    }
 
     //returns a description of the room, including what's around you.
     this.description = function() {
@@ -262,8 +248,20 @@ function Place() {
 
 }
 
+
+
 //sets up the environment, creates all the places, adds their items.
 function setUp() {
+
+    messages = {
+        // move descriptors
+        moveMessage: "you walk to the ",
+        moveError: "that's not a place you can walk from here!",
+        
+        //move logic
+        moveRedundancy: "you are already at the "
+    }
+
     parkingLot = new Place();
     ticketEntrance = new Place();
     mainSquare = new Place();
@@ -313,6 +311,8 @@ function setUp() {
     mainSquare.ahead = ferrisWheel;
     mainSquare.left = lawn;
     mainSquare.right = arcade;
+    mainSquare.isEntryLocked = true;
+    mainSquare.messages.errorEntryLocked = "It looks like you need a ticket to enter."
 
     //ferrisWheel
     ferrisWheel.name = "ferris wheel";
@@ -577,3 +577,4 @@ $(document).ready(function() {
         }
     });
 });
+
