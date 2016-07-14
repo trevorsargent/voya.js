@@ -12,6 +12,12 @@ function line() {
     $("<p></br></p>").insertBefore("#placeholder");
 }
 
+function line(int){
+    for(var i = 0; i < int; i++){
+        line();
+    }
+}
+
 
 //adds the gramatically appropriate article to the string passed
 function addArticle(string) {

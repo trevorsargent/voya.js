@@ -12,9 +12,9 @@ you're dropped off in the parking lot of what looks to be a very sad carnival.  
 
 right now there's not a lot of funcitonality. wander around if you like, it's pretty empty.
 
-- recently added prizes to the arcade games
 - plan to implement flashlights, and the necessity thereof
 - plan to implement randomness in the prize mechanism
+- plan to implement multiple lines of 'look around' text, to add to story
 - plan to expand the world
 
 ##Credits
