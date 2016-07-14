@@ -445,11 +445,8 @@ function setUp() {
 
 $(document).ready(function() {
 
-    var root = new Firebase('https://carnival.firebaseio.com/web/data');
-    root.push("hello");
-    welcome();
-
     setUp();
+    welcome();
 
     player = new Person();
     player.currentLocation = parkingLot;
