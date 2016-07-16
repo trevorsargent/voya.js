@@ -62,6 +62,7 @@ function Person() {
     this.walkTo = function(placeName) {
         this.currentLocation.beenHere = true;
         destination = {};
+        var toReturn = "";
 
         if (this.currentLocation.name.indexOf(placeName) > -1) {
             return messages.moveRedundancy + this.currentLocation.name;
@@ -79,15 +80,20 @@ function Person() {
             return messages.moveError;
         }
 
-        if (destination.isEntryLocked) {
-            return destination.messages.errorEntryLocked;
+        if (destination.isEntryLocked && destination.beenHere == false) {
+
+            toReturn = destination.messages.locked;
+
+            if (this.pockets[destination.key] != undefined) {
+                toReturn += destination.messages.successEntryGranted;
+            } else {
+                return toReturn;
+            }
         }
 
-
-        
-
         this.currentLocation = destination;
-        return messages.moveMessage + this.currentLocation.name;
+        toReturn += messages.moveMessage + this.currentLocation.name;
+        return toReturn;
     }
 
     //takes an item out of the current place and adds it to the person's pockets
@@ -105,7 +111,7 @@ function Person() {
         if (this.removeItem(item)) {
             this.currentLocation.addItem(item);
             toReturn += "you dropped " + addArticle(item);
-            if(Object.keys(this.currentLocation.exchanges).length > 0){
+            if (Object.keys(this.currentLocation.exchanges).length > 0) {
                 var returned = this.currentLocation.exchange(item);
             }
             this.addItem(returned);
@@ -179,8 +185,8 @@ function Place() {
     this.key = ""
 
     this.messages = {
-        errorEntryLocked: ""
-
+        locked: "",
+        successEntryGranted: ""
     }
 
     this.exchanges = {
@@ -274,8 +280,8 @@ function Place() {
         return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
     }
 
-    this.exchange = function(item){
-        if(this.exchanges[item] != undefined){
+    this.exchange = function(item) {
+        if (this.exchanges[item] != undefined) {
             return this.exchanges[item];
         }
     }
@@ -336,7 +342,7 @@ function setUp() {
     ticketEntrance.behind = parkingLot;
     ticketEntrance.newText = "god this place is run down...";
     //items
-    
+
     ticketEntrance.exchanges = {
         dollar: "ticket",
         quarter: "token"
@@ -349,7 +355,9 @@ function setUp() {
     mainSquare.left = lawn;
     mainSquare.right = arcade;
     mainSquare.isEntryLocked = true;
-    mainSquare.messages.errorEntryLocked = "It looks like you need a ticket to enter."
+    mainSquare.key = "ticket";
+    mainSquare.messages.locked = "a ticket is required for entry."
+    mainSquare.messages.successEntryGranted = "you use your ticket to enter."
 
     //ferrisWheel
     ferrisWheel.name = "ferris wheel";
@@ -430,7 +438,7 @@ function setUp() {
     entryHall.ahead = antiChamber;
     entryHall.lights = false;
     entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. " +
-    "there is no coming back the way you came. god hope you have your ticket with you";
+        "there is no coming back the way you came. god hope you have your ticket with you";
 
     //antiChamber
     antiChamber.name = "antichamber";
