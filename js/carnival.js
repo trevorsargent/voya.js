@@ -47,7 +47,7 @@ function Person() {
     this.height = 0;
     this.money = 0;
     this.currentLocation = {};
-    this.pockets2 = {
+    this.pockets = {
         dollar: 3,
         quarter: 10,
         phone: 1,
@@ -112,10 +112,10 @@ function Person() {
     //returns a list of everything in the persons's pockets
     this.emptyPockets = function() {
         var toReturn = ""
-        if (Object.keys(this.pockets2).length > 0) {
+        if (Object.keys(this.pockets).length > 0) {
             toReturn += "your pockets contain: </br>";
-            for (var item in this.pockets2) {
-                toReturn += item + ": (" + this.pockets2[item] + ") </br>";
+            for (var item in this.pockets) {
+                toReturn += item + ": (" + this.pockets[item] + ") </br>";
             }
         } else {
             toReturn += "your pockets are empty"
@@ -125,18 +125,18 @@ function Person() {
 
     //adds an item to the person's 'pockets'
     this.addItem = function(string) {
-        if (this.pockets2[string] != undefined) {
-            this.pockets2[string]++;
+        if (this.pockets[string] != undefined) {
+            this.pockets[string]++;
         } else {
-            this.pockets2[string] = 1;
+            this.pockets[string] = 1;
         }
     }
 
     this.removeItem = function(string) {
-        if (this.pockets2[string] != undefined && this.pockets2[string] > 0) {
-            this.pockets2[string]--;
-            if (this.pockets2[string] == 0) {
-                delete this.pockets2[string]
+        if (this.pockets[string] != undefined && this.pockets[string] > 0) {
+            this.pockets[string]--;
+            if (this.pockets[string] == 0) {
+                delete this.pockets[string]
             }
             return true;
         }
