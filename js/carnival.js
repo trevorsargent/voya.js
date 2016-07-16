@@ -113,7 +113,9 @@ function Person() {
         var toReturn = "your pockets contain: </br>";
         for(var item in this.pockets2){
             console.log(item);
-            toReturn += item + ": (" + this.pockets2[item] + ") </br>";
+            if(this.pockets2[item] > 0){
+                toReturn += item + ": (" + this.pockets2[item] + ") </br>";
+            }
         }
         return toReturn;
     }
@@ -187,7 +189,9 @@ function Place() {
             toReturn += "you see: </br>"
             for(var item in this.objects){
                 console.log(item);
-                toReturn += item + ": (" + this.objects[item] + ") </br>";
+                if(this.objects[item]>0){
+                    toReturn += item + ": (" + this.objects[item] + ") </br>";
+                }
             }
         } else {
             toReturn = "there's nothing here"
@@ -222,6 +226,9 @@ function Place() {
         if (this.objects[string] != undefined && this.objects[string] > 0) {
             if(!this.isShop){
                 this.objects[string]--;
+            }
+            if(this.objects[string] == 0){
+                delete this.objects[string];
             }
             return true;
         } else {
