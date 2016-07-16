@@ -100,22 +100,26 @@ function Person() {
 
     //drops an item out of the person's pockets into the current room.
     this.drop = function(item) {
-        if (this.pockets2[item] > 0) {
-          this.pockets2[item]--;
+        if (this.removeItem(item)) {
           this.currentLocation.addItem(item);
           return "you dropped " + addArticle(item);
         }
         return "you don't have " + addArticle(item);
     }
 
+
+
     //returns a list of everything in the persons's pockets
     this.emptyPockets = function() {
-        var toReturn = "your pockets contain: </br>";
-        for(var item in this.pockets2){
-            console.log(item);
-            if(this.pockets2[item] > 0){
+        var toReturn = ""
+        if(Object.keys(this.pockets2).length > 0){
+            toReturn += "your pockets contain: </br>";
+            for(var item in this.pockets2){
+                console.log(item);
                 toReturn += item + ": (" + this.pockets2[item] + ") </br>";
             }
+        }else{
+            toReturn += "your pockets are empty"
         }
         return toReturn;
     }
@@ -127,6 +131,18 @@ function Person() {
         }else{
             this.pockets2[string] = 1;
         }
+    }
+
+    this.removeItem = function(string){
+        if(this.pockets2[string] != undefined && this.pockets2[string] >0){
+            this.pockets2[string]--;
+            if(this.pockets2[string]==0){
+                delete this.pockets2[string]
+            }
+            return true;
+        }
+        return false;    
+
     }
 }
 
@@ -189,9 +205,7 @@ function Place() {
             toReturn += "you see: </br>"
             for(var item in this.objects){
                 console.log(item);
-                if(this.objects[item]>0){
                     toReturn += item + ": (" + this.objects[item] + ") </br>";
-                }
             }
         } else {
             toReturn = "there's nothing here"
