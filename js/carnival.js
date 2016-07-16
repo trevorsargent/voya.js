@@ -83,6 +83,7 @@ function Person() {
             return destination.messages.errorEntryLocked;
         }
 
+
         
 
         this.currentLocation = destination;
@@ -100,9 +101,16 @@ function Person() {
 
     //drops an item out of the person's pockets into the current room.
     this.drop = function(item) {
+        var toReturn = ""
         if (this.removeItem(item)) {
             this.currentLocation.addItem(item);
-            return "you dropped " + addArticle(item);
+            toReturn += "you dropped " + addArticle(item);
+            if(Object.keys(this.currentLocation.exchanges).length > 0){
+                var returned = this.currentLocation.exchange(item);
+            }
+            this.addItem(returned);
+            toReturn += "you take " + addArticle(returned) + " in return for the " + item;
+            return toReturn;
         }
         return "you don't have " + addArticle(item);
     }
@@ -162,7 +170,6 @@ function Place() {
     this.beenHere = false;
     this.isRide = false;
     this.isGame = false;
-    this.isShop = false;
     this.canClimb = false;
     this.lights = true;
     this.prize = "";
@@ -174,6 +181,11 @@ function Place() {
     this.messages = {
         errorEntryLocked: ""
 
+    }
+
+    this.exchanges = {
+        // NOTE: Exchanges are not symmetrical
+        //dollar: "ticket"
     }
 
     //returns a description of the room, including what's around you.
@@ -237,9 +249,6 @@ function Place() {
     //removes an item from the room
     this.removeItem = function(string) {
         if (this.objects[string] != undefined && this.objects[string] > 0) {
-            if (!this.isShop) {
-                this.objects[string]--;
-            }
             if (this.objects[string] == 0) {
                 delete this.objects[string];
             }
@@ -265,6 +274,11 @@ function Place() {
         return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
     }
 
+    this.exchange = function(item){
+        if(this.exchanges[item] != undefined){
+            return this.exchanges[item];
+        }
+    }
 
 }
 
@@ -322,8 +336,11 @@ function setUp() {
     ticketEntrance.behind = parkingLot;
     ticketEntrance.newText = "god this place is run down...";
     //items
-    ticketEntrance.addItem("ticket");
-    ticketEntrance.addItem("attendant");
+    
+    ticketEntrance.exchanges = {
+        dollar: "ticket",
+        quarter: "token"
+    }
 
     //mainSquare
     mainSquare.name = "main square";
@@ -351,14 +368,12 @@ function setUp() {
     //cottonCandy
     cottonCandy.name = "cotton candy stand";
     cottonCandy.behind = lawn;
-    cottonCandy.isShop = true;
     //items
     cottonCandy.addItem("cotton candy");
 
     //cornDogs
     cornDogs.name = "corn dog stand";
     cornDogs.behind = lawn;
-    cornDogs.isShop = true;
     //items
     cornDogs.addItem("corn dog");
 
@@ -414,7 +429,8 @@ function setUp() {
     entryHall.name = "entrance hall";
     entryHall.ahead = antiChamber;
     entryHall.lights = false;
-    entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you";
+    entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. " +
+    "there is no coming back the way you came. god hope you have your ticket with you";
 
     //antiChamber
     antiChamber.name = "antichamber";
