@@ -12,8 +12,8 @@ function line() {
     $("<p></br></p>").insertBefore("#placeholder");
 }
 
-function lineNum(int){
-    for(var i = 0; i < int; i++){
+function lineNum(int) {
+    for (var i = 0; i < int; i++) {
         line();
     }
 }
@@ -62,28 +62,28 @@ function Person() {
     this.walkTo = function(placeName) {
         this.currentLocation.beenHere = true;
         destination = {};
-        
-        if (this.currentLocation.name.indexOf(placeName)>-1) {
+
+        if (this.currentLocation.name.indexOf(placeName) > -1) {
             return messages.moveRedundancy + this.currentLocation.name;
         }
 
-        if (this.currentLocation.left.name != undefined && this.currentLocation.left.name.indexOf(placeName)>-1) {
+        if (this.currentLocation.left.name != undefined && this.currentLocation.left.name.indexOf(placeName) > -1) {
             destination = this.currentLocation.left;
-        } else if (this.currentLocation.right.name != undefined && this.currentLocation.right.name.indexOf(placeName)>-1) {
+        } else if (this.currentLocation.right.name != undefined && this.currentLocation.right.name.indexOf(placeName) > -1) {
             destination = this.currentLocation.right;
-        } else if (this.currentLocation.ahead.name != undefined && this.currentLocation.ahead.name.indexOf(placeName)>-1) {
+        } else if (this.currentLocation.ahead.name != undefined && this.currentLocation.ahead.name.indexOf(placeName) > -1) {
             destination = this.currentLocation.ahead;
-        } else if (this.currentLocation.behind.name != undefined && this.currentLocation.behind.name.indexOf(placeName)>-1) {
+        } else if (this.currentLocation.behind.name != undefined && this.currentLocation.behind.name.indexOf(placeName) > -1) {
             destination = this.currentLocation.behind;
         } else {
             return messages.moveError;
         }
 
-        if(destination.isEntryLocked){
+        if (destination.isEntryLocked) {
             return destination.messages.errorEntryLocked;
         }
 
-        //implement system for unlocking thing.....
+        
 
         this.currentLocation = destination;
         return messages.moveMessage + this.currentLocation.name;
@@ -91,18 +91,18 @@ function Person() {
 
     //takes an item out of the current place and adds it to the person's pockets
     this.take = function(item) {
-        if(this.currentLocation.removeItem(item)){
+        if (this.currentLocation.removeItem(item)) {
             this.addItem(item);
             return "you picked up " + addArticle(item);
         }
-       return "there's not " + addArticle(item);
+        return "there isn't " + addArticle(item);
     }
 
     //drops an item out of the person's pockets into the current room.
     this.drop = function(item) {
         if (this.removeItem(item)) {
-          this.currentLocation.addItem(item);
-          return "you dropped " + addArticle(item);
+            this.currentLocation.addItem(item);
+            return "you dropped " + addArticle(item);
         }
         return "you don't have " + addArticle(item);
     }
@@ -112,36 +112,35 @@ function Person() {
     //returns a list of everything in the persons's pockets
     this.emptyPockets = function() {
         var toReturn = ""
-        if(Object.keys(this.pockets2).length > 0){
+        if (Object.keys(this.pockets2).length > 0) {
             toReturn += "your pockets contain: </br>";
-            for(var item in this.pockets2){
-                console.log(item);
+            for (var item in this.pockets2) {
                 toReturn += item + ": (" + this.pockets2[item] + ") </br>";
             }
-        }else{
+        } else {
             toReturn += "your pockets are empty"
         }
         return toReturn;
     }
 
     //adds an item to the person's 'pockets'
-    this.addItem = function(string){
-        if(this.pockets2[string] != undefined){
-            this.pockets2[string] ++;
-        }else{
+    this.addItem = function(string) {
+        if (this.pockets2[string] != undefined) {
+            this.pockets2[string]++;
+        } else {
             this.pockets2[string] = 1;
         }
     }
 
-    this.removeItem = function(string){
-        if(this.pockets2[string] != undefined && this.pockets2[string] >0){
+    this.removeItem = function(string) {
+        if (this.pockets2[string] != undefined && this.pockets2[string] > 0) {
             this.pockets2[string]--;
-            if(this.pockets2[string]==0){
+            if (this.pockets2[string] == 0) {
                 delete this.pockets2[string]
             }
             return true;
         }
-        return false;    
+        return false;
 
     }
 }
@@ -200,48 +199,48 @@ function Place() {
 
     //lists the items present in the room
     this.listObjects = function() {
-        var toReturn = "";
-        if (Object.keys(this.objects).length > 0) {
-            toReturn += "you see: </br>"
-            for(var item in this.objects){
-                console.log(item);
+            var toReturn = "";
+            if (Object.keys(this.objects).length > 0) {
+                toReturn += "you see: </br>"
+                for (var item in this.objects) {
+                    console.log(item);
                     toReturn += item + ": (" + this.objects[item] + ") </br>";
+                }
+            } else {
+                toReturn = "there's nothing here"
             }
-        } else {
-            toReturn = "there's nothing here"
+            return toReturn;
         }
-        return toReturn;
-    }
-    //adds an item to the room
-    this.addItem = function(string){
-        if(this.objects[string] != undefined){
-            this.objects[string] ++;
-        }else{
+        //adds an item to the room
+    this.addItem = function(string) {
+        if (this.objects[string] != undefined) {
+            this.objects[string]++;
+        } else {
             this.objects[string] = 1;
         }
     }
 
     //sets the prize variable
-    this.setPrize = function(string){
+    this.setPrize = function(string) {
         this.prize = string;
     }
 
     //returnes the prize
-    this.retrievePrize = function(){
-        if(this.isGame){
+    this.retrievePrize = function() {
+        if (this.isGame) {
             return this.prize
-        }else{
+        } else {
             return "";
         }
     }
 
     //removes an item from the room
-    this.removeItem = function(string){
+    this.removeItem = function(string) {
         if (this.objects[string] != undefined && this.objects[string] > 0) {
-            if(!this.isShop){
+            if (!this.isShop) {
                 this.objects[string]--;
             }
-            if(this.objects[string] == 0){
+            if (this.objects[string] == 0) {
                 delete this.objects[string];
             }
             return true;
@@ -250,20 +249,20 @@ function Place() {
         }
     }
 
-    this.play = function(player){
-      if(this.isGame){
-        player.addItem(this.prize);
-        return "you won " + addArticle(this.prize) + "! keep it safe!";
-      }
-      return "'" + player.currentLocation.name + "' isn't a game... you cant ... 'play' it";
+    this.play = function(player) {
+        if (this.isGame) {
+            player.addItem(this.prize);
+            return "you won " + addArticle(this.prize) + "! keep it safe!";
+        }
+        return "'" + player.currentLocation.name + "' isn't a game... you cant ... 'play' it";
 
     }
 
-    this.ride = function(player){
-      if(this.isRide){
-        return this.rideText;
-      }
-      return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
+    this.ride = function(player) {
+        if (this.isRide) {
+            return this.rideText;
+        }
+        return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
     }
 
 
@@ -278,7 +277,7 @@ function setUp() {
         // move descriptors
         moveMessage: "you walk to the ",
         moveError: "that's not a place you can walk from here!",
-        
+
         //move logic
         moveRedundancy: "you are already at the "
     }
@@ -491,7 +490,7 @@ $(document).ready(function() {
         numInputs += 1;
         selectInput = numInputs;
 
-        if(input.length>0){ println(">> " + input);}
+        if (input.length > 0) { println(">> " + input); }
         line();
         //var inputArray = input.split(" ");
 
@@ -507,11 +506,11 @@ $(document).ready(function() {
             println('- drop [item]');
             println('- take [item]');
 
-        //look around describe where you are
+            //look around describe where you are
         } else if (input.indexOf("look around") > -1) {
             println(player.currentLocation.description());
 
-        //walk places
+            //walk places
         } else if (input.indexOf("walk to") > -1) {
             // input = input.replace("walk to", "").trim().input.replace("the", "").trim();
             input = input.replace("walk to", "");
@@ -520,7 +519,7 @@ $(document).ready(function() {
             input = input.trim();
             println(player.walkTo(input));
 
-        //take items
+            //take items
         } else if (input.indexOf("take") > -1) {
             input = input.replace("take", "");
             input = input.trim();
@@ -528,7 +527,7 @@ $(document).ready(function() {
             input = input.trim();
             println(player.take(input));
 
-        //drop items
+            //drop items
         } else if (input.indexOf("drop") > -1) {
             input = input.replace("drop", "");
             input = input.trim();
@@ -536,40 +535,40 @@ $(document).ready(function() {
             input = input.trim();
             println(player.drop(input));
 
-        //take inventory
+            //take inventory
         } else if (input.indexOf("pockets") > -1) {
             println(player.emptyPockets());
 
-        //see what items are in the room.
+            //see what items are in the room.
         } else if (input.indexOf("items") > -1) {
             // println("HI");
             println(player.currentLocation.listObjects());
 
-        //climb stairs, if that's where you are
-        } else if(input.indexOf("climb") > -1){
-            if(player.currentLocation.canClimb && player.currentLocation.above != undefined){
+            //climb stairs, if that's where you are
+        } else if (input.indexOf("climb") > -1) {
+            if (player.currentLocation.canClimb && player.currentLocation.above != undefined) {
                 player.walkTo(player.currentLocation.above)
             }
 
-        //go down stairs if that's where you are
-        } else if(input.indexOf("go down")> -1){
-            if(player.currentLocation.canClimb && player.currentLocation.below != undefined){
+            //go down stairs if that's where you are
+        } else if (input.indexOf("go down") > -1) {
+            if (player.currentLocation.canClimb && player.currentLocation.below != undefined) {
                 player.walkTo(player.currentLocation.below);
             }
 
-        //dig, if you have a shovel, and there's something under you
-        } else if(input.indexOf("dig")> -1){
-            if(player.currentLocation.below != undefined && player.pockets2["shovel"] > 0){
+            //dig, if you have a shovel, and there's something under you
+        } else if (input.indexOf("dig") > -1) {
+            if (player.currentLocation.below != undefined && player.pockets2["shovel"] > 0) {
                 player.currentLocation = player.currentLocation.below;
                 println("you dropped down into the " + player.currentLocation.name);
             }
-        } else if(input.indexOf("play")>-1){
-          println(player.currentLocation.play(player));
+        } else if (input.indexOf("play") > -1) {
+            println(player.currentLocation.play(player));
 
-        } else if(input.indexOf("ride")>-1){
-          println(player.currentLocation.ride(player));
+        } else if (input.indexOf("ride") > -1) {
+            println(player.currentLocation.ride(player));
         } else {
-            if(input.length>0){println("command invalid");}
+            if (input.length > 0) { println("command invalid"); }
         }
 
 
@@ -598,4 +597,3 @@ $(document).ready(function() {
         }
     });
 });
-
