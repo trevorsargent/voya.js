@@ -4,7 +4,11 @@
 
 //prints 'line' to the "console" on a new line
 function println(line) {
-    $("<p>" + line + "</p>").insertBefore("#placeholder");
+    arr = line.split('\n');
+    for (var i = 0; i < arr.length; i++) {
+        $("<p>" + arr[i].trim() + "</p>").insertBefore("#placeholder");
+    }
+    
 }
 
 //adds a blank line
@@ -32,11 +36,7 @@ function addArticle(string) {
 //prints the welcome message
 function welcome() {
     lineNum(8);
-    println('-----------------------------');
-    println('| welcome to the carnival!! |');
-    println('-----------------------------');
-    println('there are lots of fun things here');
-    println('enjoy yourself. we demand it.');
+    println(messages.welcomeText);
     line();
 }
 
@@ -60,7 +60,7 @@ function Person() {
 
     //walks to the place
     this.walkTo = function(placeName) {
-        this.currentLocation.beenHere = true;
+        this.currentLocation.settings.beenHere = true;
         destination = {};
         var toReturn = "";
 
@@ -80,12 +80,15 @@ function Person() {
             return messages.moveError;
         }
 
-        if (destination.isEntryLocked && destination.beenHere == false) {
+        if (destination.settings.entryLocked) {
 
             toReturn = destination.messages.locked;
 
             if (this.pockets[destination.key] != undefined) {
                 toReturn += destination.messages.successEntryGranted;
+                if (destination.settings.leaveUnlocked) {
+                    destination.settings.entryLocked = false;
+                }
             } else {
                 return toReturn;
             }
@@ -100,9 +103,9 @@ function Person() {
     this.take = function(item) {
         if (this.currentLocation.removeItem(item)) {
             this.addItem(item);
-            return "you picked up " + addArticle(item);
+            return messages.successPickUp + addArticle(item);
         }
-        return "there isn't " + addArticle(item);
+        return messages.errorPickUp + addArticle(item);
     }
 
     //drops an item out of the person's pockets into the current room.
@@ -113,9 +116,9 @@ function Person() {
             toReturn += "you dropped " + addArticle(item);
             if (Object.keys(this.currentLocation.exchanges).length > 0) {
                 var returned = this.currentLocation.exchange(item);
+                this.addItem(returned);
+                toReturn += "\nyou take " + addArticle(returned) + " in return for the " + item;
             }
-            this.addItem(returned);
-            toReturn += "you take " + addArticle(returned) + " in return for the " + item;
             return toReturn;
         }
         return "you don't have " + addArticle(item);
@@ -172,21 +175,25 @@ function Place() {
     this.above = {};
     this.objects = {};
     this.newText = "";
-    this.isEntryLocked = false;
-    this.beenHere = false;
-    this.isRide = false;
-    this.isGame = false;
-    this.canClimb = false;
-    this.lights = true;
-    this.prize = "";
-    this.played = false;
-    this.rideText;
-    this.playText;
     this.key = ""
 
     this.messages = {
         locked: "",
-        successEntryGranted: ""
+        successEntryGranted: "",
+        prize: "", 
+        playText: "",
+        rideText: ""
+    }
+
+    this.settings = {
+        leaveUnlocked: false,
+        entryLocked: false,
+        beenHere: false,
+        isRide: false,
+        isGame: false,
+        beenPlayed: false,
+        canClimb: false,
+        isLit: true
     }
 
     this.exchanges = {
@@ -209,7 +216,7 @@ function Place() {
         if (this.behind.name != undefined) {
             toReturn += "</br>behind you is the " + this.behind.name + ".";
         }
-        if (!this.beenHere && this.newText != "") {
+        if (!this.settings.beenHere && this.newText != "") {
             toReturn += "</br></br>" + this.newText + ".";
         }
         return toReturn;
@@ -238,11 +245,6 @@ function Place() {
         }
     }
 
-    //sets the prize variable
-    this.setPrize = function(string) {
-        this.prize = string;
-    }
-
     //returnes the prize
     this.retrievePrize = function() {
         if (this.isGame) {
@@ -265,7 +267,7 @@ function Place() {
     }
 
     this.play = function(player) {
-        if (this.isGame) {
+        if (this.settings.isGame) {
             player.addItem(this.prize);
             return "you won " + addArticle(this.prize) + "! keep it safe!";
         }
@@ -274,7 +276,7 @@ function Place() {
     }
 
     this.ride = function(player) {
-        if (this.isRide) {
+        if (this.settings.isRide) {
             return this.rideText;
         }
         return "'" + player.currentLocation.name + "' isn't a ride... don't just jump onto things that aren't meant to be ridden...";
@@ -299,8 +301,19 @@ function setUp() {
         moveError: "that's not a place you can walk from here!",
 
         //move logic
-        moveRedundancy: "you are already at the "
-    }
+        moveRedundancy: "you are already at the ",
+
+        //objects
+        successPickUp: "you picked up ",
+        errorPickUp: "there isn't ",
+
+        welcomeText: 
+        '-----------------------------\n' +
+        '| welcome to the carnival!! |\n' +
+        '-----------------------------\n' +
+        'there are lots of fun things here\n'+ 
+        'enjoy yourself. we demand it.'
+    };
 
     parkingLot = new Place();
     ticketEntrance = new Place();
@@ -354,16 +367,17 @@ function setUp() {
     mainSquare.ahead = ferrisWheel;
     mainSquare.left = lawn;
     mainSquare.right = arcade;
-    mainSquare.isEntryLocked = true;
+    mainSquare.settings.entryLocked = true;
+    mainSquare.settings.leaveUnlocked = true;
+    mainSquare.messages.locked = "a ticket is required for entry.\n"
+    mainSquare.messages.successEntryGranted = "you use your ticket to enter.\n"
     mainSquare.key = "ticket";
-    mainSquare.messages.locked = "a ticket is required for entry."
-    mainSquare.messages.successEntryGranted = "you use your ticket to enter."
 
     //ferrisWheel
     ferrisWheel.name = "ferris wheel";
     ferrisWheel.behind = mainSquare;
     ferrisWheel.below = southStairsTop;
-    ferrisWheel.isRide = true;
+    ferrisWheel.settings.isRide = true;
     ferrisWheel.rideText = "wow the view is great from up here. make sure you don't drop anything...";
 
     //lawn
@@ -388,8 +402,8 @@ function setUp() {
     //tiltaWhirl
     tiltaWhirl.name = "tilt-a-whirl";
     tiltaWhirl.behind = lawn;
-    tiltaWhirl.isRide = true;
-    tiltaWhirl.rideText = "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick";
+    tiltaWhirl.settings.isRide = true;
+    tiltaWhirl.messages.rideText = "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick";
 
     //arcade
     arcade.name = "arcade entrance";
@@ -401,23 +415,23 @@ function setUp() {
     //whackaMole
     whackaMole.name = "whack-a-mole";
     whackaMole.behind = arcade;
-    whackaMole.isGame = true;
-    whackaMole.setPrize("helmet");
-    whackaMole.playText = "whack...whack... wow you're good at this."
+    whackaMole.settings.isGame = true;
+    whackaMole.settings.prize = "helmet"
+    whackaMole.messages.playText = "whack...whack... wow you're good at this."
 
     //skeeBall
     skeeBall.name = "skeeball";
     skeeBall.behind = arcade;
-    skeeBall.isGame = true;
-    skeeBall.setPrize("bottomless bucket");
-    skeeBall.playText = "fwoomp. crack. boink. clunk. ding ding ding!";
+    skeeBall.settings.isGame = true;
+    skeeBall.settings.prize = "bottomless bucket";
+    skeeBall.messages.playText = "fwoomp. crack. boink. clunk. ding ding ding!";
 
     //pinBall
     pinBall.name = "pinball";
     pinBall.behind = arcade;
-    pinBall.isGame = true;
-    pinBall.setPrize("pair of seven league boots");
-    pinBall.playText = "fwap. fwap. zing. broing. shatchatchatchatcha. dinnnng dinnng!";
+    pinBall.settings.isGame = true;
+    pinBall.settings.prize = "pair of seven league boots";
+    pinBall.messages.playText = "fwap. fwap. zing. broing. shatchatchatchatcha. dinnnng dinnng!";
 
     //UNDERGROUND CASTLE
 
@@ -425,18 +439,18 @@ function setUp() {
     southStairsTop.name = "the top of the south stairs";
     southStairsTop.above = ferrisWheel;
     southStairsTop.below = southStairsBottom;
-    southStairsTop.canClimb = true;
+    southStairsTop.settings.canClimb = true;
 
     //southStairsBottom
     southStairsBottom.name = "the bottom of the south stairs";
     southStairsBottom.above = southStairsTop;
     southStairsBottom.ahead = entryHall;
-    southStairsBottom.lights = false;
+    southStairsBottom.settings.lights = false;
 
     //entryHall
     entryHall.name = "entrance hall";
     entryHall.ahead = antiChamber;
-    entryHall.lights = false;
+    entryHall.settings.lights = false;
     entryHall.newText = "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. " +
         "there is no coming back the way you came. god hope you have your ticket with you";
 
@@ -444,7 +458,7 @@ function setUp() {
     antiChamber.name = "antichamber";
     antiChamber.behind = entryHall;
     antiChamber.ahead = mainHall;
-    antiChamber.lights = false;
+    antiChamber.settings.lights = false;
 
     //mainHall
     mainHall.name = "main hall";
@@ -452,17 +466,17 @@ function setUp() {
     mainHall.ahead = northStairsBottom;
     mainHall.left = westWing;
     mainHall.right = eastWing;
-    mainHall.lights = false;
+    mainHall.settings.lights = false;
 
     //eastWing
     eastWing.name = "east wing";
     eastWing.behind = mainHall;
-    eastWing.lights = false;
+    eastWing.settings.lights = false;
 
     //westWing
     westWing.name = "west wing";
     westWing.behind = mainHall;
-    westWing.lights = false;
+    westWing.settings.lights = false;
     westWing.addItem("sword");
     westWing.addItem("shield");
     westWing.addItem("hand mirror");
@@ -472,15 +486,15 @@ function setUp() {
     northStairsBottom.name = "bottom of the north stairs";
     northStairsBottom.behind = mainHall;
     northStairsBottom.above = northStairsTop;
-    northStairsBottom.canClimb = true;
-    northStairsBottom.lights = false;
+    northStairsBottom.settings.canClimb = true;
+    northStairsBottom.settings.lights = false;
     northStairsBottom.newText = "climb "
 
     //northStairsTop
     northStairsTop.name = "top of the north stairs";
     northStairsTop.below = northStairsBottom;
     northStairsTop.ahead = owlry;
-    northStairsTop.canClimb = true;
+    northStairsTop.settings.canClimb = true;
 
 
     //owlry
@@ -500,7 +514,7 @@ $(document).ready(function() {
 
     player = new Person();
     player.currentLocation = parkingLot;
-    player.currentLocation.beenHere = true;
+    player.currentLocation.settings.beenHere = true;
 
     var inputHistory = new Array();
     var numInputs = 0;
@@ -550,7 +564,6 @@ $(document).ready(function() {
             input = input.replace("the", "");
             input = input.trim();
             println(player.take(input));
-
             //drop items
         } else if (input.indexOf("drop") > -1) {
             input = input.replace("drop", "");
@@ -565,27 +578,26 @@ $(document).ready(function() {
 
             //see what items are in the room.
         } else if (input.indexOf("items") > -1) {
-            // println("HI");
             println(player.currentLocation.listObjects());
 
             //climb stairs, if that's where you are
-        } else if (input.indexOf("climb") > -1) {
-            if (player.currentLocation.canClimb && player.currentLocation.above != undefined) {
-                player.walkTo(player.currentLocation.above)
-            }
+        // } else if (input.indexOf("climb") > -1) {
+        //     if (player.currentLocation.settings.canClimb && player.currentLocation.above != undefined) {
+        //         player.walkTo(player.currentLocation.above)
+        //     }
 
-            //go down stairs if that's where you are
-        } else if (input.indexOf("go down") > -1) {
-            if (player.currentLocation.canClimb && player.currentLocation.below != undefined) {
-                player.walkTo(player.currentLocation.below);
-            }
+        //     //go down stairs if that's where you are
+        // } else if (input.indexOf("go down") > -1) {
+        //     if (player.currentLocation.settings.canClimb && player.currentLocation.below != undefined) {
+        //         player.walkTo(player.currentLocation.below);
+        //     }
 
             //dig, if you have a shovel, and there's something under you
-        } else if (input.indexOf("dig") > -1) {
-            if (player.currentLocation.below != undefined && player.pockets2["shovel"] > 0) {
-                player.currentLocation = player.currentLocation.below;
-                println("you dropped down into the " + player.currentLocation.name);
-            }
+        // } else if (input.indexOf("dig") > -1) {
+        //     if (player.currentLocation.below != undefined && player.pockets["shovel"] > 0) {
+        //         player.currentLocation = player.currentLocation.below;
+        //         println("you dropped down into the " + player.currentLocation.name);
+        //     }
         } else if (input.indexOf("play") > -1) {
             println(player.currentLocation.play(player));
 
