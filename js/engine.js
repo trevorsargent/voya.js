@@ -1,6 +1,6 @@
 //main logic and text-parsing for the game
 //Made by, and copyright, @trevorsargent 2014, licenced under
-
+var database = firebase.database();
 //prints 'line' to the "console" on a new line
 function println(line) {
     arr = line.split('\n');
