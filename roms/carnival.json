@@ -1,0 +1,282 @@
+{
+    "messages": {
+        "moveMessage": "you walk to the ",
+        "moveError": "that's not a place you can walk from here!",
+
+        "moveRedundancy": "you are already at the ",
+
+
+        "pickUpSuccess": "you picked up ",
+        "pickUpError": "there isn't ",
+
+        "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n there are lots of fun things here\n enjoy yourself.we demand it."
+    },
+
+    "player": {
+        "name": "",
+        "age": 0,
+        "height": 0,
+        "money": 0,
+        "currentLocation": {},
+        "pockets": {},
+        "startingPlace": "parkingLot"
+    },
+
+    "places": {
+
+
+
+        "parkingLot": {
+
+
+            "name": "parking lot",
+            "ahead": "ticketEntrance",
+            "messages": {
+                "newText": "yikes. is that a knife over there?"
+            },
+            "objects": {
+                "knife": 1
+            }
+        },
+
+        "ticketEntrance": {
+            "name": "ticket entrance",
+            "ahead": "mainSquare",
+            "behind": "parkingLot",
+            "messages": {
+                "newText": "god this place is run down..."
+            },
+            "exchanges": {
+                "dollar": "ticket",
+                "quarter": "token"
+            }
+        },
+
+        "mainSquare": {
+
+
+            "name": "main square",
+
+
+            "behind": "ticketEntrance",
+            "ahead": "ferrisWheel",
+
+            "left": "lawn",
+            "right": "arcade",
+
+            "settings": {
+                "entryLocked": true,
+                "leaveUnlocked": true
+            },
+
+            "messages": {
+                "locked": "a ticket is required for entry.\n",
+                "successEntryGranted": "you use your ticket to enter.\n"
+            },
+
+            "key": "ticket"
+
+        },
+
+        "ferrisWheel": {
+            "name": "ferris wheel",
+            "behind": "mainSquare",
+            "below": "sourthStairsTop",
+            "settings": {
+                "isRide": true
+            },
+            "rideText": "wow the view is great from up here. make sure you don't drop anything..."
+        },
+
+        "lawn": {
+            "name": "lawn",
+            "behind": "mainSquare",
+            "ahead": "cottonCandy",
+            "left": "cornDogs",
+            "right": "tiltaWhirl"
+        },
+
+        "cottonCandy": {
+            "name": "cotton candy stand",
+            "behind": "lawn",
+            "objects": {
+                "cotton candy": 1
+            }
+        },
+
+        "cornDogs": {
+
+            "name": "corn dog stand",
+            "behind": "lawn",
+            "objects": {
+                "corn dog": 1
+            }
+        },
+
+        "tiltaWhirl": {
+            "name": "tilt-a-whirl",
+            "behind": "lawn",
+            "settings": {
+                "isRide": "true"
+            },
+            "messages": {
+                "rideText": "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick"
+            }
+        },
+
+        "arcade": {
+            "name": "arcade entrance",
+            "behind": "mainSquare",
+            "ahead": "whackaMole",
+            "left": "skeeBall",
+            "right": "pinBall"
+        },
+
+        "whackaMole": {
+            "name": "whack-a-mole",
+            "behind": "arcade",
+            "settings": {
+                "isGame": true,
+                "prize": "helmet"
+            },
+            "messages": {
+                "playText": "whack...whack... wow you're good at this."
+            }
+        },
+
+        "skeeBall": {
+            "name": "skeeball",
+            "behind": "arcade",
+            "settings": {
+                "isGame": true,
+                "prize": "bottomless bucket"
+            },
+            "messages": {
+                "playText": "fwoomp. crack. boink. clunk. ding ding ding!"
+            }
+        },
+
+        "pinBall": {
+            "name": "pinball",
+            "behind": "arcade",
+            "settings": {
+                "isGame": true,
+                "prize": "pair of seven league boots"
+            },
+            "messages": {
+                "playText": "fwap. fwap. zing. broing. shatchatchatchatcha. dinnnng dinnng!"
+            }
+        },
+
+        "southStairsTop": {
+
+            "name": "the top of the south stairs",
+            "above": "ferrisWheel",
+            "below": "southStairsBottom",
+            "settings": {
+                "canClimb": true
+            }
+        },
+
+        "southStairsBottom": {
+            "name": "the bottom of the south stairs",
+            "above": "southStairsTop",
+            "ahead": "entryHall",
+            "settings": {
+                "lights": false
+            }
+        },
+
+        "entryHall": {
+            "name": "entrance hall",
+            "ahead": "antiChamber",
+            "settings": {
+                "lights": false
+            },
+
+            "newText": "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you"
+
+        },
+
+        "antiChamber": {
+            "name": "antichamber",
+            "behind": "entryHall",
+            "ahead": "mainHall",
+            "settings": {
+                "lights": false
+            }
+        },
+
+        "mainHall": {
+            "name": "main hall",
+            "behind": "antiChamber",
+            "ahead": "northStairsBottom",
+            "left": "westWing",
+            "right": "eastWing",
+            "settings": {
+                "lights": false
+            }
+        },
+
+        "eastWing": {
+
+            "name": "east wing",
+            "behind": "mainHall",
+            "settings": {
+                "lights": false
+            }
+        },
+
+        "westWing": {
+
+            "name": "west wing",
+            "behind": "mainHall",
+            "settings": {
+                "lights": false
+            },
+            "objects": {
+                "sword": 1,
+                "shield": 1,
+                "hand mirror": 1,
+                "broken chair": 1
+            }
+        },
+
+        "northStairsBottom": {
+
+            "name": "bottom of the north stairs",
+            "behind": "mainHall",
+            "above": "northStairsTop",
+            "settings": {
+                "lights": false,
+                "canClimb": true
+            }
+        },
+
+        "northStairsTop": {
+
+
+            "newText": "climb ",
+            "name": "top of the north stairs",
+            "below": "northStairsBottom",
+            "ahead": "owlry",
+            "settings": {
+                "canClimb": true
+            }
+        },
+
+
+        "owlry": {
+            "name": "owlry",
+            "behind": "northStairsTop",
+            "left": "balcony"
+        },
+
+        "balcony": {
+
+            "name": "balcony",
+            "behind": "owlry"
+        }
+    }
+
+}
