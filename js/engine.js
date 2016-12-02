@@ -6,7 +6,6 @@ function println(line) {
     for (var i = 0; i < arr.length; i++) {
         $("<p>" + arr[i].trim() + "</p>").insertBefore("#placeholder");
     }
-    
 }
 
 //adds a blank line
@@ -20,10 +19,18 @@ function lineNum(int) {
     }
 }
 
+//prints the welcome message
+function welcome() {
+    lineNum(8)
+    println(messages.welcomeText);
+    line();
+}
+
 //adds the gramatically appropriate article to the string passed
 function addArticle(string) {
+    var vowels = ['a', 'e', 'i', 'o', 'u'];
     var article;
-    if (string.charAt(0) == 'a' || string.charAt(0) == 'e' || string.charAt(0) == 'i' || string.charAt(0) == 'o' || string.charAt(0) == 'u') {
+    if (vowels.includes(string.charAt(0))){
         article = "an ";
     } else {
         article = "a "
@@ -31,12 +38,7 @@ function addArticle(string) {
     return article + " " + string;
 }
 
-//prints the welcome message
-function welcome() {
-    lineNum(8);
-    println(messages.welcomeText);
-    line();
-}
+
 
 //player object
 function Person() {
