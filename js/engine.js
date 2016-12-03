@@ -38,7 +38,7 @@ function addArticle(string) {
 }
 
 //returns a formatted list of everything in a hash
-listHash = function(hash) {
+function hashList(hash) {
 	var toReturn = ""
 	if (Object.keys(hash)
 		.length > 0) {
@@ -51,6 +51,26 @@ listHash = function(hash) {
 	return toReturn
 }
 
+//adds an item to the person's 'pockets'
+function hashAdd(string, list) {
+	if (string in list) {
+		list[string]++
+	} else {
+		list[string] = 1
+	}
+	return list
+}
+
+function hashRemove(string, list) {
+	if (string in list) {
+		list[string]--
+			if (list[string] <= 0) {
+				delete list[string]
+			}
+	}
+	return list
+}
+
 //prints the welcome message
 function welcome() {
 	lineNum(8)
@@ -61,93 +81,64 @@ function welcome() {
 
 
 //walks to the place
-moveTo = function(placeName) {
-	data.player.currentLocation.settings.beenHere = true
-	destination = {}
-	var toReturn = ""
-
-	if (data.player.currentLocation.name.indexOf(placeName) > -1) {
-		return messages.moveRedundancy + data.player.currentLocation.name
-	}
-
-	if (data.player.currentLocation.left.name != undefined && data.player.currentLocation.left.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.left
-	} else if (data.player.currentLocation.right.name != undefined && data.player.currentLocation.right.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.right
-	} else if (data.player.currentLocation.ahead.name != undefined && data.player.currentLocation.ahead.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.ahead
-	} else if (data.player.currentLocation.behind.name != undefined && data.player.currentLocation.behind.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.behind
-	} else if (data.player.currentLocation.above.name != undefined && data.player.currentLocation.above.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.above
-	} else if (data.player.currentLocation.below.name != undefined && data.player.currentLocation.below.name.indexOf(placeName) > -1) {
-		destination = data.player.currentLocation.below
-	} else {
-		return messages.moveError
-	}
-
-	if (destination.settings.entryLocked) {
-
-		toReturn = destination.messages.locked
-
-		if (data.player.pockets[destination.key] != undefined) {
-			toReturn += destination.messages.successEntryGranted
-			if (destination.settings.leaveUnlocked) {
-				destination.settings.entryLocked = false
-			}
-		} else {
-			return toReturn
-		}
-	}
-
-	data.player.currentLocation = destination
-	wirePlace(data.player.currentLocation)
-	toReturn += messages.moveMessage + data.player.currentLocation.name
-	return toReturn
+walkTo = function(player, destination) {
+	player.currentLocation.settings.beenHere = true
+	destination = applyPlaceDefaults(placeFromString(placeName))
+	player.currentLocation = destination
+	return player
 }
 
 //takes an item out of the current place and adds it to the person's pockets
 
-//adds an item to the person's 'pockets'
-addItem = function(string, list) {
-	if (string in list) {
-		list[string]++
-	} else {
-		list[string] = 1
+function locationIsAccessable(placeName, placeObj) {
+	place = placeFromString(placeName)
+	if (place === undefined) {
+		return false
 	}
-	return list
+	if (data.places[placeObj.ahead] === place) {
+		return true
+	}
+	if (data.places[placeObj.behind] === place) {
+		return true
+	}
+	if (data.places[placeObj.right] === place) {
+		return true
+	}
+	if (data.places[placeObj.left] === place) {
+		return true
+	}
+	if (data.places[placeObj.above] === place) {
+		return true
+	}
+	if (data.places[placeObj.below] === place) {
+		return true
+	}
+	return false
+
 }
 
-removeItem = function(string, list) {
-		if (string in list) {
-			list[string]--
-				if (list[string] <= 0) {
-					delete list[string]
-				}
-		}
-	}
-	//location object
-
-//returns a description of the room, including what's around you.
+// returns a description of 'place'
 description = function(place) {
-	var toReturn = "you're standing in the " + data.player.currentLocation.name + "."
+	var toReturn = "you're standing in the " + place.name + "."
 	if (place.left != undefined) {
-		toReturn += "</br>on your left is the " + place.left.name + "."
+		toReturn += "</br>on your left is the " + data.places[place.left].name + "."
 	}
 	if (place.right != undefined) {
-		toReturn += "</br>on your right is the " + place.right.name + "."
+		toReturn += "</br>on your right is the " + data.places[place.right].name + "."
 	}
 	if (place.ahead != undefined) {
-		toReturn += "</br>ahead of you is the " + place.ahead.name + "."
+		toReturn += "</br>ahead of you is the " + data.places[place.ahead].name + "."
 	}
 	if (place.behind != undefined) {
-		toReturn += "</br>behind you is the " + place.behind.name + "."
+		toReturn += "</br>behind you is the " + data.places[place.behind].name + "."
 	}
 	if (!place.settings.beenHere && place.messages.newText != "") {
 		toReturn += "</br></br>" + place.messages.newText + "."
 	}
 	return toReturn
 }
+
+// TODO: FIX
 
 function play(place) {
 	if (place.settings.isGame) {
@@ -157,6 +148,8 @@ function play(place) {
 	return false
 
 }
+
+// TODO: FIX
 
 function exchange(place) {
 	if (place.exchanges[item] != undefined) {
@@ -179,17 +172,6 @@ function trimInput(input, string) {
 		.trim();
 }
 
-function wirePlace(place) {
-	place.settings = place.settings || {}
-	place.messages = place.messages || {}
-	place.left = data.places[place.left]
-	place.right = data.places[place.right]
-	place.ahead = data.places[place.ahead]
-	place.behind = data.places[place.behind]
-	place.above = data.places[place.above]
-	place.below = data.places[place.left]
-}
-
 function loadJSON(file, callback) {
 	var xobj = new XMLHttpRequest();
 	xobj.overrideMimeType("application/json");
@@ -207,14 +189,21 @@ function loadJSON(file, callback) {
 function load() {
 	loadJSON("../roms/carnival.json", function(response) {
 		data = JSON.parse(response);
-
+		onLoad()
 	});
 }
 
 function onLoad() {
-	data.player.currentLocation = data.places[data.player.startingPlace]
-	wirePlace(data.player.currentLocation)
+	data.player.currentLocation = applyPlaceDefaults(data.places[data.player.startingPlace])
 	welcome();
+}
+
+function applyPlaceDefaults(place) {
+	place.settings = place.settings || {}
+	place.settings.beenHere = place.settings.beenHere || false
+	place.settings.isLocked = place.settings.isLocked || false
+	place.messages = place.messages || {}
+	return place
 }
 
 
@@ -261,30 +250,43 @@ $(document)
 					//walk places
 				} else if (input.indexOf("walk to") > -1) {
 					// input = input.replace("walk to", "").trim().input.replace("the", "").trim()
-					location = trimInput(input, "walk to")
-					moveTo(location)
-					println(data.messages.moveMessage + location)
+					placeName = trimInput(input, "walk to")
+
+					if (locationIsAccessable(placeName, data.player.currentLocation)) {
+						data.player = walkTo(data.player, placeName)
+						println(data.messages.moveMessage + placeName)
+					} else {
+						println(data.messages.moveError)
+					}
+
+
 
 					//take items
 				} else if (input.indexOf("take") > -1) {
 					// TODO: take logic
 					item = trimInput(input, "take")
 					if (item in data.player.currentLocation.objects) {
-						data.player.currentLocation.objects = hashRemoveItem(data.player.currentLocation.objects, item)
-						data.player.pockets = hashAddItem(data.player.pockets, item)
+						data.player.currentLocation.objects = hashRemove(item, data.player.currentLocation.objects)
+						data.player.pockets = hashAdd(item, data.player.pockets)
 						println(data.messages.pickUpSuccess + addArticle(item))
 					} else {
 						println(data.messages.pickUpError + addArticle(item))
 					}
 					//drop items
 				} else if (input.indexOf("drop") > -1) {
-					input = trimInput(input, "drop")
-						// TODO: drop logic
+					item = trimInput(input, "drop")
+					if (item in data.player.pockets) {
+						data.player.pockets = hashRemove(item, data.player.pockets)
+						data.player.currentLocation.objects = hashAdd(item, data.player.currentLocation.objects)
+						println(data.messages.dropSuccess + addArticle(item))
+					} else {
+						println(data.messages.dropError + addArticle(item))
+					}
 
 					//take inventory
 				} else if (input.indexOf("pockets") > -1) {
-					if (listHash(data.player.pockets)) {
-
+					if (data.player.pockets != {}) {
+						println(hashList(data.player.pockets))
 					}
 					//see what items are in the room.
 				} else if (input.indexOf("items") > -1) {

@@ -8,6 +8,8 @@
 
         "pickUpSuccess": "you picked up ",
         "pickUpError": "there isn't ",
+				"dropSuccess" : "you dropped ",
+				"dropError" : "you dont have ",
 
         "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n there are lots of fun things here\n enjoy yourself.we demand it."
     },
