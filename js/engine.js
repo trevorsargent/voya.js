@@ -5,6 +5,7 @@ var data
 
 //prints a line of text to the screen
 function println(line) {
+	console.log(line)
 	arr = line.split('\n')
 	for (var i = 0; i < arr.length; i++) {
 		$("<p>" + arr[i].trim() + "</p>")
@@ -38,17 +39,18 @@ function addArticle(string) {
 }
 
 //returns a formatted list of everything in a hash
-function hashList(hash) {
+function hashList(hash, error) {
 	var toReturn = ""
 	if (Object.keys(hash)
 		.length > 0) {
 		for (var item in hash) {
-			toReturn += item + ": (" + hash[item] + ") </br>"
+			toReturn += item + ": (" + hash[item] + ") \n"
 		}
+		return toReturn
 	} else {
-		toReturn = null
+		return error
 	}
-	return toReturn
+
 }
 
 //adds an item to the person's 'pockets'
@@ -203,25 +205,26 @@ function applyPlaceDefaults(place) {
 	place.settings.beenHere = place.settings.beenHere || false
 	place.settings.isLocked = place.settings.isLocked || false
 	place.messages = place.messages || {}
+	place.messages.newText = place.messages.newText || ""
 	return place
 }
 
-
+let inputHistory = new Array()
+let numInputs = 0
+let selectInput = 0
 
 $(document)
 	.ready(function() {
 
 		load();
 
-		var inputHistory = new Array()
-		var numInputs = 0
-		var selectInput
+
 
 		//on pressing enter after providing a command
 		$("form")
 			.submit(function() {
 
-				var input = $('#command_line')
+				let input = $('#command_line')
 					.val()
 				inputHistory.push(input)
 				numInputs += 1
@@ -286,7 +289,7 @@ $(document)
 					//take inventory
 				} else if (input.indexOf("pockets") > -1) {
 					if (data.player.pockets != {}) {
-						println(hashList(data.player.pockets))
+						println(hashList(data.player.pockets, data.messages.inventoryError))
 					}
 					//see what items are in the room.
 				} else if (input.indexOf("items") > -1) {
@@ -318,19 +321,22 @@ $(document)
 		$(document)
 			.on("keyup", function(e) {
 				var code = e.which
-				if (code == 38) {
-					selectInput--
-					if (selectInput >= 0) {
+				if (code == 38) { //up
+					if (selectInput > 0) {
+						selectInput--
 						//alert(inputHistory[selectInput])
 						$('#command_line')
 							.val(inputHistory[selectInput])
 					}
-				} else if (code == 40) {
-					selectInput++
-					if (selectInput >= 0) {
-						//alert(inputHistory[selectInput])
+				} else if (code == 40) { //down
+
+					if (selectInput < numInputs) {
+						selectInput++
 						$('#command_line')
 							.val(inputHistory[selectInput])
+					} else if (selectInput === numInputs) {
+						$('#command_line')
+							.val("")
 					}
 				}
 			})

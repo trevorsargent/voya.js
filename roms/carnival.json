@@ -5,7 +5,7 @@
 
         "moveRedundancy": "you are already at the ",
 
-
+				"inventoryError": "you don't have anything in your pockets",
         "pickUpSuccess": "you picked up ",
         "pickUpError": "there isn't ",
 				"dropSuccess" : "you dropped ",
