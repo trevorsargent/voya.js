@@ -13,14 +13,29 @@
 
         "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n there are lots of fun things here\n enjoy yourself.we demand it."
     },
+		"defaults":{
+			"place":{
+				"messages":{
+					"newText": ""
+				},
+				"settings":{
+					"isLocked": false,
+					"beenHere" : false
+				}
+			}
+		},
 
     "player": {
-        "name": "",
-        "age": 0,
-        "height": 0,
-        "money": 0,
-        "currentLocation": {},
-        "pockets": {},
+        "name": "Mort",
+        "age": 21,
+        "height": 172,
+        "pockets": {
+					"coin": 6,
+					"dollar": 5,
+					"pocket watch": 1,
+					"wrench" : 1,
+					"flashlight" : 1
+				},
         "startingPlace": "parkingLot"
     },
 
