@@ -6,13 +6,15 @@ Voya is a text based, interactive fiction adventure game engine.
 
 ##Roadmap
 
+[Full roadmap](https://github.com/trevorsargent/voya.js/projects/1) is available, but here are the highlights
+
  - [x] transition to functional programming style (mostly done on this, please [open an issue](https://github.com/trevorsargent/voya.js/issues/new) if there are any elements you see need fixing - i'm still learning a lot...)   
  - [ ] implement 'hand-held' light sources, and the necessity thereof
  - [ ] support multiple lines of 'look around' text, to add to story, and customizable settings for its display
  - [ ] re-introduce locking mechanisms on locations, and keys on the player
  - [ ] support custom commands titles - a game could retitle the 'walk' command to 'swim' or 'fly' or simply 'go'... etc.
 
- Right now there's not a lot of functionality. wander around if you like, it's pretty empty.
+
 
 
 
