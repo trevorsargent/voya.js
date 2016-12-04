@@ -148,7 +148,6 @@ function exchange(item, place) {
 }
 
 function placeFromString(placeName, places) {
-	// console.log("placeFromString args: ", placeName, places)
 	for (var e in places) {
 		if (places[e].name == placeName) {
 			return places[e]
@@ -269,7 +268,6 @@ $(document)
 		let selectInput = 0
 
 		data = load('../roms/carnival.json')
-		console.log(data)
 		data.player.currentLocation = applyPlaceDefaults(data.places[data.player.startingPlace], data.defaults)
 		printWelcome(data.messages.welcomeText);
 
