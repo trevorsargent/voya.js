@@ -2,10 +2,10 @@
 
 //p rints a line of text to the screen
 function println(line) {
-	arr = line.split('\n')
+	arr = line.split('\n');
 	for (var i = 0; i < arr.length; i++) {
 		$("<p>" + arr[i].trim() + "</p>")
-			.insertBefore("#placeholder")
+			.insertBefore("#placeholder");
 	}
 }
 
@@ -29,6 +29,8 @@ function printWelcome(welcomeText) {
 	line()
 }
 
+<<
+<< << < HEAD
 // adds the gramatically appropriate article (in english) to the string passed
 function addArticle(string) {
 	var article
@@ -171,7 +173,30 @@ function load(path) {
 
 function onLoad(data) {
 
+} ===
+=== =
+//prints the welcome message
+function welcome() {
+	lineNum(8)
+	println(messages.welcomeText);
+	line();
 }
+
+//adds the gramatically appropriate article to the string passed
+function addArticle(string) {
+	var vowels = ['a', 'e', 'i', 'o', 'u'];
+	var article;
+	if (vowels.includes(string.charAt(0))) {
+		article = "an ";
+	} else {
+		article = "a "
+	}
+	return article + " " + string;
+}
+
+
+>>>
+>>> > 02 ad942dead3e5138a4ea139f4e9ef137f4bef1a
 
 function applyPlaceDefaults(place, defaults) {
 	place.settings = place.settings || {}
