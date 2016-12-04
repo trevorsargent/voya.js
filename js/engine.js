@@ -29,19 +29,6 @@ function printWelcome(welcomeText) {
 	line()
 }
 
-<<
-<< << < HEAD
-// adds the gramatically appropriate article (in english) to the string passed
-function addArticle(string) {
-	var article
-	if (string.charAt(0) == 'a' || string.charAt(0) == 'e' || string.charAt(0) == 'i' || string.charAt(0) == 'o' || string.charAt(0) == 'u') {
-		article = "an "
-	} else {
-		article = "a "
-	}
-	return article + " " + string
-}
-
 function trimInput(input, string) {
 	return input.replace(string, "")
 		.trim()
@@ -164,22 +151,11 @@ function load(path) {
 		'global': false,
 		'url': path,
 		'dataType': "json",
-		'success': function(data) {
+		'success': function (data) {
 			json = data;
 		}
 	})
 	return json;
-}
-
-function onLoad(data) {
-
-} ===
-=== =
-//prints the welcome message
-function welcome() {
-	lineNum(8)
-	println(messages.welcomeText);
-	line();
 }
 
 //adds the gramatically appropriate article to the string passed
@@ -193,10 +169,6 @@ function addArticle(string) {
 	}
 	return article + " " + string;
 }
-
-
->>>
->>> > 02 ad942dead3e5138a4ea139f4e9ef137f4bef1a
 
 function applyPlaceDefaults(place, defaults) {
 	place.settings = place.settings || {}
@@ -285,7 +257,7 @@ function processInput(input, data) {
 }
 
 $(document)
-	.ready(function() {
+	.ready(function () {
 
 		var data
 		let inputHistory = new Array()
@@ -298,7 +270,7 @@ $(document)
 
 		//on pressing enter after providing a command
 		$("form")
-			.submit(function() {
+			.submit(function () {
 				let input = $('#command_line')
 					.val()
 				input = input.trim();
@@ -321,7 +293,7 @@ $(document)
 
 
 		$(document)
-			.on("keyup", function(e) {
+			.on("keyup", function (e) {
 				var code = e.which
 				if (code == 38) { //up
 					if (selectInput > 0) {
