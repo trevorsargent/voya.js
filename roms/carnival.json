@@ -1,5 +1,7 @@
 {
     "messages": {
+
+				"visibilityError" : "it's kinda dark... you can't really see.",
         "moveMessage": "you walk to the ",
         "moveError": "that's not a place you can walk from here!",
 
@@ -13,6 +15,7 @@
 
         "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n there are lots of fun things here\n enjoy yourself.we demand it."
     },
+
 		"defaults":{
 			"place":{
 				"messages":{
@@ -20,7 +23,8 @@
 				},
 				"settings":{
 					"isLocked": false,
-					"beenHere" : false
+					"beenHere" : false,
+					"isLit": true
 				}
 			}
 		},
@@ -34,9 +38,13 @@
 					"dollar": 5,
 					"pocket watch": 1,
 					"wrench" : 1,
-					"flashlight" : 1
+					"flashlight" : 1,
+					"lamp": 1
 				},
-        "startingPlace": "parkingLot"
+				"settings": {
+        	"startingPlace": "parkingLot",
+					"lamps":["flashlight", "torch", "lamp", "lantern"]
+			}
     },
 
     "places": {
@@ -53,7 +61,10 @@
             },
             "objects": {
                 "knife": 1
-            }
+            },
+						"settings" : {
+							"isLit" : false
+						}
         },
 
         "ticketEntrance": {

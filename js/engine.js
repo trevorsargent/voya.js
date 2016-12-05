@@ -93,6 +93,19 @@ function hashRemove(string, list) {
 	return list
 }
 
+function canSee(player) {
+
+	if (player.currentLocation.settings.islit) {
+		return true
+	}
+	for (e in player.settings.lamps) {
+		if (player.pockets[player.settings.lamps[e]]) {
+			return true
+		}
+	}
+	return false
+}
+
 //walks to the place
 function walkTo(player, destination, places, defaults) {
 	player.currentLocation.settings.beenHere = true
@@ -174,6 +187,7 @@ function applyPlaceDefaults(place, defaults) {
 	place.settings = place.settings || {}
 	place.settings.beenHere = place.settings.beenHere || defaults.place.settings.beenHere
 	place.settings.isLocked = place.settings.isLocked || defaults.place.settings.isLocked
+	place.settings.isLit = place.settings.isLit || defaults.place.settings.isLit
 	place.messages = place.messages || {}
 	place.messages.newText = place.messages.newText || defaults.place.messages.newText
 	return place
@@ -201,8 +215,12 @@ function processInput(input, data) {
 
 		//look around describe where you are
 	} else if (input.indexOf("look around") > -1) {
+		if (canSee(data.player)) {
 
-		println(description(data.player.currentLocation, data.places))
+			println(description(data.player.currentLocation, data.places))
+		} else {
+			println(data.messages.visibilityError)
+		}
 
 		//walk places
 	} else if (input.indexOf("walk to") > -1) {
@@ -265,7 +283,7 @@ $(document)
 		let selectInput = 0
 
 		data = load('../roms/carnival.json')
-		data.player.currentLocation = applyPlaceDefaults(data.places[data.player.startingPlace], data.defaults)
+		data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
 		printWelcome(data.messages.welcomeText);
 
 		//on pressing enter after providing a command
