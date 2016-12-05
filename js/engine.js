@@ -160,15 +160,14 @@ function placeFromString(placeName, places) {
 function load(path) {
 	var json = null;
 	$.ajax({
-		'async': false,
+		'async': true,
 		'global': false,
 		'url': path,
 		'dataType': "json",
 		'success': function (data) {
-			json = data;
+			globalData = data;
 		}
 	})
-	return json;
 }
 
 //adds the gramatically appropriate article to the string passed
@@ -282,11 +281,16 @@ $(document)
 		let numInputs = 0
 		let selectInput = 0
 
-		data = load('../roms/carnival.json')
-		data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-		printWelcome(data.messages.welcomeText);
+		$.getJSON("../roms/carnival.json", function (json) {
+			// console.log(json); // this will show the info it in firebug console
+			data = json
+			data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
+			printWelcome(data.messages.welcomeText);
 
-		//on pressing enter after providing a command
+			//on pressing enter after providing a command
+
+		})
+
 		$("form")
 			.submit(function () {
 				let input = $('#command_line')
@@ -332,4 +336,6 @@ $(document)
 					}
 				}
 			})
+
+
 	})
