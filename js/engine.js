@@ -282,7 +282,7 @@ $(document)
 		let numInputs = 0
 		let selectInput = 0
 
-		data = load('/roms/carnival.json')
+		data = load('../roms/carnival.json')
 		data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
 		printWelcome(data.messages.welcomeText);
 
