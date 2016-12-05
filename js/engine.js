@@ -281,7 +281,7 @@ $(document)
 		let numInputs = 0
 		let selectInput = 0
 
-		$.getJSON("../roms/carnival.json", function (json) {
+		$.getJSON("roms/carnival.json", function (json) {
 			// console.log(json); // this will show the info it in firebug console
 			data = json
 			data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
