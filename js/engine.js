@@ -2,10 +2,13 @@
 
 //p rints a line of text to the screen
 function println(line) {
-	arr = line.split('\n');
-	for (var i = 0; i < arr.length; i++) {
-		$("<p>" + arr[i].trim() + "</p>")
-			.insertBefore("#placeholder");
+	if (line) {
+		arr = line.split('\n');
+		for (var i = 0; i < arr.length; i++) {
+			$("<p>" + arr[i].trim() + "</p>")
+				.insertBefore("#placeholder");
+		}
+
 	}
 }
 
@@ -115,8 +118,7 @@ function walkTo(player, destination, places, defaults) {
 }
 
 // returns whether a place is accessabel from another place
-function locationIsAccessable(destString, source, places) {
-	dest = placeFromString(destString, places)
+function locationIsAccessable(dest, source, places) {
 	if (dest === undefined) {
 		return false
 	}
@@ -142,6 +144,23 @@ function locationIsAccessable(destString, source, places) {
 	return false
 }
 
+function unlockLocation(destination, pockets) {
+	if (pockets[destination.settings.key] && destination.settings.leaveUnlocked) {
+		destination.settings.isLocked = false
+	}
+	return destination
+}
+
+function locationIsLocked(destination, pockets) {
+	if (destination.settings.isLocked) {
+		if (pockets[destination.settings.key]) {
+			return false
+		}
+		return true
+	}
+	return false
+}
+
 // return an item in exchange for another item, based on the place
 function exchange(item, place) {
 	if (item in place.exchanges) {
@@ -155,19 +174,6 @@ function placeFromString(placeName, places) {
 			return places[e]
 		}
 	}
-}
-
-function load(path) {
-	var json = null;
-	$.ajax({
-		'async': true,
-		'global': false,
-		'url': path,
-		'dataType': "json",
-		'success': function (data) {
-			globalData = data;
-		}
-	})
 }
 
 //adds the gramatically appropriate article to the string passed
@@ -188,7 +194,7 @@ function applyPlaceDefaults(place, defaults) {
 	place.settings.isLocked = place.settings.isLocked || defaults.place.settings.isLocked
 	place.settings.isLit = place.settings.isLit || defaults.place.settings.isLit
 	place.messages = place.messages || {}
-	place.messages.newText = place.messages.newText || defaults.place.messages.newText
+	place.objects = place.objects || {}
 	return place
 }
 
@@ -225,12 +231,30 @@ function processInput(input, data) {
 	} else if (input.indexOf("walk to") > -1) {
 		// input = input.replace("walk to", "").trim().input.replace("the", "").trim()
 		placeName = trimInput(input, "walk to")
-		if (locationIsAccessable(placeName, data.player.currentLocation, data.places)) {
-			data.player = walkTo(data.player, placeName, data.places, data.defaults)
-			println(data.messages.moveMessage + placeName)
+		place = placeFromString(placeName, data.places)
+		if (place != undefined) {
+			place = applyPlaceDefaults(place, data.defaults)
+			if (locationIsAccessable(place, data.player.currentLocation, data.places) && place != undefined) {
+				if (!locationIsLocked(place, data.player.pockets)) {
+					data.player = walkTo(data.player, placeName, data.places, data.defaults)
+					if (data.player.currentLocation.settings.isLocked) {
+						println(data.player.currentLocation.messages.successEntryGranted)
+					}
+					data.player.currentLocation = unlockLocation(data.player.currentLocation, data.player.pockets)
+					if (data.player.currentLocation.leaveUnlocked) {
+						println(data.player.currentLocation.messages.unlock)
+					}
+					println(data.messages.moveMessage + placeName)
+				} else {
+					println(place.messages.locked)
+				}
+			} else {
+				println(data.messages.moveError)
+			}
 		} else {
 			println(data.messages.moveError)
 		}
+
 
 		//take items
 	} else if (input.indexOf("take") > -1) {
@@ -336,6 +360,5 @@ $(document)
 					}
 				}
 			})
-
 
 	})
