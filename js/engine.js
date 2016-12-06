@@ -8,7 +8,6 @@ function println(line) {
 			$("<p>" + arr[i].trim() + "</p>")
 				.insertBefore("#placeholder");
 		}
-
 	}
 }
 
@@ -336,7 +335,6 @@ $(document)
 				$("#command_line")
 					.val("")
 			})
-
 
 		$(document)
 			.on("keyup", function (e) {
