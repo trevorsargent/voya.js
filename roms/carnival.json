@@ -5,14 +5,16 @@
 		"takeInventory": "pockets",
 		"gainItem": "take",
 		"loseItem": "drop",
-		"perceiveItems": "items"
+		"perceiveItems": "items",
+		"help": "help"
 	},
 	"settings":{
 		"title":"Carnival",
-		"background-url" : "http://unsplash.com/photos/n5LtC0L04To/download?force=true"
+		"background-url" : "http://unsplash.com/photos/n5LtC0L04To/download?force=true",
+		"prepend": ">> "
 	},
   "messages": {
-
+			"helpText": "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]",
 			"visibilityError" : "it's kinda dark... you can't really see.",
       "moveMessage": "you walk to the ",
       "moveError": "that's not a place you can walk from here!",
@@ -26,8 +28,10 @@
 			"dropSuccess" : "you dropped ",
 			"dropError" : "you dont have ",
 
+			"exchangeSuccess": "in exchange, you recieve ",
       "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n there are lots of fun things here\n enjoy yourself.we demand it."
-  },
+
+	},
 
 	"defaults":{
 		"place":{
@@ -83,7 +87,7 @@
         },
         "exchanges": {
             "dollar": "ticket",
-            "quarter": "token"
+            "coin": "token"
         },
 				"objects":{
 					"ticket" : 1

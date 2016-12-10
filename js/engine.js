@@ -204,19 +204,13 @@ function processInput(input, data) {
 	// store in inputHistory
 
 	if (input.length > 0) {
-		println(">> " + input)
+		println(data.settings.prepend + input)
 		line()
 	}
 
 	//ask for help
-	if (input.indexOf("help") > -1) {
-		println('possible commands:')
-		println('- look around')
-		println('- pockets')
-		println('- items')
-		println('- walk to [name of place]')
-		println('- drop [item]')
-		println('- take [item]')
+	if (input.indexOf(data.commands.help) > -1) {
+		println(data.messages.helpText)
 
 		//look around describe where you are
 	} else if (input.indexOf(data.commands.observe) > -1) {
@@ -273,14 +267,21 @@ function processInput(input, data) {
 		item = trimInput(input, data.commands.loseItem)
 		if (item in data.player.pockets) {
 			data.player.pockets = hashRemove(item, data.player.pockets)
-			data.player.currentLocation.objects = hashAdd(item, data.player.currentLocation.objects)
 			println(data.messages.dropSuccess + addArticle(item))
+
+			if (data.player.currentLocation.exchanges[item]) {
+				data.player.pockets = hashAdd(data.player.currentLocation.exchanges[item], data.player.pockets)
+				println(data.messages.exchangeSuccess + addArticle(data.player.currentLocation.exchanges[item]))
+			} else {
+				data.player.currentLocation.objects = hashAdd(item, data.player.currentLocation.objects)
+			}
+
 		} else {
 			println(data.messages.dropError + addArticle(item))
 		}
 
 		//take inventory
-	} else if (input.indexOf(data.commands.inventory) > -1) {
+	} else if (input.indexOf(data.commands.takeInventory) > -1) {
 		if (data.player.pockets != {}) {
 			println(hashList(data.player.pockets, data.messages.inventoryError))
 		}
@@ -317,7 +318,8 @@ $(document)
 			$("#logo")
 				.html(data.settings.title)
 				//on pressing enter after providing a command
-
+			$("#prepend")
+				.html(data.settings.prepend)
 		})
 
 		$("form")
