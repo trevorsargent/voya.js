@@ -6,7 +6,7 @@ function println(line) {
 		arr = line.split('\n');
 		for (var i = 0; i < arr.length; i++) {
 			$("<p>" + arr[i].trim() + "</p>")
-				.insertBefore("#placeholder");
+				.insertBefore("#placeholder")
 		}
 	}
 }
@@ -36,6 +36,7 @@ function trimInput(input, string) {
 		.trim()
 		.replace("the ", "")
 		.replace("a ", "")
+		.replace("to ", "")
 		.trim();
 }
 
@@ -218,7 +219,7 @@ function processInput(input, data) {
 		println('- take [item]')
 
 		//look around describe where you are
-	} else if (input.indexOf("look around") > -1) {
+	} else if (input.indexOf(data.commands.observe) > -1) {
 		if (canSee(data.player)) {
 
 			println(description(data.player.currentLocation, data.places))
@@ -227,9 +228,9 @@ function processInput(input, data) {
 		}
 
 		//walk places
-	} else if (input.indexOf("walk to") > -1) {
+	} else if (input.indexOf(data.commands.move) > -1) {
 		// input = input.replace("walk to", "").trim().input.replace("the", "").trim()
-		placeName = trimInput(input, "walk to")
+		placeName = trimInput(input, data.commands.move)
 		place = placeFromString(placeName, data.places)
 		if (place != undefined) {
 			place = applyPlaceDefaults(place, data.defaults)
@@ -256,9 +257,9 @@ function processInput(input, data) {
 
 
 		//take items
-	} else if (input.indexOf("take") > -1) {
+	} else if (input.indexOf(data.commands.gainItem) > -1) {
 		// TODO: take logic
-		item = trimInput(input, "take")
+		item = trimInput(input, data.commands.gainItem)
 		if (item in data.player.currentLocation.objects) {
 			data.player.currentLocation.objects = hashRemove(item, data.player.currentLocation.objects)
 			data.player.pockets = hashAdd(item, data.player.pockets)
@@ -268,8 +269,8 @@ function processInput(input, data) {
 		}
 
 		//drop items
-	} else if (input.indexOf("drop") > -1) {
-		item = trimInput(input, "drop")
+	} else if (input.indexOf(data.commands.loseItem) > -1) {
+		item = trimInput(input, data.commands.loseItem)
 		if (item in data.player.pockets) {
 			data.player.pockets = hashRemove(item, data.player.pockets)
 			data.player.currentLocation.objects = hashAdd(item, data.player.currentLocation.objects)
@@ -279,18 +280,18 @@ function processInput(input, data) {
 		}
 
 		//take inventory
-	} else if (input.indexOf("pockets") > -1) {
+	} else if (input.indexOf(data.commands.inventory) > -1) {
 		if (data.player.pockets != {}) {
 			println(hashList(data.player.pockets, data.messages.inventoryError))
 		}
 
 		//see what items are in the room.
-	} else if (input.indexOf("items") > -1) {
+	} else if (input.indexOf(data.commands.perceiveItems) > -1) {
 		println(hashList(data.player.currentLocation.objects))
 
 	} else {
 		if (input.length > 0) {
-			println("command invalid")
+			println(data.messages.commandInvalid)
 		}
 	}
 	return data
@@ -309,8 +310,13 @@ $(document)
 			data = json
 			data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
 			printWelcome(data.messages.welcomeText);
-
-			//on pressing enter after providing a command
+			//$("#image")
+			//.attr("src", data.settings["background-url"])
+			$("title")
+				.html(data.settings.title)
+			$("#logo")
+				.html(data.settings.title)
+				//on pressing enter after providing a command
 
 		})
 

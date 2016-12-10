@@ -1,4 +1,16 @@
 {
+	"commands":{
+		"move": "walk",
+		"observe": "look around",
+		"takeInventory": "pockets",
+		"gainItem": "take",
+		"loseItem": "drop",
+		"perceiveItems": "items"
+	},
+	"settings":{
+		"title":"Carnival",
+		"background-url" : "http://unsplash.com/photos/n5LtC0L04To/download?force=true"
+	},
   "messages": {
 
 			"visibilityError" : "it's kinda dark... you can't really see.",
@@ -6,6 +18,7 @@
       "moveError": "that's not a place you can walk from here!",
 
       "moveRedundancy": "you are already at the ",
+			"commandInvalid" : "uh... what?",
 
 			"inventoryError": "you don't have anything in your pockets",
       "pickUpSuccess": "you picked up ",
