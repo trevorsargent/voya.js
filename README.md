@@ -12,7 +12,7 @@ Voya is a text based, interactive fiction adventure game engine.
  - [x] implement 'hand-held' light sources, and the necessity thereof
  - [ ] support multiple lines of 'look around' text, to add to story, and customizable settings for its display
  - [x] re-introduce locking mechanisms on locations, and keys on the player
- - [ ] support custom commands titles - a game could retitle the 'walk' command to 'swim' or 'fly' or simply 'go'... etc.
+ - [x] support custom commands titles - a game could retitle the 'walk' command to 'swim' or 'fly' or simply 'go'... etc.
 
 
 
