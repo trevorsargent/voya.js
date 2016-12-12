@@ -311,8 +311,8 @@ $(document)
 			data = json
 			data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
 			printWelcome(data.messages.welcomeText);
-			//$("#image")
-			//.attr("src", data.settings["background-url"])
+			$("#image")
+			.attr("src", data.settings["background-url"])
 			$("title")
 				.html(data.settings.title)
 			$("#logo")
