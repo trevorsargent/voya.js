@@ -4,7 +4,7 @@
 function println(line) {
 	if (line) {
 		arr = line.split('\n');
-		for (var i = 0; i < arr.length; i++) {
+		for (let i = 0; i < arr.length; i++) {
 			$("<p>" + arr[i].trim() + "</p>")
 				.insertBefore("#placeholder")
 		}
@@ -19,7 +19,7 @@ function line() {
 
 // adds a number of blank lines
 function lineNum(int) {
-	for (var i = 0; i < int; i++) {
+	for (let i = 0; i < int; i++) {
 		line()
 	}
 }
@@ -42,7 +42,7 @@ function trimInput(input, string) {
 
 // returns a description of a 'place'
 function description(place, places) {
-	var toReturn = "you're standing in the " + place.name + "."
+	let toReturn = "you're standing in the " + place.name + "."
 	if (place.left != undefined) {
 		toReturn += "</br>on your left is the " + places[place.left].name + "."
 	}
@@ -63,10 +63,10 @@ function description(place, places) {
 
 //returns a formatted list of everything in a hash
 function hashList(hash, error) {
-	var toReturn = ""
+	let toReturn = ""
 	if (Object.keys(hash)
 		.length > 0) {
-		for (var item in hash) {
+		for (let item in hash) {
 			toReturn += item + ": (" + hash[item] + ") \n"
 		}
 		return toReturn
@@ -123,7 +123,6 @@ function locationIsAccessable(dest, source, places) {
 		return false
 	}
 	if (places[source.ahead] === dest) {
-
 		return true
 	}
 	if (places[source.behind] === dest) {
@@ -169,7 +168,7 @@ function exchange(item, place) {
 }
 
 function placeFromString(placeName, places) {
-	for (var e in places) {
+	for (let e in places) {
 		if (places[e].name == placeName) {
 			return places[e]
 		}
@@ -178,8 +177,8 @@ function placeFromString(placeName, places) {
 
 //adds the gramatically appropriate article to the string passed
 function addArticle(string) {
-	var vowels = ['a', 'e', 'i', 'o', 'u'];
-	var article;
+	let vowels = ['a', 'e', 'i', 'o', 'u'];
+	let article = "";
 	if (vowels.includes(string.charAt(0))) {
 		article = "an ";
 	} else {
@@ -195,113 +194,113 @@ function applyPlaceDefaults(place, defaults) {
 	place.settings.isLit = place.settings.isLit || defaults.place.settings.isLit
 	place.messages = place.messages || {}
 	place.objects = place.objects || {}
+	place.exchanges = place.exchanges || {}
 	return place
 }
 
 // process the input from each command
 function processInput(input, data) {
+	let {settings, commands, player, places, messages, defaults} = data;
 
 	// store in inputHistory
-
 	if (input.length > 0) {
-		println(data.settings.prepend + input)
+		println(settings.prepend + input)
 		line()
 	}
 
 	//ask for help
-	if (input.indexOf(data.commands.help) > -1) {
-		println(data.messages.helpText)
+	if (input.indexOf(commands.help) > -1) {
+		println(messages.helpText)
 
 		//look around describe where you are
-	} else if (input.indexOf(data.commands.observe) > -1) {
-		if (canSee(data.player)) {
-
-			println(description(data.player.currentLocation, data.places))
+	} else if (input.indexOf(commands.observe) > -1) {
+		if (canSee(player)) {
+			println(description(player.currentLocation, places))
 		} else {
-			println(data.messages.visibilityError)
+			println(messages.visibilityError)
 		}
 
 		//walk places
-	} else if (input.indexOf(data.commands.move) > -1) {
+	} else if (input.indexOf(commands.move) > -1) {
 		// input = input.replace("walk to", "").trim().input.replace("the", "").trim()
-		placeName = trimInput(input, data.commands.move)
-		place = placeFromString(placeName, data.places)
+		placeName = trimInput(input, commands.move)
+		place = placeFromString(placeName, places)
 		if (place != undefined) {
-			place = applyPlaceDefaults(place, data.defaults)
-			if (locationIsAccessable(place, data.player.currentLocation, data.places) && place != undefined) {
-				if (!locationIsLocked(place, data.player.pockets)) {
-					data.player = walkTo(data.player, placeName, data.places, data.defaults)
-					if (data.player.currentLocation.settings.isLocked) {
-						println(data.player.currentLocation.messages.successEntryGranted)
+			place = applyPlaceDefaults(place, defaults)
+			if (locationIsAccessable(place, player.currentLocation, places) && place != undefined) {
+				if (!locationIsLocked(place, player.pockets)) {
+					player = walkTo(player, placeName, places, defaults)
+					if (player.currentLocation.settings.isLocked) {
+						println(player.currentLocation.messages.successEntryGranted)
 					}
-					data.player.currentLocation = unlockLocation(data.player.currentLocation, data.player.pockets)
-					if (data.player.currentLocation.leaveUnlocked) {
-						println(data.player.currentLocation.messages.unlock)
+					player.currentLocation = unlockLocation(player.currentLocation, player.pockets)
+					if (player.currentLocation.leaveUnlocked) {
+						println(player.currentLocation.messages.unlock)
 					}
-					println(data.messages.moveMessage + placeName)
+					println(messages.moveMessage + placeName)
 				} else {
 					println(place.messages.locked)
 				}
-			} else {
-				println(data.messages.moveError)
+			} else if(place === player.currentLocation){
+				println(messages.moveRedundancy + place.name)
+			}else {
+				println(messages.moveError)
 			}
 		} else {
-			println(data.messages.moveError)
+			println(messages.moveError)
 		}
 
-
 		//take items
-	} else if (input.indexOf(data.commands.gainItem) > -1) {
-		// TODO: take logic
-		item = trimInput(input, data.commands.gainItem)
-		if (item in data.player.currentLocation.objects) {
-			data.player.currentLocation.objects = hashRemove(item, data.player.currentLocation.objects)
-			data.player.pockets = hashAdd(item, data.player.pockets)
-			println(data.messages.pickUpSuccess + addArticle(item))
+	} else if (input.indexOf(commands.gainItem) > -1) {
+
+		item = trimInput(input, commands.gainItem)
+		if (item in player.currentLocation.objects) {
+			player.currentLocation.objects = hashRemove(item, player.currentLocation.objects)
+			player.pockets = hashAdd(item, player.pockets)
+			println(messages.pickUpSuccess + addArticle(item))
 		} else {
-			println(data.messages.pickUpError + addArticle(item))
+			println(messages.pickUpError + addArticle(item))
 		}
 
 		//drop items
-	} else if (input.indexOf(data.commands.loseItem) > -1) {
-		item = trimInput(input, data.commands.loseItem)
-		if (item in data.player.pockets) {
-			data.player.pockets = hashRemove(item, data.player.pockets)
-			println(data.messages.dropSuccess + addArticle(item))
-
-			if (data.player.currentLocation.exchanges[item]) {
-				data.player.pockets = hashAdd(data.player.currentLocation.exchanges[item], data.player.pockets)
-				println(data.messages.exchangeSuccess + addArticle(data.player.currentLocation.exchanges[item]))
+	} else if (input.indexOf(commands.loseItem) > -1) {
+		item = trimInput(input, commands.loseItem)
+		if (item in player.pockets) {
+			player.pockets = hashRemove(item, player.pockets)
+			println(messages.dropSuccess + addArticle(item))
+			if (player.currentLocation.exchanges[item]) {
+				player.pockets = hashAdd(player.currentLocation.exchanges[item], player.pockets)
+				println(messages.exchangeSuccess + addArticle(player.currentLocation.exchanges[item]))
 			} else {
-				data.player.currentLocation.objects = hashAdd(item, data.player.currentLocation.objects)
+				player.currentLocation.objects = hashAdd(item, player.currentLocation.objects)
 			}
 
 		} else {
-			println(data.messages.dropError + addArticle(item))
+			println(messages.dropError + addArticle(item))
 		}
 
 		//take inventory
-	} else if (input.indexOf(data.commands.takeInventory) > -1) {
-		if (data.player.pockets != {}) {
-			println(hashList(data.player.pockets, data.messages.inventoryError))
+	} else if (input.indexOf(commands.takeInventory) > -1) {
+		if (player.pockets != {}) {
+			println(hashList(player.pockets, messages.inventoryError))
 		}
 
-		//see what items are in the room.
-	} else if (input.indexOf(data.commands.perceiveItems) > -1) {
-		println(hashList(data.player.currentLocation.objects))
+	} else if (input.indexOf(commands.perceiveItems) > -1) {
+		println(hashList(player.currentLocation.objects))
 
 	} else {
 		if (input.length > 0) {
-			println(data.messages.commandInvalid)
+			println(messages.commandInvalid)
 		}
 	}
+	Object.assign(data, {player,places})
 	return data
 }
 
 $(document)
 	.ready(function () {
 
-		var data
+		let data = {}
 		let inputHistory = new Array()
 		let numInputs = 0
 		let selectInput = 0
@@ -346,7 +345,7 @@ $(document)
 
 		$(document)
 			.on("keyup", function (e) {
-				var code = e.which
+				let code = e.which
 				if (code == 38) { //up
 					if (selectInput > 0) {
 						selectInput--
