@@ -200,9 +200,17 @@ function applyPlaceDefaults(place, defaults) {
 
 // process the input from each command
 function processInput(input, data) {
-	let {settings, commands, player, places, messages, defaults} = data;
+	let {
+		settings,
+		commands,
+		player,
+		places,
+		messages,
+		defaults
+	} = data;
 
-	// store in inputHistory
+	input = input.toLowerCase()
+		// store in inputHistory
 	if (input.length > 0) {
 		println(settings.prepend + input)
 		line()
@@ -241,9 +249,9 @@ function processInput(input, data) {
 				} else {
 					println(place.messages.locked)
 				}
-			} else if(place === player.currentLocation){
+			} else if (place === player.currentLocation) {
 				println(messages.moveRedundancy + place.name)
-			}else {
+			} else {
 				println(messages.moveError)
 			}
 		} else {
@@ -293,25 +301,28 @@ function processInput(input, data) {
 			println(messages.commandInvalid)
 		}
 	}
-	Object.assign(data, {player,places})
+	Object.assign(data, {
+		player,
+		places
+	})
 	return data
 }
 
 $(document)
-	.ready(function () {
+	.ready(function() {
 
 		let data = {}
 		let inputHistory = new Array()
 		let numInputs = 0
 		let selectInput = 0
 
-		$.getJSON("roms/carnival.json", function (json) {
+		$.getJSON("roms/carnival.json", function(json) {
 			// console.log(json); // this will show the info it in firebug console
 			data = json
 			data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
 			printWelcome(data.messages.welcomeText);
 			$("#image")
-			.attr("src", data.settings["background-url"])
+				.attr("src", data.settings["background-url"])
 			$("title")
 				.html(data.settings.title)
 			$("#logo")
@@ -322,7 +333,7 @@ $(document)
 		})
 
 		$("form")
-			.submit(function () {
+			.submit(function() {
 				let input = $('#command_line')
 					.val()
 				input = input.trim();
@@ -344,7 +355,7 @@ $(document)
 			})
 
 		$(document)
-			.on("keyup", function (e) {
+			.on("keyup", function(e) {
 				let code = e.which
 				if (code == 38) { //up
 					if (selectInput > 0) {
