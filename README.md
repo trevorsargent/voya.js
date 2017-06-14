@@ -1,8 +1,8 @@
-# [Voya.js](http://trevorsargent.github.io/voya.js)
+# [Voya.js](http://trevorsargent.cf/voya.js)
 
 Voya is a text based, interactive fiction adventure game engine.
 
-[lineweight.github.io/voya.js](http://lineweight.github.io/voya.js)
+[lineweight.github.io/voya.js](http://lineweight.cf/voya.js)
 
 ## Roadmap
 
