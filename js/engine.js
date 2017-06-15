@@ -33,12 +33,7 @@ function printWelcome(welcomeText) {
 }
 
 function trimInput(input, string) {
-  return input.replace(string, "")
-    .trim()
-    .replace("the ", "")
-    .replace("a ", "")
-    .replace("to ", "")
-    .trim();
+  return input.replace(string, "").trim().replace("the ", "").replace("a ", "").replace("to ", "").trim();
 }
 
 // returns a description of a 'place'
@@ -65,8 +60,7 @@ function description(place, places) {
 //returns a formatted list of everything in a hash
 function hashList(hash, error) {
   let toReturn = ""
-  if (Object.keys(hash)
-    .length > 0) {
+  if (Object.keys(hash).length > 0) {
     for (let item in hash) {
       toReturn += item + ": (" + hash[item] + ") \n"
     }
@@ -89,10 +83,10 @@ function hashAdd(string, list) {
 // removes an item from a hash
 function hashRemove(string, list) {
   if (string in list) {
-    list[string]--
-      if (list[string] <= 0) {
-        delete list[string]
-      }
+    list[string]--;
+    if (list[string] <= 0) {
+      delete list[string]
+    }
   }
   return list
 }
@@ -276,16 +270,25 @@ function processInput(input, data) {
     item = trimInput(input, commands.loseItem)
     if (item in player.pockets) {
       player.pockets = hashRemove(item, player.pockets)
+      player.currentLocation.objects = hashAdd(item, player.currentLocation.objects)
       println(messages.dropSuccess + addArticle(item))
+    } else {
+      println(messages.inventoryItemError + addArticle(item))
+    }
+
+  } else if (input.indexOf(commands.useItem) > -1) {
+    item = trimInput(input, commands.useItem)
+    if (item in player.pockets) {
       if (player.currentLocation.exchanges[item]) {
+        player.pockets = hashRemove(item, player.pockets)
         player.pockets = hashAdd(player.currentLocation.exchanges[item], player.pockets)
         println(messages.exchangeSuccess + addArticle(player.currentLocation.exchanges[item]))
       } else {
-        player.currentLocation.objects = hashAdd(item, player.currentLocation.objects)
+        println(messages.useError)
       }
 
     } else {
-      println(messages.dropError + addArticle(item))
+      println(messages.inventoryItemError + addArticle(item))
     }
 
     //take inventory
@@ -302,10 +305,7 @@ function processInput(input, data) {
       println(messages.commandInvalid)
     }
   }
-  Object.assign(data, {
-    player,
-    places
-  })
+  Object.assign(data, {player, places})
   return data
 }
 
@@ -316,25 +316,20 @@ window.onload = function() {
   let numInputs = 0
   let selectInput = 0
 
-  getJSON('roms/carnival.json',
-    function(err, json) {
-      if (err != null) {
-        alert('Something went wrong: ' + err);
-      } else {
-        data = json
-        data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-        printWelcome(data.messages.welcomeText);
-        document.getElementById('image')
-          .src = data.settings["background-url"]
-        document.title
-          .innerHTML = data.settings.title
-        document.getElementById('logo')
-          .innerHTML = data.settings.title
-        //on pressing enter after providing a command
-        document.getElementById('prepend')
-          .innerHTML = data.settings.prepend
-      }
-    })
+  getJSON('/roms/carnival.json', function(err, json) {
+    if (err != null) {
+      alert('Something went wrong: ' + err);
+    } else {
+      data = json
+      data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
+      printWelcome(data.messages.welcomeText);
+      document.getElementById('image').src = data.settings["background-url"]
+      document.title.innerHTML = data.settings.title
+      document.getElementById('logo').innerHTML = data.settings.title
+      //on pressing enter after providing a command
+      document.getElementById('prepend').innerHTML = data.settings.prepend
+    }
+  })
 
   document.getElementById('form').onsubmit = function() {
     let input = document.getElementById('command_line').value
@@ -356,29 +351,6 @@ window.onload = function() {
 
     document.getElementById('command_line').value = ""
   }
-
-  // $(document)
-  //   .on("keyup", function(e) {
-  //     let code = e.which
-  //     if (code == 38) { //up
-  //       if (selectInput > 0) {
-  //         selectInput--
-  //         //alert(inputHistory[selectInput])
-  //         $('#command_line')
-  //           .val(inputHistory[selectInput])
-  //       }
-  //     } else if (code == 40) { //down
-  //
-  //       if (selectInput < numInputs) {
-  //         selectInput++
-  //         $('#command_line')
-  //           .val(inputHistory[selectInput])
-  //       } else if (selectInput === numInputs) {
-  //         $('#command_line')
-  //           .val("")
-  //       }
-  //     }
-  //   })
 
 }
 
