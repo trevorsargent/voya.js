@@ -231,6 +231,7 @@ function processInput(input, data) {
     if (place != undefined) {
       place = applyPlaceDefaults(place, defaults)
       if (locationIsAccessable(place, player.currentLocation, places) && place != undefined) {
+
         if (!locationIsLocked(place, player.pockets)) {
           player = walkTo(player, placeName, places, defaults)
           if (player.currentLocation.settings.isLocked) {
