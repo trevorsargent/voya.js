@@ -317,7 +317,7 @@ window.onload = function() {
   let numInputs = 0
   let selectInput = 0
 
-  getJSON('/roms/carnival.json', function(err, json) {
+  getJSON('../roms/carnival.json', function(err, json) {
     if (err != null) {
       alert('Something went wrong: ' + err);
     } else {
