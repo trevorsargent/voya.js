@@ -21,3 +21,7 @@ Carnival is the test scenario for Voya.js at the moment.
 you're dropped off in the parking lot of what looks to be a very sad carnival.  enter if you want, but there's not much else around.  go on. explore. we'll wait for you. for a little while at least.
 
 scenarios are interchangeable and customizable, and of course open to any and all who wish to write one. implementation for external files is coming soon. See the file description below (or study the `/roms` to write your own)
+
+## Wiki
+
+[The Wiki](https://github.com/LineWeight/voya.js/wiki) is full of information about how to write games for Voya.js
