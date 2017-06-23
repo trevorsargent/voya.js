@@ -1,4 +1,26 @@
 {
+  "settings": {
+    "title": "Carnival",
+    "background-url": "http://unsplash.com/photos/n5LtC0L04To/download?force=true",
+    "prepend": ">> "
+  },
+  "player": {
+    "name": "Mort",
+    "age": 21,
+    "height": 172,
+    "pockets": {
+      "coin": 6,
+      "dollar": 5,
+      "pocket watch": 1,
+      "wrench": 1,
+      "flashlight": 1,
+      "lamp": 1
+    },
+    "settings": {
+      "startingPlace": "parkingLot",
+      "lamps": ["flashlight", "torch", "lamp", "lantern"]
+    }
+  },
   "commands": {
     "move": "walk",
     "observe": "look around",
@@ -9,11 +31,7 @@
     "help": "help",
     "useItem": "use"
   },
-  "settings": {
-    "title": "Carnival",
-    "background-url": "http://unsplash.com/photos/n5LtC0L04To/download?force=true",
-    "prepend": ">> "
-  },
+
   "messages": {
     "helpText": "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]",
     "visibilityError": "it's kinda dark... you can't really see.",
@@ -45,24 +63,6 @@
         "beenHere": false,
         "isLit": true
       }
-    }
-  },
-
-  "player": {
-    "name": "Mort",
-    "age": 21,
-    "height": 172,
-    "pockets": {
-      "coin": 6,
-      "dollar": 5,
-      "pocket watch": 1,
-      "wrench": 1,
-      "flashlight": 1,
-      "lamp": 1
-    },
-    "settings": {
-      "startingPlace": "parkingLot",
-      "lamps": ["flashlight", "torch", "lamp", "lantern"]
     }
   },
 
