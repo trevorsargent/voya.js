@@ -1,68 +1,69 @@
-//Made by, and copyright, @trevorsargent 2016
+// Made by, and copyright, @trevorsargent 2017
 
-//p rints a line of text to the screen
-function println(line) {
+// p rints a line of text to the screen
+function println (line) {
+  'use strict'
   if (line) {
-    arr = line.split('\n');
+    let arr = line.split('\n')
     for (let i = 0; i < arr.length; i++) {
-      var sp1 = document.createElement('p');
+      var sp1 = document.createElement('p')
       sp1.innerHTML = arr[i].trim()
       document.getElementById('console').appendChild(sp1)
     }
   }
 }
 
-//a dds a blank line
-function line() {
-  var sp1 = document.createElement("br");
+// adds a blank line
+function line () {
+  var sp1 = document.createElement('br')
   document.getElementById('console').appendChild(sp1)
 }
 
 // adds a number of blank lines
-function lineNum(int) {
+function lineNum (int) {
   for (let i = 0; i < int; i++) {
     line()
   }
 }
 
 // prints the welcome message
-function printWelcome(welcomeText) {
+function printWelcome (welcomeText) {
   lineNum(8)
   println(welcomeText)
   line()
 }
 
-function trimInput(input, string) {
-  return input.replace(string, "").trim().replace("the ", "").replace("a ", "").replace("to ", "").trim();
+function trimInput (input, string) {
+  return input.replace(string, '').trim().replace('the ', '').replace('a ', '').replace('to ', '').trim()
 }
 
 // returns a description of a 'place'
-function description(place, places) {
-  let toReturn = "you're standing in the " + place.name + "."
-  if (place.left != undefined) {
-    toReturn += "</br>on your left is the " + places[place.left].name + "."
+function description (place, places) {
+  let toReturn = "you're standing in the " + place.name + '.'
+  if (place.left !== undefined) {
+    toReturn += '</br>on your left is the ' + places[place.left].name + '.'
   }
-  if (place.right != undefined) {
-    toReturn += "</br>on your right is the " + places[place.right].name + "."
+  if (place.right !== undefined) {
+    toReturn += '</br>on your right is the ' + places[place.right].name + '.'
   }
-  if (place.ahead != undefined) {
-    toReturn += "</br>ahead of you is the " + places[place.ahead].name + "."
+  if (place.ahead !== undefined) {
+    toReturn += '</br>ahead of you is the ' + places[place.ahead].name + '.'
   }
-  if (place.behind != undefined) {
-    toReturn += "</br>behind you is the " + places[place.behind].name + "."
+  if (place.behind !== undefined) {
+    toReturn += '</br>behind you is the ' + places[place.behind].name + '.'
   }
-  if (!place.settings.beenHere && place.messages.newText != "") {
-    toReturn += "</br></br>" + place.messages.newText + "."
+  if (!place.settings.beenHere && place.messages.newText !== '') {
+    toReturn += '</br></br>' + place.messages.newText + '.'
   }
   return toReturn
 }
 
-//returns a formatted list of everything in a hash
-function hashList(hash, error) {
-  let toReturn = ""
+// returns a formatted list of everything in a hash
+function hashList (hash, error) {
+  let toReturn = ''
   if (Object.keys(hash).length > 0) {
     for (let item in hash) {
-      toReturn += item + ": (" + hash[item] + ") \n"
+      toReturn += item + ': (' + hash[item] + ') \n'
     }
     return toReturn
   } else {
@@ -71,7 +72,7 @@ function hashList(hash, error) {
 }
 
 // adds an item a hash
-function hashAdd(string, list) {
+function hashAdd (string, list) {
   if (string in list) {
     list[string]++
   } else {
@@ -81,9 +82,9 @@ function hashAdd(string, list) {
 }
 
 // removes an item from a hash
-function hashRemove(string, list) {
+function hashRemove (string, list) {
   if (string in list) {
-    list[string]--;
+    list[string]--
     if (list[string] <= 0) {
       delete list[string]
     }
@@ -91,12 +92,11 @@ function hashRemove(string, list) {
   return list
 }
 
-function canSee(player) {
-
+function canSee (player) {
   if (player.currentLocation.settings.islit) {
     return true
   }
-  for (e in player.settings.lamps) {
+  for (let e in player.settings.lamps) {
     if (player.pockets[player.settings.lamps[e]]) {
       return true
     }
@@ -104,16 +104,16 @@ function canSee(player) {
   return false
 }
 
-//walks to the place
-function walkTo(player, destination, places, defaults) {
+// walks to the place
+function walkTo (player, destination, places, defaults) {
   player.currentLocation.settings.beenHere = true
-  destination = applyPlaceDefaults(placeFromString(placeName, places), defaults)
+  destination = applyPlaceDefaults(placeFromString(destination, places), defaults)
   player.currentLocation = destination
   return player
 }
 
 // returns whether a place is accessabel from another place
-function locationIsAccessable(dest, source, places) {
+function locationIsAccessable (dest, source, places) {
   if (dest === undefined) {
     return false
   }
@@ -138,14 +138,14 @@ function locationIsAccessable(dest, source, places) {
   return false
 }
 
-function unlockLocation(destination, pockets) {
+function unlockLocation (destination, pockets) {
   if (pockets[destination.settings.key] && destination.settings.leaveUnlocked) {
     destination.settings.isLocked = false
   }
   return destination
 }
 
-function locationIsLocked(destination, pockets) {
+function locationIsLocked (destination, pockets) {
   if (destination.settings.isLocked) {
     if (pockets[destination.settings.key]) {
       return false
@@ -156,33 +156,33 @@ function locationIsLocked(destination, pockets) {
 }
 
 // return an item in exchange for another item, based on the place
-function exchange(item, place) {
-  if (item in place.exchanges) {
-    return place.exchanges[item]
-  }
-}
+// function exchange (item, place) {
+//   if (item in place.exchanges) {
+//     return place.exchanges[item]
+//   }
+// }
 
-function placeFromString(placeName, places) {
+function placeFromString (placeName, places) {
   for (let e in places) {
-    if (places[e].name == placeName) {
+    if (places[e].name === placeName) {
       return places[e]
     }
   }
 }
 
-//adds the gramatically appropriate article to the string passed
-function addArticle(string) {
-  let vowels = ['a', 'e', 'i', 'o', 'u'];
-  let article = "";
+// adds the gramatically appropriate article to the string passed
+function addArticle (string) {
+  let vowels = ['a', 'e', 'i', 'o', 'u']
+  let article = ''
   if (vowels.includes(string.charAt(0))) {
-    article = "an ";
+    article = 'an '
   } else {
-    article = "a "
+    article = 'a '
   }
-  return article + " " + string;
+  return article + ' ' + string
 }
 
-function applyPlaceDefaults(place, defaults) {
+function applyPlaceDefaults (place, defaults) {
   place.settings = place.settings || {}
   place.settings.beenHere = place.settings.beenHere || defaults.place.settings.beenHere
   place.settings.isLocked = place.settings.isLocked || defaults.place.settings.isLocked
@@ -194,7 +194,7 @@ function applyPlaceDefaults(place, defaults) {
 }
 
 // process the input from each command
-function processInput(input, data) {
+function processInput (input, data) {
   let {
     settings,
     commands,
@@ -202,7 +202,7 @@ function processInput(input, data) {
     places,
     messages,
     defaults
-  } = data;
+  } = data
 
   input = input.toLowerCase()
 
@@ -211,11 +211,11 @@ function processInput(input, data) {
     line()
   }
 
-  //ask for help
+  // ask for help
   if (input.indexOf(commands.help) > -1) {
     println(messages.helpText)
 
-    //look around describe where you are
+    // look around describe where you are
   } else if (input.indexOf(commands.observe) > -1) {
     if (canSee(player)) {
       println(description(player.currentLocation, places))
@@ -223,15 +223,14 @@ function processInput(input, data) {
       println(messages.visibilityError)
     }
 
-    //walk places
+    // walk places
   } else if (input.indexOf(commands.move) > -1) {
     // input = input.replace("walk to", "").trim().input.replace("the", "").trim()
-    placeName = trimInput(input, commands.move)
-    place = placeFromString(placeName, places)
-    if (place != undefined) {
+    let placeName = trimInput(input, commands.move)
+    let place = placeFromString(placeName, places)
+    if (place !== undefined) {
       place = applyPlaceDefaults(place, defaults)
-      if (locationIsAccessable(place, player.currentLocation, places) && place != undefined) {
-
+      if (locationIsAccessable(place, player.currentLocation, places) && place !== undefined) {
         if (!locationIsLocked(place, player.pockets)) {
           player = walkTo(player, placeName, places, defaults)
           if (player.currentLocation.settings.isLocked) {
@@ -254,10 +253,9 @@ function processInput(input, data) {
       println(messages.moveError)
     }
 
-    //take items
+    // take items
   } else if (input.indexOf(commands.gainItem) > -1) {
-
-    item = trimInput(input, commands.gainItem)
+    let item = trimInput(input, commands.gainItem)
     if (item in player.currentLocation.objects) {
       player.currentLocation.objects = hashRemove(item, player.currentLocation.objects)
       player.pockets = hashAdd(item, player.pockets)
@@ -266,9 +264,9 @@ function processInput(input, data) {
       println(messages.pickUpError + addArticle(item))
     }
 
-    //drop items
+    // drop items
   } else if (input.indexOf(commands.loseItem) > -1) {
-    item = trimInput(input, commands.loseItem)
+    let item = trimInput(input, commands.loseItem)
     if (item in player.pockets) {
       player.pockets = hashRemove(item, player.pockets)
       player.currentLocation.objects = hashAdd(item, player.currentLocation.objects)
@@ -276,9 +274,8 @@ function processInput(input, data) {
     } else {
       println(messages.inventoryItemError + addArticle(item))
     }
-
   } else if (input.indexOf(commands.useItem) > -1) {
-    item = trimInput(input, commands.useItem)
+    let item = trimInput(input, commands.useItem)
     if (item in player.pockets) {
       if (player.currentLocation.exchanges[item]) {
         player.pockets = hashRemove(item, player.pockets)
@@ -287,60 +284,54 @@ function processInput(input, data) {
       } else {
         println(messages.useError)
       }
-
     } else {
       println(messages.inventoryItemError + addArticle(item))
     }
 
-    //take inventory
+    // take inventory
   } else if (input.indexOf(commands.takeInventory) > -1) {
-    if (player.pockets != {}) {
+    if (player.pockets !== {}) {
       println(hashList(player.pockets, messages.inventoryError))
     }
-
   } else if (input.indexOf(commands.perceiveItems) > -1) {
     println(hashList(player.currentLocation.objects))
-
   } else {
     if (input.length > 0) {
       println(messages.commandInvalid)
     }
   }
-  Object.assign(data, {player, places})
+  Object.assign(data, {
+    player,
+    places
+  })
   return data
 }
 
-window.onload = function() {
-
+window.onload = function () {
   let data = {}
-  let inputHistory = new Array()
-  let numInputs = 0
-  let selectInput = 0
+  let inputHistory = []
 
-  getJSON('roms/carnival.json', function(err, json) {
-    if (err != null) {
-      alert('Something went wrong: ' + err);
+  getJSON('roms/carnival.json', function (err, json) {
+    if (err !== null) {
+      window.alert('Something went wrong: ' + err)
     } else {
       data = json
       data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-      printWelcome(data.messages.welcomeText);
-      document.getElementById('image').src = data.settings["background-url"]
+      printWelcome(data.messages.welcomeText)
+      document.getElementById('image').src = data.settings['background-url']
       document.title.innerHTML = data.settings.title
       document.getElementById('logo').innerHTML = data.settings.title
-      //on pressing enter after providing a command
+      // on pressing enter after providing a command
       document.getElementById('prepend').innerHTML = data.settings.prepend
     }
   })
 
-  document.getElementById('form').onsubmit = function() {
+  document.getElementById('form').onsubmit = function () {
     let input = document.getElementById('command_line').value
     console.log(input)
-    input = input.trim();
+    input = input.trim()
 
     inputHistory.push(input)
-    numInputs += 1
-    selectInput = numInputs
-
     data = processInput(input, data)
 
     line()
@@ -348,24 +339,23 @@ window.onload = function() {
       top: 100, // could be negative value
       left: 0,
       behavior: 'smooth'
-    });
+    })
 
-    document.getElementById('command_line').value = ""
+    document.getElementById('command_line').value = ''
   }
-
 }
 
-var getJSON = function(url, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.responseType = 'json';
-  xhr.onload = function() {
-    var status = xhr.status;
-    if (status == 200) {
-      callback(null, xhr.response);
+var getJSON = function (url, callback) {
+  var xhr = new window.XMLHttpRequest()
+  xhr.open('GET', url, true)
+  xhr.responseType = 'json'
+  xhr.onload = function () {
+    var status = xhr.status
+    if (status === 200) {
+      callback(null, xhr.response)
     } else {
-      callback(status);
+      callback(status)
     }
-  };
-  xhr.send();
-};
+  }
+  xhr.send()
+}
