@@ -1,0 +1,31 @@
+{
+  "name": "voya.js",
+  "version": "1.0.0",
+  "description": "a javascript text-adventure engine",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LineWeight/voya.js.git"
+  },
+  "keywords": [
+    "text-adventure",
+    "game"
+  ],
+  "author": "Trevor Sargent",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LineWeight/voya.js/issues"
+  },
+  "homepage": "https://github.com/LineWeight/voya.js#readme",
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
+}
