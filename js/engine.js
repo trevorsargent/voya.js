@@ -195,14 +195,7 @@ function applyPlaceDefaults (place, defaults) {
 
 // process the input from each command
 function processInput (input, data) {
-  let {
-    settings,
-    commands,
-    player,
-    places,
-    messages,
-    defaults
-  } = data
+  let {settings, commands, player, places, messages, defaults} = data
 
   input = input.toLowerCase()
 
@@ -215,7 +208,7 @@ function processInput (input, data) {
   if (input.indexOf(commands.help) > -1) {
     println(messages.helpText)
 
-    // look around describe where you are
+  // look around describe where you are
   } else if (input.indexOf(commands.observe) > -1) {
     if (canSee(player)) {
       println(description(player.currentLocation, places))
@@ -223,7 +216,7 @@ function processInput (input, data) {
       println(messages.visibilityError)
     }
 
-    // walk places
+  // walk places
   } else if (input.indexOf(commands.move) > -1) {
     // input = input.replace("walk to", "").trim().input.replace("the", "").trim()
     let placeName = trimInput(input, commands.move)
@@ -253,7 +246,7 @@ function processInput (input, data) {
       println(messages.moveError)
     }
 
-    // take items
+  // take items
   } else if (input.indexOf(commands.gainItem) > -1) {
     let item = trimInput(input, commands.gainItem)
     if (item in player.currentLocation.objects) {
@@ -264,7 +257,7 @@ function processInput (input, data) {
       println(messages.pickUpError + addArticle(item))
     }
 
-    // drop items
+  // drop items
   } else if (input.indexOf(commands.loseItem) > -1) {
     let item = trimInput(input, commands.loseItem)
     if (item in player.pockets) {
@@ -288,7 +281,7 @@ function processInput (input, data) {
       println(messages.inventoryItemError + addArticle(item))
     }
 
-    // take inventory
+  // take inventory
   } else if (input.indexOf(commands.takeInventory) > -1) {
     if (player.pockets !== {}) {
       println(hashList(player.pockets, messages.inventoryError))
@@ -302,8 +295,7 @@ function processInput (input, data) {
   }
   Object.assign(data, {
     player,
-    places
-  })
+  places})
   return data
 }
 
