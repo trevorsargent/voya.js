@@ -293,9 +293,7 @@ function processInput (input, data) {
       println(messages.commandInvalid)
     }
   }
-  Object.assign(data, {
-    player,
-  places})
+  Object.assign(data, {player, places})
   return data
 }
 
