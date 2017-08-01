@@ -1,5 +1,8 @@
 // Made by, and copyright, @trevorsargent 2017
 
+let data = {}
+let inputHistory = []
+
 const times = (x, func) => {
   while (x--) {
     func()
@@ -285,44 +288,20 @@ const processInput = (input, data) => {
   return data
 }
 
-window.onload = () => {
-  let data = {}
-  let inputHistory = []
-
-  getJSON('roms/carnival.json', function (err, json) {
-    if (err !== null) {
-      window.alert('Something went wrong: ' + err)
-    } else {
-      data = json
-      data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-      times(8, println)
-      // appendBlank(8)
-      println(data.messages.welcomeText)
-      document.getElementById('image').src = data.settings['background-url']
-      document.title.innerHTML = data.settings.title
-      document.getElementById('logo').innerHTML = data.settings.title
-      // on pressing enter after providing a command
-      document.getElementById('prepend').innerHTML = data.settings.prepend
-    }
-  })
-
-  document.getElementById('form').onsubmit = function () {
-    let input = document.getElementById('command_line').value
-    // console.log(input)
-    input = input.trim()
-
-    inputHistory.push(input)
-    data = processInput(input, data)
-
-    println()
-
-    window.scrollBy({
-      top: 100, // could be negative value
-      left: 0,
-      behavior: 'smooth'
-    })
-
-    document.getElementById('command_line').value = ''
+const getJSONCallback = (err, json) => {
+  if (err !== null) {
+    window.alert('Something went wrong: ' + err)
+  } else {
+    data = json
+    data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
+    times(8, println)
+    // appendBlank(8)
+    println(data.messages.welcomeText)
+    document.getElementById('image').src = data.settings['background-url']
+    document.title.innerHTML = data.settings.title
+    document.getElementById('logo').innerHTML = data.settings.title
+    // on pressing enter after providing a command
+    document.getElementById('prepend').innerHTML = data.settings.prepend
   }
 }
 
@@ -339,4 +318,27 @@ const getJSON = (url, callback) => {
     }
   }
   xhr.send()
+}
+
+document.getElementById('form').onsubmit = () => {
+  let input = document.getElementById('command_line').value
+  input = input.trim().toLowerCase()
+
+  inputHistory.push(input)
+
+  data = processInput(input, data)
+
+  println()
+
+  window.scrollBy({
+    top: 100, // could be negative value
+    left: 0,
+    behavior: 'smooth'
+  })
+
+  document.getElementById('command_line').value = ''
+}
+
+window.onload = () => {
+  getJSON('roms/carnival.json', getJSONCallback)
 }
