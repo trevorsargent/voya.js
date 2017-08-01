@@ -27,8 +27,8 @@ function trimInput (input, string) {
   return input.replace(string, '').trim().replace('the ', '').replace('a ', '').replace('to ', '').trim()
 }
 
-// returns a description of a 'place'
-function description (place, places) {
+// returns a string description of a 'place'
+const description = (place, places) => {
   let toReturn = "you're standing in the " + place.name + '.'
   if (place.left !== undefined) {
     toReturn += '\n on your left is the ' + places[place.left].name + '.'
@@ -49,7 +49,7 @@ function description (place, places) {
 }
 
 // returns a formatted list of everything in a hash
-function hashList (hash, error) {
+const hashList = (hash, error) => {
   let toReturn = ''
   if (Object.keys(hash).length > 0) {
     for (let item in hash) {
@@ -62,7 +62,7 @@ function hashList (hash, error) {
 }
 
 // adds an item a hash
-function hashAdd (string, list) {
+const hashAdd = (string, list) => {
   if (string in list) {
     list[string]++
   } else {
@@ -72,7 +72,7 @@ function hashAdd (string, list) {
 }
 
 // removes an item from a hash
-function hashRemove (string, list) {
+const hashRemove = (string, list) => {
   if (string in list) {
     list[string]--
     if (list[string] <= 0) {
@@ -82,7 +82,8 @@ function hashRemove (string, list) {
   return list
 }
 
-function canSee (player) {
+// returns whether a player can currently see
+const canSee = player => {
   if (player.currentLocation.settings.islit) {
     return true
   }
@@ -94,7 +95,8 @@ function canSee (player) {
   return false
 }
 
-// walks to the place
+// updates the players
+// TODO: break this up
 function walkTo (player, destination, places, defaults) {
   player.currentLocation.settings.beenHere = true
   destination = applyPlaceDefaults(placeFromString(destination, places), defaults)
@@ -128,21 +130,15 @@ function locationIsAccessable (dest, source, places) {
   return false
 }
 
-function unlockLocation (destination, pockets) {
-  if (pockets[destination.settings.key] && destination.settings.leaveUnlocked) {
-    destination.settings.isLocked = false
-  }
+// set state of lock on location
+const unlockLocation = destination => {
+  destination.settings.isLocked = false
   return destination
 }
 
-function locationIsLocked (destination, pockets) {
-  if (destination.settings.isLocked) {
-    if (pockets[destination.settings.key]) {
-      return false
-    }
-    return true
-  }
-  return false
+// check if a location is locked
+const locationIsLocked = location => {
+  return location.settings.isLocked
 }
 
 // return an item in exchange for another item, based on the place
@@ -152,7 +148,7 @@ function locationIsLocked (destination, pockets) {
 //   }
 // }
 
-function placeFromString (placeName, places) {
+const placeFromString = (placeName, places) => {
   for (let e in places) {
     if (places[e].name === placeName) {
       return places[e]
@@ -161,7 +157,7 @@ function placeFromString (placeName, places) {
 }
 
 // adds the gramatically appropriate article to the string passed
-function addArticle (string) {
+const addArticle = string => {
   let vowels = ['a', 'e', 'i', 'o', 'u']
   let article = ''
   if (vowels.includes(string.charAt(0))) {
@@ -172,7 +168,7 @@ function addArticle (string) {
   return article + ' ' + string
 }
 
-function applyPlaceDefaults (place, defaults) {
+const applyPlaceDefaults = (place, defaults) => {
   place.settings = place.settings || {}
   place.settings.beenHere = place.settings.beenHere || defaults.place.settings.beenHere
   place.settings.isLocked = place.settings.isLocked || defaults.place.settings.isLocked
@@ -183,8 +179,9 @@ function applyPlaceDefaults (place, defaults) {
   return place
 }
 
+// TODO: Break this up as well
 // process the input from each command
-function processInput (input, data) {
+const processInput = (input, data) => {
   let {settings, commands, player, places, messages, defaults} = data
 
   input = input.toLowerCase()
@@ -288,7 +285,7 @@ function processInput (input, data) {
   return data
 }
 
-window.onload = function () {
+window.onload = () => {
   let data = {}
   let inputHistory = []
 
@@ -329,7 +326,7 @@ window.onload = function () {
   }
 }
 
-var getJSON = function (url, callback) {
+const getJSON = (url, callback) => {
   var xhr = new window.XMLHttpRequest()
   xhr.open('GET', url, true)
   xhr.responseType = 'json'
