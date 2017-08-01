@@ -91,6 +91,7 @@ input:-ms-input-placeholder { /* Internet Explorer 10-11 */
 
 p{
 	margin: 0;
+	height: 16px;
 }
 
 #console{

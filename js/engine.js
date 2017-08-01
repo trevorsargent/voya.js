@@ -1,32 +1,26 @@
 // Made by, and copyright, @trevorsargent 2017
 
-import _ from 'lodash'
+const times = (x, func) => {
+  while (x--) {
+    func()
+  }
+}
+
+// appends a paragraph to the console with the parameter as content
+const appendParagraph = x => {
+  var sp1 = document.createElement('p')
+  sp1.innerHTML = x.trim()
+  appendItem(sp1)
+}
 
 // p rints a line of text to the screen
 const println = lines => {
-  if (lines) {
-    lines.split('\n').forEach(appendPp)
-  } else {
-    appendBlank()
-  }
+  lines = lines || ''
+  lines.split('\n').forEach(appendParagraph)
 }
 
 const appendItem = x => {
   document.getElementById('console').appendChild(x)
-}
-
-// adds a blank line
-const appendBlank = x => {
-  const count = x || 1
-  _.times(count, x => {
-    appendItem(document.createElement('br'))
-  })
-}
-
-const appendPp = x => {
-  var sp1 = document.createElement('p')
-  sp1.innerHTML = x.trim()
-  appendItem(sp1)
 }
 
 function trimInput (input, string) {
@@ -37,19 +31,19 @@ function trimInput (input, string) {
 function description (place, places) {
   let toReturn = "you're standing in the " + place.name + '.'
   if (place.left !== undefined) {
-    toReturn += '</br>on your left is the ' + places[place.left].name + '.'
+    toReturn += '\n on your left is the ' + places[place.left].name + '.'
   }
   if (place.right !== undefined) {
-    toReturn += '</br>on your right is the ' + places[place.right].name + '.'
+    toReturn += '\n on your right is the ' + places[place.right].name + '.'
   }
   if (place.ahead !== undefined) {
-    toReturn += '</br>ahead of you is the ' + places[place.ahead].name + '.'
+    toReturn += '\n ahead of you is the ' + places[place.ahead].name + '.'
   }
   if (place.behind !== undefined) {
-    toReturn += '</br>behind you is the ' + places[place.behind].name + '.'
+    toReturn += '\n behind you is the ' + places[place.behind].name + '.'
   }
   if (!place.settings.beenHere && place.messages.newText !== '') {
-    toReturn += '</br></br>' + place.messages.newText + '.'
+    toReturn += '\n \n ' + place.messages.newText + '.'
   }
   return toReturn
 }
@@ -196,6 +190,7 @@ function processInput (input, data) {
   input = input.toLowerCase()
 
   if (input.length > 0) {
+    println()
     println(settings.prepend + input)
     println()
   }
@@ -303,7 +298,8 @@ window.onload = function () {
     } else {
       data = json
       data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-      appendBlank(8)
+      times(8, println)
+      // appendBlank(8)
       println(data.messages.welcomeText)
       document.getElementById('image').src = data.settings['background-url']
       document.title.innerHTML = data.settings.title
@@ -315,13 +311,14 @@ window.onload = function () {
 
   document.getElementById('form').onsubmit = function () {
     let input = document.getElementById('command_line').value
-    console.log(input)
+    // console.log(input)
     input = input.trim()
 
     inputHistory.push(input)
     data = processInput(input, data)
 
     println()
+
     window.scrollBy({
       top: 100, // could be negative value
       left: 0,
