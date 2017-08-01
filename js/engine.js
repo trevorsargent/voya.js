@@ -108,26 +108,26 @@ function walkTo (player, destination, places, defaults) {
 }
 
 // returns whether a place is accessabel from another place
-function locationIsAccessable (dest, source, places) {
+function locationIsAccessable (player, dest) {
   if (dest === undefined) {
     return false
   }
-  if (places[source.ahead] === dest) {
+  if (player.currentLocation.ahead === dest) {
     return true
   }
-  if (places[source.behind] === dest) {
+  if (player.currentLocation.behind === dest) {
     return true
   }
-  if (places[source.right] === dest) {
+  if (player.currentLocation.right === dest) {
     return true
   }
-  if (places[source.left] === dest) {
+  if (player.currentLocation.left === dest) {
     return true
   }
-  if (places[source.above] === dest) {
+  if (player.currentLocation.above === dest) {
     return true
   }
-  if (places[source.below] === dest) {
+  if (player.currentLocation.below === dest) {
     return true
   }
   return false
@@ -207,38 +207,66 @@ const processAndPrint = (input, data) => {
     return data
   }
 
-  const {places, player, defaults, messages} = data
-  // ask for help
-  if (input.indexOf(commands.move) > -1) {
-    let placeName = trimInput(input, commands.move)
-    let place = placeFromString(placeName, places)
-    if (place !== undefined) {
-      place = applyPlaceDefaults(place, defaults)
-      if (locationIsAccessable(place, player.currentLocation, places) && place !== undefined) {
-        if (!locationIsLocked(place, player.pockets)) {
-          player = walkTo(player, placeName, places, defaults)
-          if (player.currentLocation.settings.isLocked) {
-            println(player.currentLocation.messages.successEntryGranted)
-          }
-          player.currentLocation = unlockLocation(player.currentLocation, player.pockets)
-          if (player.currentLocation.leaveUnlocked) {
-            println(player.currentLocation.messages.unlock)
-          }
-          println(messages.moveMessage + placeName)
-        } else {
-          println(place.messages.locked)
-        }
-      } else if (place === player.currentLocation) {
-        println(messages.moveRedundancy + place.name)
-      } else {
-        println(messages.moveError)
-      }
-    } else {
-      println(messages.moveError)
+  if (input.includes(commands.move)) {
+    const destination = trimInput(input, commands.move) // string name
+    const { messages, player, places } = data
+
+    // check whether the player is already at the location
+    if (player.currentLocation === destination) {
+      println(messages.moveRedundancy)
     }
 
+    // check whether location is accessable
+    if (!locationIsAccessable(player, destination)) {
+      println(placeFromString(destination, places).messages.locationIsLocked)
+      return data
+    }
+
+    // check whether location is locked
+
+    // check whether player can unlock location
+
+    // unlock the location if necessary
+
+    // move the player to the location
+
+  // 
+  }
+
+  // old move method
+  // if (input.indexOf(commands.move) > -1) {
+  //   let placeName = trimInput(input, commands.move)
+  //   let place = placeFromString(placeName, places)
+  //   if (place !== undefined) {
+  //     place = applyPlaceDefaults(place, defaults)
+  //     if (locationIsAccessable(place, player.currentLocation, places) && place !== undefined) {
+  //       if (!locationIsLocked(place, player.pockets)) {
+  //         player = walkTo(player, placeName, places, defaults)
+  //         if (player.currentLocation.settings.isLocked) {
+  //           println(player.currentLocation.messages.successEntryGranted)
+  //         }
+  //         player.currentLocation = unlockLocation(player.currentLocation, player.pockets)
+  //         if (player.currentLocation.leaveUnlocked) {
+  //           println(player.currentLocation.messages.unlock)
+  //         }
+  //         println(messages.moveMessage + placeName)
+  //       } else {
+  //         println(place.messages.locked)
+  //       }
+  //     } else if (place === player.currentLocation) {
+  //       println(messages.moveRedundancy + place.name)
+  //     } else {
+  //       println(messages.moveError)
+  //     }
+  //   } else {
+  //     println(messages.moveError)
+  //   }
+
+  // 
+  // 
+  // 
   // take items
-  } else if (input.indexOf(commands.gainItem) > -1) {
+  if (input.indexOf(commands.gainItem) > -1) {
     let item = trimInput(input, commands.gainItem)
     if (item in player.currentLocation.objects) {
       player.currentLocation.objects = hashRemove(item, player.currentLocation.objects)
