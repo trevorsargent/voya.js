@@ -182,34 +182,34 @@ const applyPlaceDefaults = (place, defaults) => {
   return place
 }
 
+const generateObserveText = (player, places, messages) => {
+  if (canSee(player)) {
+    return description(player.currentLocation, places)
+  } else {
+    return messages.visibilityError
+  }
+}
+
 // TODO: Break this up as well
 // process the input from each command
-const processInput = (input, data) => {
-  let {settings, commands, player, places, messages, defaults} = data
+const processAndPrint = (input, data) => {
+  const { commands } = data
 
-  input = input.toLowerCase()
-
-  if (input.length > 0) {
-    println()
-    println(settings.prepend + input)
-    println()
+  if (input.includes(commands.help)) {
+    const { messages } = data
+    println(messages.helpText)
+    return data
   }
 
+  if (input.includes(commands.observe)) {
+    const { player, places, messages } = data
+    println(generateObserveText(player, places, messages))
+    return data
+  }
+
+  const {places, player, defaults, messages} = data
   // ask for help
-  if (input.indexOf(commands.help) > -1) {
-    println(messages.helpText)
-
-  // look around describe where you are
-  } else if (input.indexOf(commands.observe) > -1) {
-    if (canSee(player)) {
-      println(description(player.currentLocation, places))
-    } else {
-      println(messages.visibilityError)
-    }
-
-  // walk places
-  } else if (input.indexOf(commands.move) > -1) {
-    // input = input.replace("walk to", "").trim().input.replace("the", "").trim()
+  if (input.indexOf(commands.move) > -1) {
     let placeName = trimInput(input, commands.move)
     let place = placeFromString(placeName, places)
     if (place !== undefined) {
@@ -284,7 +284,7 @@ const processInput = (input, data) => {
       println(messages.commandInvalid)
     }
   }
-  Object.assign(data, {player, places})
+  Object.assign(data, { player, places})
   return data
 }
 
@@ -321,14 +321,18 @@ const getJSON = (url, callback) => {
 }
 
 document.getElementById('form').onsubmit = () => {
-  let input = document.getElementById('command_line').value
-  input = input.trim().toLowerCase()
+  const input = document.getElementById('command_line').value.trim().toLowerCase()
+
+  const { settings } = data
 
   inputHistory.push(input)
 
-  data = processInput(input, data)
-
-  println()
+  if (input.length > 0) {
+    println()
+    println(settings.prepend + input)
+    println()
+    data = processAndPrint(input, data)
+  }
 
   window.scrollBy({
     top: 100, // could be negative value
