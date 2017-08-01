@@ -1,36 +1,32 @@
 // Made by, and copyright, @trevorsargent 2017
 
+import _ from 'lodash'
+
 // p rints a line of text to the screen
-function println (line) {
-  'use strict'
-  if (line) {
-    let arr = line.split('\n')
-    for (let i = 0; i < arr.length; i++) {
-      var sp1 = document.createElement('p')
-      sp1.innerHTML = arr[i].trim()
-      document.getElementById('console').appendChild(sp1)
-    }
+const println = lines => {
+  if (lines) {
+    lines.split('\n').forEach(appendPp)
+  } else {
+    appendBlank()
   }
+}
+
+const appendItem = x => {
+  document.getElementById('console').appendChild(x)
 }
 
 // adds a blank line
-function line () {
-  var sp1 = document.createElement('br')
-  document.getElementById('console').appendChild(sp1)
+const appendBlank = x => {
+  const count = x || 1
+  _.times(count, x => {
+    appendItem(document.createElement('br'))
+  })
 }
 
-// adds a number of blank lines
-function lineNum (int) {
-  for (let i = 0; i < int; i++) {
-    line()
-  }
-}
-
-// prints the welcome message
-function printWelcome (welcomeText) {
-  lineNum(8)
-  println(welcomeText)
-  line()
+const appendPp = x => {
+  var sp1 = document.createElement('p')
+  sp1.innerHTML = x.trim()
+  appendItem(sp1)
 }
 
 function trimInput (input, string) {
@@ -201,7 +197,7 @@ function processInput (input, data) {
 
   if (input.length > 0) {
     println(settings.prepend + input)
-    line()
+    println()
   }
 
   // ask for help
@@ -307,7 +303,8 @@ window.onload = function () {
     } else {
       data = json
       data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-      printWelcome(data.messages.welcomeText)
+      appendBlank(8)
+      println(data.messages.welcomeText)
       document.getElementById('image').src = data.settings['background-url']
       document.title.innerHTML = data.settings.title
       document.getElementById('logo').innerHTML = data.settings.title
@@ -324,7 +321,7 @@ window.onload = function () {
     inputHistory.push(input)
     data = processInput(input, data)
 
-    line()
+    println()
     window.scrollBy({
       top: 100, // could be negative value
       left: 0,
