@@ -193,7 +193,7 @@ const generateObserveText = (player, places, messages) => {
 // TODO: Break this up as well
 // process the input from each command
 const processAndPrint = (input, data) => {
-  const { commands } = data
+  const { commands, player, places, messages } = data
 
   if (input.includes(commands.help)) {
     const { messages } = data
@@ -202,7 +202,6 @@ const processAndPrint = (input, data) => {
   }
 
   if (input.includes(commands.observe)) {
-    const { player, places, messages } = data
     println(generateObserveText(player, places, messages))
     return data
   }
@@ -230,7 +229,7 @@ const processAndPrint = (input, data) => {
 
     // move the player to the location
 
-  // 
+    // 
   }
 
   // old move method
@@ -262,9 +261,6 @@ const processAndPrint = (input, data) => {
   //     println(messages.moveError)
   //   }
 
-  // 
-  // 
-  // 
   // take items
   if (input.indexOf(commands.gainItem) > -1) {
     let item = trimInput(input, commands.gainItem)
@@ -276,7 +272,7 @@ const processAndPrint = (input, data) => {
       println(messages.pickUpError + addArticle(item))
     }
 
-  // drop items
+    // drop items
   } else if (input.indexOf(commands.loseItem) > -1) {
     let item = trimInput(input, commands.loseItem)
     if (item in player.pockets) {
@@ -300,7 +296,7 @@ const processAndPrint = (input, data) => {
       println(messages.inventoryItemError + addArticle(item))
     }
 
-  // take inventory
+    // take inventory
   } else if (input.indexOf(commands.takeInventory) > -1) {
     if (player.pockets !== {}) {
       println(hashList(player.pockets, messages.inventoryError))
@@ -312,7 +308,7 @@ const processAndPrint = (input, data) => {
       println(messages.commandInvalid)
     }
   }
-  Object.assign(data, { player, places})
+  Object.assign(data, { player, places })
   return data
 }
 
