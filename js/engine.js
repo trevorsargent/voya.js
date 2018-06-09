@@ -1,34 +1,9 @@
-// Made by, and copyright, @trevorsargent 2017
+// Made by, and copyright, @trevorsargent 2018
+import _ from 'highland'
 
-let data = {}
-let inputHistory = []
-
-const times = (x, func) => {
-  while (x--) {
-    func()
-  }
-}
-
-// appends a paragraph to the console with the parameter as content
-const appendParagraph = x => {
-  var sp1 = document.createElement('p')
-  sp1.innerHTML = x.trim()
-  appendItem(sp1)
-}
-
-// p rints a line of text to the screen
-const println = lines => {
-  lines = lines || ''
-  lines.split('\n').forEach(appendParagraph)
-}
-
-const appendItem = x => {
-  document.getElementById('console').appendChild(x)
-}
-
-function trimInput (input, string) {
-  return input.replace(string, '').trim().replace('the ', '').replace('a ', '').replace('to ', '').trim()
-}
+// IO Streams
+export const input$ = _()
+export const output$ = _()
 
 // returns a string description of a 'place'
 const description = (place, places) => {
@@ -52,17 +27,7 @@ const description = (place, places) => {
 }
 
 // returns a formatted list of everything in a hash
-const hashList = (hash, error) => {
-  let toReturn = ''
-  if (Object.keys(hash).length > 0) {
-    for (let item in hash) {
-      toReturn += item + ': (' + hash[item] + ') \n'
-    }
-    return toReturn
-  } else {
-    return error
-  }
-}
+
 
 // adds an item a hash
 const hashAdd = (string, list) => {
@@ -312,61 +277,3 @@ const processAndPrint = (input, data) => {
   return data
 }
 
-const getJSONCallback = (err, json) => {
-  if (err !== null) {
-    window.alert('Something went wrong: ' + err)
-  } else {
-    data = json
-    data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-    times(8, println)
-    // appendBlank(8)
-    println(data.messages.welcomeText)
-    document.getElementById('image').src = data.settings['background-url']
-    document.title.innerHTML = data.settings.title
-    document.getElementById('logo').innerHTML = data.settings.title
-    // on pressing enter after providing a command
-    document.getElementById('prepend').innerHTML = data.settings.prepend
-  }
-}
-
-const getJSON = (url, callback) => {
-  var xhr = new window.XMLHttpRequest()
-  xhr.open('GET', url, true)
-  xhr.responseType = 'json'
-  xhr.onload = function () {
-    var status = xhr.status
-    if (status === 200) {
-      callback(null, xhr.response)
-    } else {
-      callback(status)
-    }
-  }
-  xhr.send()
-}
-
-document.getElementById('form').onsubmit = () => {
-  const input = document.getElementById('command_line').value.trim().toLowerCase()
-
-  const { settings } = data
-
-  inputHistory.push(input)
-
-  if (input.length > 0) {
-    println()
-    println(settings.prepend + input)
-    println()
-    data = processAndPrint(input, data)
-  }
-
-  window.scrollBy({
-    top: 100, // could be negative value
-    left: 0,
-    behavior: 'smooth'
-  })
-
-  document.getElementById('command_line').value = ''
-}
-
-window.onload = () => {
-  getJSON('roms/carnival.json', getJSONCallback)
-}
