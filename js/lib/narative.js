@@ -30,3 +30,15 @@ export const describeHash = (hash) => {
     return false
   }
 }
+
+// adds the gramatically appropriate article to the string passed
+export const addArticle = string => {
+  let vowels = ['a', 'e', 'i', 'o', 'u']
+  let article = ''
+  if (vowels.includes(string.charAt(0))) {
+    article = 'an '
+  } else {
+    article = 'a '
+  }
+  return article + ' ' + string
+}
