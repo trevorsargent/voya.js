@@ -4,11 +4,7 @@
 //   }
 // }
 
-// const appendParagraph = x => {
-//   var sp1 = document.createElement('p')
-//   sp1.innerHTML = x.trim()
-//   appendItem(sp1)
-// }
+
 
 // // p rints a line of text to the screen
 // const println = lines => {
@@ -16,9 +12,7 @@
 //   lines.split('\n').forEach(appendParagraph)
 // }
 
-// const appendItem = x => {
-//   document.getElementById('console').appendChild(x)
-// }
+
 
 // const getJSONCallback = (err, json) => {
 //   if (err !== null) {

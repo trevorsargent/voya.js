@@ -1,7 +1,10 @@
 import { input$, output$ } from './engine.js'
+import state from './state.js'
+console.log('HELO!?')
 
 const commandLine = document.getElementById('command_line')
 const form = document.getElementById('form')
+const log = document.getElementById('console')
 
 const getCommandLineValue = () => {
   return commandLine.value.trim().toLowerCase()
@@ -9,6 +12,12 @@ const getCommandLineValue = () => {
 
 const setCommandLineValue = (text) => {
   commandLine.value = text
+}
+
+const logText = x => {
+  let p = document.createElement('p')
+  p.innerHTML = x
+  log.appendChild(x)
 }
 
 const smoothScrollWindow = (px) => {
@@ -33,7 +42,10 @@ form.onsubmit = () => {
 
 output$.each(x => {
   // print the output
+  logText(x)
 
   // scroll the window up to accomodate for new text
   smoothScrollWindow(100)
 })
+
+console.log(state)
