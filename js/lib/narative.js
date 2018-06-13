@@ -42,3 +42,8 @@ export const addArticle = string => {
   }
   return article + ' ' + string
 }
+
+// add prepend characters
+export const prepend = prepend => input => {
+  return prepend + ' ' + input
+}

@@ -32,8 +32,9 @@ const smoothScrollWindow = (px) => {
 
 form.onsubmit = (e) => {
   e.preventDefault()
+
+  // get input
   let input = getCommandLineValue()
-  // TODO: Clean input here
 
   // send input to engine
   input$.write(input)
