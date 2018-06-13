@@ -1,6 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 module.exports = {
+  watch: true,
   entry: './js/main.js',
   mode: 'development',
   output: {

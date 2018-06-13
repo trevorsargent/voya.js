@@ -30,7 +30,7 @@ body{
 }
 
 
-#form{
+#form-box{
 	display: flex;
 	flex-direction: row;
 	align-items: baseline;

@@ -1,17 +1,24 @@
-// easily remove a particular word from a string 
+// easily remove a particular word from a string
+
+import Action from '../actions.js'
+
 export const sanitize = string => input => {
   sanitizeBasic(input).replace(string, '')
 }
 
 // remove common unnecessary articles and words from a string
-// TODO: read the list of articles and words from the database instead of hard coding them here. 
+// TODO: read the list of articles and words from the database instead of hard coding them here.
 export const sanitizeBasic = (input) => {
-  input
+  return input
     .trim()
     .replace('the ', '')
     .replace('a ', '')
     .replace('to ', '')
     .trim()
+}
+
+export const filterEmpty = (input) => {
+  return input !== ''
 }
 
 // adds an item a hash
@@ -52,4 +59,13 @@ export const applyDefaults = (subject, base) => {
   subject.objects = subject.objects || {}
   subject.exchanges = subject.exchanges || {}
   return subject
+}
+
+export const buildAction = (string) => {
+  let action = {}
+  if (string.indexOf('look around') > -1) {
+    action.type = Action.type.OBSERVE
+  }
+
+  return action
 }

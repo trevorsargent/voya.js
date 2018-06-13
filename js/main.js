@@ -1,10 +1,12 @@
 import { input$, output$ } from './engine.js'
-import state from './state.js'
-console.log('HELO!?')
+// import state from './state.js'
+// import { sanitize } from './lib/operative.js';
 
 const commandLine = document.getElementById('command_line')
 const form = document.getElementById('form')
 const log = document.getElementById('console')
+
+window.input = input$
 
 const getCommandLineValue = () => {
   return commandLine.value.trim().toLowerCase()
@@ -16,8 +18,8 @@ const setCommandLineValue = (text) => {
 
 const logText = x => {
   let p = document.createElement('p')
-  p.innerHTML = x
-  log.appendChild(x)
+  p.innerText = x
+  log.appendChild(p)
 }
 
 const smoothScrollWindow = (px) => {
@@ -28,9 +30,9 @@ const smoothScrollWindow = (px) => {
   })
 }
 
-form.onsubmit = () => {
-  const input = getCommandLineValue()
-
+form.onsubmit = (e) => {
+  e.preventDefault()
+  let input = getCommandLineValue()
   // TODO: Clean input here
 
   // send input to engine
@@ -47,5 +49,3 @@ output$.each(x => {
   // scroll the window up to accomodate for new text
   smoothScrollWindow(100)
 })
-
-console.log(state)

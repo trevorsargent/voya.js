@@ -1,13 +1,31 @@
-// // Made by, and copyright, @trevorsargent 2018
-// import _ from 'highland'
-// import { sanitizeBasic, buildAction } from './lib/operative'
-// import Dispatch from './dispatch.js'
+// Made by, and copyright, @trevorsargent 2018
+import _ from 'highland'
+import Action from './actions.js'
+import State from './state.js'
+import { sanitizeBasic, filterEmpty, buildAction } from './lib/operative'
 
-// // IO Streams
-// export const input$ = _()
-// export const output$ = _()
+// IO Streams
+export const input$ = _()
+export const output$ = _()
 
-// input$
-//   .map(sanitizeBasic)
-//   .map(buildAction)
-//   .each(Dispatch.broadcastAction)
+const act = (action) => {
+  switch (action.type) {
+    case Action.type.OBSERVE:
+      console.log('looking....')
+      output$.write(State.describePlayerLocation())
+  }
+}
+
+input$
+  .fork()
+  .map(sanitizeBasic)
+  .map(buildAction)
+  .each(act)
+
+input$
+  .fork()
+  .map(sanitizeBasic)
+  .filter(filterEmpty)
+  .each(x => {
+    output$.write(x)
+  })
