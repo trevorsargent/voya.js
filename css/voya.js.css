@@ -92,7 +92,7 @@ input:-ms-input-placeholder { /* Internet Explorer 10-11 */
 p{
   margin: 0;
   margin-bottom: 16px;
-  height: 16px;
+  min-height: 16px;
 }
 
 #console{

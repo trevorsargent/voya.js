@@ -1,9 +1,7 @@
 // easily remove a particular word from a string
 
-import Action from '../actions.js'
-
 export const sanitize = string => input => {
-  sanitizeBasic(input).replace(string, '')
+  return sanitizeBasic(input).replace(string, '').trim()
 }
 
 // remove common unnecessary articles and words from a string
@@ -50,22 +48,14 @@ export const findPlaceFromName = (placeName, places) => {
   }
 }
 
-export const applyDefaults = (subject, base) => {
-  subject.settings = subject.settings || {}
-  subject.settings.beenHere = subject.settings.beenHere || base.settings.beenHere
-  subject.settings.isLocked = subject.settings.isLocked || base.settings.isLocked
-  subject.settings.isLit = subject.settings.isLit || base.settings.isLit
-  subject.messages = subject.messages || {}
-  subject.objects = subject.objects || {}
-  subject.exchanges = subject.exchanges || {}
-  return subject
-}
-
-export const buildAction = (string) => {
-  let action = {}
-  if (string.indexOf('look around') > -1) {
-    action.type = Action.type.OBSERVE
-  }
-
-  return action
+export const applyDefaults = (place, base) => {
+  place.settings = place.settings || {}
+  place.settings.beenHere = place.settings.beenHere || base.settings.beenHere
+  place.settings.isLocked = place.settings.isLocked || base.settings.isLocked
+  place.settings.isLit = place.settings.isLit || base.settings.isLit
+  place.messages = place.messages || {}
+  place.messages.newText = place.messages.newText || ''
+  place.objects = place.objects || {}
+  place.exchanges = place.exchanges || {}
+  return place
 }

@@ -1,5 +1,5 @@
 // returns a string description of a 'place'
-export const describePlace = (place, places) => {
+export const describeNeighborhood = (place, places) => {
   let toReturn = "you're standing in the " + place.name + '.'
   if (place.left !== undefined) {
     toReturn += '\n on your left is the ' + places[place.left].name + '.'
@@ -12,9 +12,6 @@ export const describePlace = (place, places) => {
   }
   if (place.behind !== undefined) {
     toReturn += '\n behind you is the ' + places[place.behind].name + '.'
-  }
-  if (!place.settings.beenHere && place.messages.newText !== '') {
-    toReturn += '\n \n ' + place.messages.newText + '.'
   }
   return toReturn
 }
