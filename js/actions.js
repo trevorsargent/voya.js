@@ -1,14 +1,24 @@
 import { sanitize } from './lib/operative'
 
 export const type = {
+  EMPTY: Symbol('empty'),
   HELP: Symbol('help'),
-  MOVE: Symbol('move'),
-  INVENTORY: Symbol('inventory'),
   OBSERVE: Symbol('observe'),
-  EXCHANGE: Symbol('exchange')
+  INVENTORY: Symbol('inventory'),
+  ITEMS: Symbol('stock'),
+  EXCHANGE: Symbol('exchange'),
+  MOVE: Symbol('move'),
+  TAKE: Symbol('take'),
+  DROP: Symbol('drop'),
+  ERROR: Symbol('error')
 }
 
 export const build = string => {
+  if (string === '') {
+    return {
+      type: type.EMPTY
+    }
+  }
   if (string.indexOf('help') > -1) {
     return {
       type: type.HELP
@@ -24,11 +34,33 @@ export const build = string => {
       type: type.INVENTORY
     }
   }
+  if (string.indexOf('items') > -1) {
+    return {
+      type: type.ITEMS
+    }
+  }
   if (string.indexOf('walk') > -1) {
     string = sanitize('walk')(string)
     return {
       type: type.MOVE,
       subject: string
     }
+  }
+  if (string.indexOf('take') > -1) {
+    string = sanitize('take')(string)
+    return {
+      type: type.TAKE,
+      subject: string
+    }
+  }
+  if (string.indexOf('drop') > -1) {
+    string = sanitize('drop')(string)
+    return {
+      type: type.DROP,
+      subject: string
+    }
+  }
+  return {
+    type: type.ERROR
   }
 }

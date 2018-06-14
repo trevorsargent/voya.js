@@ -1,4 +1,6 @@
 // returns a string description of a 'place'
+const space = ' '
+
 export const describeNeighborhood = (place, places) => {
   let toReturn = "you're standing in the " + place.name + '.'
   if (place.left !== undefined) {
@@ -18,31 +20,22 @@ export const describeNeighborhood = (place, places) => {
 
 export const describeHash = (hash) => {
   let toReturn = ''
-  if (Object.keys(hash).length > 0) {
-    for (let item in hash) {
-      toReturn += item + ': (' + hash[item] + ') \n'
-    }
-    return toReturn
-  } else {
-    return false
+  for (let item in hash) {
+    toReturn += item + ': (' + hash[item] + ') \n'
   }
+  return toReturn
 }
 
 // adds the gramatically appropriate article to the string passed
 export const addArticle = string => {
-  let vowels = ['a', 'e', 'i', 'o', 'u']
-  let article = ''
-  if (vowels.includes(string.charAt(0))) {
-    article = 'an '
-  } else {
-    article = 'a '
-  }
-  return article + ' ' + string
+  const vowels = ['a', 'e', 'i', 'o', 'u']
+  const article = vowels.includes(string.charAt(0)) ? 'an' : 'a'
+  return article + space + string
 }
 
 // add prepend characters
-export const prepend = prepend => input => {
-  return prepend + ' ' + input
+export const prepend = (prepend) => input => {
+  return prepend + space + input
 }
 
 export const glue = (...strings) => {

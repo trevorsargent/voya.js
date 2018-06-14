@@ -20,7 +20,7 @@ export const filterEmpty = (input) => {
 }
 
 // adds an item a hash
-export const hashAdd = (string, hash) => {
+export const hashAdd = (hash, string) => {
   if (string in hash) {
     hash[string]++
   } else {
@@ -30,7 +30,7 @@ export const hashAdd = (string, hash) => {
 }
 
 // removes an item from a hash
-export const hashRemove = (string, hash) => {
+export const hashRemove = (hash, string) => {
   if (string in hash) {
     hash[string]--
     if (hash[string] <= 0) {
@@ -38,6 +38,13 @@ export const hashRemove = (string, hash) => {
     }
   }
   return hash
+}
+
+export const hashHasItems = (hash) => {
+  const sum = Object
+    .values(hash)
+    .reduce((a, b) => a + b, 0)
+  return sum > 0
 }
 
 export const findPlaceFromName = (placeName, places) => {

@@ -5,13 +5,14 @@ import { sanitizeBasic, filterEmpty } from './lib/operative'
 import { settings } from '../roms/carnival.json'
 import { prepend } from './lib/narative.js'
 
-// IO Streams
 export const input$ = _()
 export const output$ = _()
   .filter(filterEmpty)
 
 const act = (action) => {
   switch (action.type) {
+    case Action.type.EMPTY:
+      break
     case Action.type.HELP:
       output$.write(State.help())
       break
@@ -19,12 +20,22 @@ const act = (action) => {
       output$.write(State.describePlayerLocation())
       break
     case Action.type.INVENTORY:
-      output$.write(State.describeInventory())
+      output$.write(State.inventory())
+      break
+    case Action.type.ITEMS:
+      output$.write(State.items())
       break
     case Action.type.MOVE:
-      output$.write(State.attemptMove(action.subject))
-      output$.write(State.describePlayerLocation())
+      output$.write(State.move(action.subject))
       break
+    case Action.type.TAKE:
+      output$.write(State.take(action.subject))
+      break
+    case Action.type.DROP:
+      output$.write(State.drop(action.subject))
+      break
+    case Action.type.ERROR:
+      output$.write(State.inputError())
   }
 }
 
