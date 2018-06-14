@@ -44,3 +44,14 @@ export const addArticle = string => {
 export const prepend = prepend => input => {
   return prepend + ' ' + input
 }
+
+export const glue = (...strings) => {
+  let toReturn = ''
+  strings.forEach((x, i) => {
+    if (i !== 0) {
+      toReturn += '\n\n'
+    }
+    toReturn += x
+  })
+  return toReturn
+}

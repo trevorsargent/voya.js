@@ -4,9 +4,7 @@
     "background-url": "http://unsplash.com/photos/n5LtC0L04To/download?force=true",
     "prepend": ">>"
   },
-  "player": {
-    "name": "Mort",
-    "age": 21,
+  "defaultPlayer": {
     "height": 172,
     "pockets": {
       "coin": 6,
@@ -17,7 +15,7 @@
       "lamp": 1
     },
     "settings": {
-      "startingPlace": "parkingLot",
+      "startingPlace": "parking lot",
       "lamps": [
         "flashlight",
         "torch",
@@ -187,14 +185,14 @@
       "above": "southStairsTop",
       "ahead": "entryHall",
       "settings": {
-        "isLit": false
+        "isDark": true
       }
     },
     "entryHall": {
       "name": "entrance hall",
       "ahead": "antiChamber",
       "settings": {
-        "isLit": false
+        "isDark": true
       },
       "newText": "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you"
     },
@@ -203,7 +201,7 @@
       "behind": "entryHall",
       "ahead": "mainHall",
       "settings": {
-        "isLit": false
+        "isDark": true
       }
     },
     "mainHall": {
@@ -213,21 +211,21 @@
       "left": "westWing",
       "right": "eastWing",
       "settings": {
-        "isLit": false
+        "isDark": true
       }
     },
     "eastWing": {
       "name": "east wing",
       "behind": "mainHall",
       "settings": {
-        "isLit": false
+        "isDark": true
       }
     },
     "westWing": {
       "name": "west wing",
       "behind": "mainHall",
       "settings": {
-        "isLit": false
+        "isDark": true
       },
       "objects": {
         "sword": 1,
@@ -241,7 +239,7 @@
       "behind": "mainHall",
       "above": "northStairsTop",
       "settings": {
-        "isLit": false,
+        "isDark": true,
         "canClimb": true
       }
     },

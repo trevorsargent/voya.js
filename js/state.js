@@ -1,14 +1,19 @@
-import { places, messages } from '../roms/carnival.json'
-import { describeNeighborhood, describeHash } from './lib/narative'
+import { places, messages, defaultPlayer } from '../roms/carnival.json'
+import { describeNeighborhood, describeHash, glue } from './lib/narative'
 import { findPlaceFromName } from './lib/operative'
 
 let player = {
-  currentLocation: findPlaceFromName('parking lot', places),
+  currentLocation: findPlaceFromName(defaultPlayer.settings.startingPlace, places),
+  height: defaultPlayer.height,
+  pockets: defaultPlayer.pockets,
   locationHistory: []
 }
 
 export const describePlayerLocation = () => {
-  return describeNeighborhood(player.currentLocation, places)
+  return glue(
+    describeNeighborhood(player.currentLocation, places),
+    describeNewPlayerLocation()
+  )
 }
 
 export const help = () => {
@@ -20,9 +25,12 @@ export const describeInventory = () => {
 }
 
 export const describeNewPlayerLocation = () => {
-  if (player.locationHistory.indexOf(player.currentLocation.name) > -1) {
-    return player.currentLocation.messages.newText || ''
+  if (player.locationHistory.indexOf(player.currentLocation.name) === -1) {
+    if (player.currentLocation.messages) {
+      return player.currentLocation.messages.newText || ''
+    }
   }
+  return ''
 }
 
 export const attemptMove = (placeName) => {
@@ -30,7 +38,7 @@ export const attemptMove = (placeName) => {
   if (place === undefined) {
     return messages.moveError
   } else {
-    player.locationHistory.push(place.name)
+    player.locationHistory.push(player.currentLocation.name)
     player.currentLocation = place
     return messages.moveMessage + place.name
   }

@@ -24,7 +24,6 @@ const act = (action) => {
     case Action.type.MOVE:
       output$.write(State.attemptMove(action.subject))
       output$.write(State.describePlayerLocation())
-      output$.write(State.describeNewPlayerLocation())
       break
   }
 }

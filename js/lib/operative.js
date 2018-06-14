@@ -47,15 +47,3 @@ export const findPlaceFromName = (placeName, places) => {
     }
   }
 }
-
-export const applyDefaults = (place, base) => {
-  place.settings = place.settings || {}
-  place.settings.beenHere = place.settings.beenHere || base.settings.beenHere
-  place.settings.isLocked = place.settings.isLocked || base.settings.isLocked
-  place.settings.isLit = place.settings.isLit || base.settings.isLit
-  place.messages = place.messages || {}
-  place.messages.newText = place.messages.newText || ''
-  place.objects = place.objects || {}
-  place.exchanges = place.exchanges || {}
-  return place
-}
