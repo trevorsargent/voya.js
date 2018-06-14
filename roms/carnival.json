@@ -55,9 +55,6 @@
     "parkingLot": {
       "name": "parking lot",
       "ahead": "ticketEntrance",
-      "messages": {
-        "newText": "yikes. is that a knife over there?"
-      },
       "objects": {
         "knife": 1
       },

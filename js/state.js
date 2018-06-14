@@ -1,12 +1,17 @@
 import { places, messages, defaultPlayer } from '../roms/carnival.json'
 import { describeNeighborhood, describeHash, glue, addArticle } from './lib/narative'
 import { findPlaceFromName, hashRemove, hashAdd, hashHasItems } from './lib/operative'
+import { locationIsAccessable } from './lib/logic'
 
 let player = {
   currentLocation: findPlaceFromName(defaultPlayer.settings.startingPlace, places),
   height: defaultPlayer.height,
   pockets: defaultPlayer.pockets,
   locationHistory: []
+}
+
+export const welcome = () => {
+  return messages.welcomeText
 }
 
 export const describePlayerLocation = () => {
@@ -40,7 +45,7 @@ export const describeNewPlayerLocation = () => {
 
 export const move = (placeName) => {
   const place = findPlaceFromName(placeName, places)
-  if (place === undefined) {
+  if (!locationIsAccessable(places, player.currentLocation, place)) {
     return messages.moveError
   }
 

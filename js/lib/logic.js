@@ -12,26 +12,26 @@ export const canSee = player => {
 }
 
 // returns whether a place is accessabel from another place
-export const locationIsAccessable = (player, dest) => {
+export const locationIsAccessable = (places, current, dest) => {
   if (dest === undefined) {
     return false
   }
-  if (player.currentLocation.ahead === dest) {
+  if (places[current.ahead] === dest) {
     return true
   }
-  if (player.currentLocation.behind === dest) {
+  if (places[current.behind] === dest) {
     return true
   }
-  if (player.currentLocation.right === dest) {
+  if (places[current.right] === dest) {
     return true
   }
-  if (player.currentLocation.left === dest) {
+  if (places[current.left] === dest) {
     return true
   }
-  if (player.currentLocation.above === dest) {
+  if (places[current.above] === dest) {
     return true
   }
-  if (player.currentLocation.below === dest) {
+  if (places[current.below] === dest) {
     return true
   }
   return false

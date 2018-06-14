@@ -54,3 +54,5 @@ input$
   .map(sanitizeBasic)
   .map(Action.build)
   .each(act)
+
+output$.write(State.welcome())
