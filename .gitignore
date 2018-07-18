@@ -2,3 +2,4 @@
 js/ga-script.js
 node_modules/
 .cache
+_serve
