@@ -1,5 +1,4 @@
-_site/
 .DS_Store
 js/ga-script.js
 node_modules/
-.vscode
+.cache

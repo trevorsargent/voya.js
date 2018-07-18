@@ -5,12 +5,12 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "start": "webpack-serve"
+    "build": "parcel build index.html",
+    "start": "parcel index.html"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LineWeight/voya.js.git"
+    "url": "git+https://github.com/trevorsargent/voya.js.git"
   },
   "keywords": [
     "text-adventure",
@@ -19,26 +19,17 @@
   "author": "Trevor Sargent",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LineWeight/voya.js/issues"
+    "url": "https://github.com/trevorsargent/voya.js/issues"
   },
-  "homepage": "https://github.com/LineWeight/voya.js#readme",
+  "homepage": "https://github.com/trevorsargent/voya.js#readme",
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.4",
-    "babel-preset-es2015": "^6.24.1",
+    "cssnano": "^4.0.3",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.12.0",
+    "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "highland": "^2.13.0",
-    "webpack": "^4.12.0",
-    "webpack-cli": "^3.0.4",
-    "webpack-dev-server": "^3.1.4",
-    "webpack-serve": "^1.0.4"
-  },
-  "dependencies": {
-    "lodash": "^4.17.10"
+    "highland": "^2.13.0"
   }
 }
