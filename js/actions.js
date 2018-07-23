@@ -60,6 +60,13 @@ export const build = string => {
       subject: string
     }
   }
+  if (string.indexOf('exchange') > -1) {
+    string = sanitize('exchange')(string)
+    return {
+      type: type.EXCHANGE,
+      subject: string
+    }
+  }
   return {
     type: type.ERROR
   }

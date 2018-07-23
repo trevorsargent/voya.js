@@ -38,6 +38,13 @@ export const prepend = (prepend) => input => {
   return prepend + space + input
 }
 
+export const templateString = (string, ...inputs) => {
+  inputs.forEach((x, i) => {
+    string = string.replace('$INPUT' + i, x)
+  })
+  return string
+}
+
 export const glue = (...strings) => {
   let toReturn = ''
   strings.forEach((x, i) => {

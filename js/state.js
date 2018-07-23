@@ -1,5 +1,5 @@
 import { places, messages, defaultPlayer } from '../roms/carnival.json'
-import { describeNeighborhood, describeHash, glue, addArticle } from './lib/narative'
+import { describeNeighborhood, describeHash, glue, addArticle, templateString } from './lib/narative'
 import { findPlaceFromName, hashRemove, hashAdd, hashHasItems } from './lib/operative'
 import { locationIsAccessable, hasPassiveAccess } from './lib/logic'
 
@@ -87,6 +87,18 @@ export const take = (item) => {
     return messages.takeSuccess + addArticle(item)
   }
   return messages.takeError + addArticle(item)
+}
+
+export const exchange = item => {
+  console.log("we're getting to here")
+  player.currentLocation.exchanges = player.currentLocation.exchanges || {}
+  if (item in player.currentLocation.exchanges) {
+    const newItem = player.currentLocation.exchanges[item]
+    hashAdd(player.pockets, newItem)
+    hashRemove(player.pockets, item)
+    return templateString(messages.exchangeSuccess, item, newItem)
+  }
+  return messages.exchangeFailure
 }
 
 export const inputError = () => {

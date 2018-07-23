@@ -34,6 +34,9 @@ const act = (action) => {
     case Action.type.DROP:
       output$.write(State.drop(action.subject))
       break
+    case Action.type.EXCHANGE:
+      output$.write(State.exchange(action.subject))
+      break
     case Action.type.ERROR:
       output$.write(State.inputError())
   }
