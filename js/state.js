@@ -91,7 +91,6 @@ export const take = (item) => {
 }
 
 export const exchange = item => {
-  console.log("we're getting to here")
   player.currentLocation.exchanges = player.currentLocation.exchanges || {}
   if (item in player.currentLocation.exchanges) {
     const newItem = player.currentLocation.exchanges[item]
