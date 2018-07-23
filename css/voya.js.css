@@ -40,7 +40,9 @@ body{
 	right: 75px;
 	left: 75px;
 	padding: 17px 0;
-	border-top: 1px solid white;
+  border-top: 1px solid white;
+  backdrop-filter: blur(10px);
+  background: rgba(0,0,0,.6);
 }
 
 form{

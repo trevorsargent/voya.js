@@ -48,5 +48,5 @@ output$.each(x => {
   logText(x)
 
   // scroll the window up to accomodate for new text
-  smoothScrollWindow(100)
+  smoothScrollWindow(500)
 })
