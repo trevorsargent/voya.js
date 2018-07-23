@@ -41,10 +41,8 @@ export const prepend = (prepend) => input => {
 export const glue = (...strings) => {
   let toReturn = ''
   strings.forEach((x, i) => {
-    if (i !== 0) {
-      toReturn += '\n\n'
-    }
+    toReturn += '\n\n'
     toReturn += x
   })
-  return toReturn
+  return toReturn.trim()
 }
