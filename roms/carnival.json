@@ -80,14 +80,11 @@
       "left": "lawn",
       "right": "arcade",
       "settings": {
-        "isLocked": true,
-        "leaveUnlocked": true,
-        "key": "ticket"
+        "passiveKey": "ticket"
       },
       "messages": {
-        "locked": "a ticket is required for entry.\n",
-        "successEntryGranted": "you use your ticket to enter.\n",
-        "unlock": "thanks for visiting the carnival - enjoy your stay"
+        "passiveKeyFailure": "a ticket is required for entry.\n",
+        "passiveKeySuccess": "you use your ticket to enter.\nthanks for visiting the carnival - enjoy your stay"
       }
     },
     "ferrisWheel": {

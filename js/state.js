@@ -1,7 +1,7 @@
 import { places, messages, defaultPlayer } from '../roms/carnival.json'
 import { describeNeighborhood, describeHash, glue, addArticle } from './lib/narative'
 import { findPlaceFromName, hashRemove, hashAdd, hashHasItems } from './lib/operative'
-import { locationIsAccessable } from './lib/logic'
+import { locationIsAccessable, hasPassiveAccess } from './lib/logic'
 
 let player = {
   currentLocation: findPlaceFromName(defaultPlayer.settings.startingPlace, places),
@@ -44,14 +44,25 @@ export const describeNewPlayerLocation = () => {
 }
 
 export const move = (placeName) => {
+  let neededPassiveKey = false
   const place = findPlaceFromName(placeName, places)
   if (!locationIsAccessable(places, player.currentLocation, place)) {
     return messages.moveError
   }
 
+  place.settings = place.settings || {}
+  if (place.settings.passiveKey) {
+    if (hasPassiveAccess(place, player)) {
+      neededPassiveKey = true
+    }
+    return place.messages.passiveKeyFailure
+  }
+
   player.locationHistory.push(player.currentLocation.name)
+
   player.currentLocation = place
   return glue(
+    neededPassiveKey ? place.messages.passiveKeySuccess : '',
     messages.moveMessage + place.name,
     describePlayerLocation(),
     describeNewPlayerLocation()
@@ -80,4 +91,8 @@ export const take = (item) => {
 
 export const inputError = () => {
   return messages.commandInvalid
+}
+
+export const unlock = () => {
+  player.currentLocation.isLocked = false
 }

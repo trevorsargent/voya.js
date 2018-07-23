@@ -36,3 +36,6 @@ export const locationIsAccessable = (places, current, dest) => {
   }
   return false
 }
+
+export const hasPassiveAccess = (dest, player) =>
+  dest.settings.passiveKey in player.pockets
