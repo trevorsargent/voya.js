@@ -54,8 +54,9 @@ export const move = (placeName) => {
   if (place.settings.passiveKey) {
     if (hasPassiveAccess(place, player)) {
       neededPassiveKey = true
+    } else {
+      return place.messages.passiveKeyFailure
     }
-    return place.messages.passiveKeyFailure
   }
 
   player.locationHistory.push(player.currentLocation.name)
