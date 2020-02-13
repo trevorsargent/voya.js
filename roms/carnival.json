@@ -6,14 +6,44 @@
   },
   "defaultPlayer": {
     "height": 172,
-    "pockets": {
-      "coin": 6,
-      "dollar": 5,
-      "pocket watch": 1,
-      "wrench": 1,
-      "flashlight": 1,
-      "lamp": 1
-    },
+    "pockets": [
+      {
+        "item": {
+          "name": "coin"
+        },
+        "quantity": 6
+      },
+      {
+        "item": {
+          "name": "dollar"
+        },
+        "quantity": 5
+      },
+      {
+        "item": {
+          "name": "pocket watch"
+        },
+        "quantity": 1
+      },
+      {
+        "item": {
+          "name": "wrench"
+        },
+        "quantity": 1
+      },
+      {
+        "item": {
+          "name": "flashlight"
+        },
+        "quantity": 1
+      },
+      {
+        "item": {
+          "name": "lamp"
+        },
+        "quantity": 1
+      }
+    ],
     "settings": {
       "startingPlace": "parking lot",
       "lamps": [
@@ -52,34 +82,37 @@
     "exchangeFailure": "there's no exchange for that",
     "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n\n there are lots of fun things here\n enjoy yourself. we demand it."
   },
-  "places": {
-    "parkingLot": {
+  "places": [
+    {
+      "id": "parking-lot",
       "name": "parking lot",
-      "ahead": "ticketEntrance",
+      "ahead": "ticket-entrance",
       "objects": {
         "knife": 1
       },
       "settings": {}
     },
-    "ticketEntrance": {
+    {
+      "id": "ticket-entrance",
       "name": "ticket entrance",
       "ahead": "mainSquare",
       "behind": "parkingLot",
-      "messages": {
-        "newText": "god this place is run down..."
-      },
+      "text": [
+        "god this place is run down..."
+      ],
       "exchanges": {
         "dollar": "ticket",
         "coin": "token"
       },
       "objects": {}
     },
-    "mainSquare": {
+    {
+      "id": "main-square",
       "name": "main square",
-      "behind": "ticketEntrance",
-      "ahead": "ferrisWheel",
+      "behind": "ticket-entrance",
+      "ahead": "ferris-wheel",
       "left": "lawn",
-      "right": "arcade",
+      "right": "arcade-entrance",
       "settings": {
         "passiveKey": "ticket"
       },
@@ -88,7 +121,8 @@
         "passiveKeySuccess": "you use your ticket to enter.\nthanks for visiting the carnival - enjoy your stay"
       }
     },
-    "ferrisWheel": {
+    {
+      "id": "ferris-wheel",
       "name": "ferris wheel",
       "behind": "mainSquare",
       "below": "sourthStairsTop",
@@ -97,28 +131,32 @@
       },
       "rideText": "wow the view is great from up here. make sure you don't drop anything..."
     },
-    "lawn": {
+    {
+      "id": "lawn",
       "name": "lawn",
       "behind": "mainSquare",
       "ahead": "cottonCandy",
       "left": "cornDogs",
       "right": "tiltaWhirl"
     },
-    "cottonCandy": {
+    {
+      "id": "cotton-candy-stand",
       "name": "cotton candy stand",
       "behind": "lawn",
       "objects": {
         "cotton candy": 1
       }
     },
-    "cornDogs": {
+    {
+      "id": "corn-dog-stand",
       "name": "corn dog stand",
       "behind": "lawn",
       "objects": {
         "corn dog": 1
       }
     },
-    "tiltaWhirl": {
+    {
+      "id": "tilt-a-whirl",
       "name": "tilt-a-whirl",
       "behind": "lawn",
       "settings": {
@@ -128,14 +166,16 @@
         "rideText": "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick"
       }
     },
-    "arcade": {
+    {
+      "id": "arcade-entrance",
       "name": "arcade entrance",
       "behind": "mainSquare",
       "ahead": "whackaMole",
       "left": "skeeBall",
       "right": "pinBall"
     },
-    "whackaMole": {
+    {
+      "id": "whack-a-mole",
       "name": "whack-a-mole",
       "behind": "arcade",
       "settings": {
@@ -146,7 +186,8 @@
         "playText": "whack...whack... wow you're good at this."
       }
     },
-    "skeeBall": {
+    {
+      "id": "skeeball",
       "name": "skeeball",
       "behind": "arcade",
       "settings": {
@@ -157,7 +198,8 @@
         "playText": "fwoomp. crack. boink. clunk. ding ding ding!"
       }
     },
-    "pinBall": {
+    {
+      "id": "pinball",
       "name": "pinball",
       "behind": "arcade",
       "settings": {
@@ -168,7 +210,7 @@
         "playText": "fwap. fwap. zing. broing. shatchatchatchatcha. dinnnng dinnng!"
       }
     },
-    "southStairsTop": {
+    {
       "name": "the top of the south stairs",
       "above": "ferrisWheel",
       "below": "southStairsBottom",
@@ -176,7 +218,7 @@
         "canClimb": true
       }
     },
-    "southStairsBottom": {
+    {
       "name": "the bottom of the south stairs",
       "above": "southStairsTop",
       "ahead": "entryHall",
@@ -184,7 +226,7 @@
         "isDark": true
       }
     },
-    "entryHall": {
+    {
       "name": "entrance hall",
       "ahead": "antiChamber",
       "settings": {
@@ -192,7 +234,7 @@
       },
       "newText": "just as you turn to look about, there's a low rumbling, and the doorway through which you just entered has vanished. there is no coming back the way you came. god hope you have your ticket with you"
     },
-    "antiChamber": {
+    {
       "name": "antichamber",
       "behind": "entryHall",
       "ahead": "mainHall",
@@ -200,7 +242,7 @@
         "isDark": true
       }
     },
-    "mainHall": {
+    {
       "name": "main hall",
       "behind": "antiChamber",
       "ahead": "northStairsBottom",
@@ -210,14 +252,14 @@
         "isDark": true
       }
     },
-    "eastWing": {
+    {
       "name": "east wing",
       "behind": "mainHall",
       "settings": {
         "isDark": true
       }
     },
-    "westWing": {
+    {
       "name": "west wing",
       "behind": "mainHall",
       "settings": {
@@ -230,7 +272,7 @@
         "broken chair": 1
       }
     },
-    "northStairsBottom": {
+    {
       "name": "bottom of the north stairs",
       "behind": "mainHall",
       "above": "northStairsTop",
@@ -239,7 +281,7 @@
         "canClimb": true
       }
     },
-    "northStairsTop": {
+    {
       "newText": "climb ",
       "name": "top of the north stairs",
       "below": "northStairsBottom",
@@ -248,14 +290,51 @@
         "canClimb": true
       }
     },
-    "owlry": {
+    {
       "name": "owlry",
       "behind": "northStairsTop",
       "left": "balcony"
     },
-    "balcony": {
+    {
       "name": "balcony",
       "behind": "owlry"
     }
-  }
+  ],
+
+
+  // EXAMPLE OF NEW PLACE STRUCTURE
+  "newPlaces": [
+    {
+      "id": "the-beginning", // no spaces all lower case (kebab-case (: ) 
+      "name": "The Beginning", // title case
+      "connections": [
+        {
+          "link": "archway",
+          "place": "the-next", // the id of the place it connects to
+        }
+      ],
+      "items": [ //an array of stacks
+        {
+          "item": {
+            "id": "hammer", // id of object (uniquely identifies the object)
+            "name": "The Hammer"
+          },
+          "quantity": 2
+        },
+        {
+          "item": {
+            "id": "nail",
+            "name": "Nail"
+          },
+          "quantity": 59
+        }
+      ],
+      "settings": {
+        "lit": true,
+        "isGame": false,
+        "isLocked": false,
+        "passiveKey": "hammer"
+      }
+    }
+  ]
 }

@@ -19,16 +19,17 @@ export interface Action {
 type ID = string
 
 export interface Place {
-  settings: PlaceSettings;
   id: ID;
   name: string
   connections: PlaceConnection[]
-  items: Item[]
+  items: Stack[]
+  settings: PlaceSettings;
 }
 
 export interface PlaceSettings{
   lit: boolean
   isGame: boolean
+  isLocked: boolean
   passiveKey?: Item
 }
 

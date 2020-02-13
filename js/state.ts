@@ -1,75 +1,15 @@
-import * as rom from '../roms/carnival.json'
+import { messages, commands, defaultPlayer, places, settings} from '../roms/carnival.json'
 import { locationIsAccessable, hasPassiveAccess } from './lib/logic'
 import { findPlaceFromName, hashHasItems, setAdd } from './lib/operative'
 import { describeNeighborhood, glue, addArticle, templateString } from './lib/narative'
 import { Player, Place, PlaceConnection } from './lib/types.js'
 
-const places: Place[] = Object.entries(rom.places).map((pk, _, pks) => ({
-  name: pk[1].name, 
-  connections: [{
-    link: 'ahead', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].ahead)?.[1].name
-    } as Place
-  },
-  {
-    link: 'behind', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].behind)?.[1].name
-    } as Place
-    },
-  {
-    link: 'left', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].left)?.[1].name
-    } as Place
-    },
-  {
-    link: 'right', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].right)?.[1].name
-    } as Place
-    },
-  {
-    link: 'above', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].above)?.[1].name
-    } as Place
-    },
-  {
-    link: 'below', 
-    place: {
-      name: pks.find(k => k[0] === pk[1].below)?.[1].name
-    } as Place
-  }, ],
-  id: pk[1].name.replace(' ', '-').toLowerCase(), 
-  items: [
-  ],
-  settings: {
-    isGame: pk[1].settings?.isGame,
-    lit: !pk[1].settings?.isDark
-  }
-} as Place)).map((place, _, pls) => ({
-  ...place, 
-  connections: place.connections.map(con => ({
-    link: con.link, 
-    place: pls.find(pl => pl.name === con.place.name)
-  } as PlaceConnection))
-}))
-
 let player: Player = {
-  location: places.find(pl =>
-    (Object.entries(rom.places).find(pk =>
-      pk[0] === rom.defaultPlayer.settings.startingPlace)[1].name === pl.name)),
-  height: rom.defaultPlayer.height as number,
-  pockets: Reflect.ownKeys(rom.defaultPlayer.pockets).map(i => ({
-    item: {
-      name: i as string,
-    },
-    quantity: (rom.defaultPlayer.pockets[i] as number)
-  })),
+  location: {} as Place,
+  height: defaultPlayer.height as number,
+  pockets: defaultPlayer.pockets,
   settings: {
-    lamps: defaultPlayer.settings.lamps.map(i => ({ name: i }))
+    lamps: []
   }
 }
 
@@ -169,5 +109,5 @@ export const inputError = () => {
 }
 
 export const unlock = () => {
-  player.currentLocation.isLocked = false
+  player.location.settings.isLocked = false
 }
