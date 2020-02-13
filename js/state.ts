@@ -1,8 +1,8 @@
-import { messages, commands, defaultPlayer, places, settings} from '../roms/carnival.json'
+import { messages, commands, defaultPlayer, places, settings } from '../roms/carnival.json'
 import { locationIsAccessable, hasPassiveAccess } from './lib/logic'
-import { findPlaceFromName, hashHasItems, setAdd } from './lib/operative'
-import { describeNeighborhood, glue, addArticle, templateString } from './lib/narative'
-import { Player, Place, PlaceConnection } from './lib/types.js'
+import { findPlaceFromName, hashHasItems, setAdd, setRemove } from './lib/operative'
+import { describeNeighborhood, glue, addArticle, templateString, describeSet } from './lib/narative'
+import { Player, Place, Item } from './lib/types.js'
 
 let player: Player = {
   location: {} as Place,
@@ -10,7 +10,8 @@ let player: Player = {
   pockets: defaultPlayer.pockets,
   settings: {
     lamps: []
-  }
+  },
+  locationHistory: new Set<Place>()
 }
 
 export const welcome = () => {
@@ -26,83 +27,70 @@ export const help = () => {
 }
 
 export const inventory = () => {
-  return describeHash(player.pockets)
+  return describeSet(player.pockets)
 }
 
 export const items = () => {
-  player.currentLocation.items = player.currentLocation.items || {}
-  if (hashHasItems(player.currentLocation.items)) {
-    return describeHash(player.currentLocation.items)
+  player.location.items = player.location.items || {}
+  if (hashHasItems(player.location.items)) {
+    return describeSet(player.location.items)
   }
   return messages.itemsError
 }
 
 export const describeNewPlayerLocation = () => {
-  if (player.locationHistory.indexOf(player.currentLocation.name) === -1) {
-    if (player.currentLocation.messages) {
-      return player.currentLocation.messages.newText || ''
+  if (player.locationHistory.has(player.location)) {
+    if (player.location) {
+      return player.location.text[0]
     }
   }
   return ''
 }
 
-export const move = (placeName) => {
+export const move = (place: Place) => {
   let neededPassiveKey = false
-  const place = findPlaceFromName(placeName, places)
-  if (!locationIsAccessable(places, player.currentLocation, place)) {
+  if (!locationIsAccessable(player.location, place)) {
     return messages.moveError
   }
 
-  place.settings = place.settings || {}
-  if (place.settings.passiveKey) {
-    if (hasPassiveAccess(place, player)) {
-      neededPassiveKey = true
-    } else {
-      return place.messages.passiveKeyFailure
-    }
-  }
+  player.locationHistory.add(player.location)
 
-  player.locationHistory.push(player.currentLocation.name)
-
-  player.currentLocation = place
+  player.location = place
   return glue(
-    neededPassiveKey ? place.messages.passiveKeySuccess : '',
     messages.moveMessage + place.name,
     describePlayerLocation(),
     describeNewPlayerLocation()
   )
 }
 
-export const drop = (item) => {
-  player.currentLocation.items = player.currentLocation.items || {}
-  if (item in player.pockets) {
-    hashRemove(player.pockets, item)
-    setAdd(player.currentLocation.items, item)
-    return messages.dropSuccess + addArticle(item)
+export const drop = (item: Item) => {
+  if (player.pockets.find(stack => stack.item.id === item.id)) {
+    setRemove(player.pockets, item)
+    setAdd(player.location.items, item)
+    return messages.dropSuccess + addArticle(item.name)
   }
-  return messages.dropError + addArticle(item)
+  return messages.dropError + addArticle(item.name)
 }
 
-export const take = (item) => {
-  player.currentLocation.items = player.currentLocation.items || {}
-  if (item in player.currentLocation.items) {
+export const take = (item: Item) => {
+  if (player.location.items.find(stack => stack.item.id === item.id)) {
     setAdd(player.pockets, item)
-    hashRemove(player.currentLocation.items, item)
-    return messages.takeSuccess + addArticle(item)
+    setRemove(player.location.items, item)
+    return messages.takeSuccess + addArticle(item.name)
   }
-  return messages.takeError + addArticle(item)
+  return messages.takeError + addArticle(item.name)
 }
 
-export const exchange = item => {
-  player.currentLocation.exchanges = player.currentLocation.exchanges || {}
-  if (item in player.currentLocation.exchanges) {
-    const newItem = player.currentLocation.exchanges[item]
-    setAdd(player.pockets, newItem)
-    hashRemove(player.pockets, item)
-    return templateString(messages.exchangeSuccess, item, newItem)
-  }
-  return messages.exchangeFailure
-}
+// export const exchange = (item: Item) => {
+//   player.location.exchanges = player.currentLocation.exchanges || {}
+//   if (item in player.currentLocation.exchanges) {
+//     const newItem = player.currentLocation.exchanges[item]
+//     setAdd(player.pockets, newItem)
+//     hashRemove(player.pockets, item)
+//     return templateString(messages.exchangeSuccess, item, newItem)
+//   }
+//   return messages.exchangeFailure
+// }
 
 export const inputError = () => {
   return messages.commandInvalid

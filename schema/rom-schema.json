@@ -1,0 +1,269 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$ref": "#/definitions/Rom",
+	"definitions": {
+		"Rom": {
+			"type": "object",
+			"properties": {
+				"settings": {
+					"$ref": "#/definitions/RomSettings"
+				},
+				"defaultPlayer": {
+					"$ref": "#/definitions/Player"
+				},
+				"places": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Place"
+					}
+				},
+				"items": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Item"
+					}
+				},
+				"commands": {
+					"$ref": "#/definitions/CommandSet"
+				}
+			},
+			"required": [
+				"settings",
+				"defaultPlayer",
+				"places",
+				"items",
+				"commands"
+			],
+			"additionalProperties": false
+		},
+		"RomSettings": {
+			"type": "object",
+			"properties": {
+				"title": {
+					"type": "string"
+				},
+				"backgroundUrl": {
+					"type": "string"
+				},
+				"prepend": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"title"
+			],
+			"additionalProperties": false
+		},
+		"Player": {
+			"type": "object",
+			"properties": {
+				"pockets": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Stack"
+					}
+				},
+				"height": {
+					"type": "number"
+				},
+				"location": {
+					"$ref": "#/definitions/Place"
+				},
+				"locationHistory": {
+					"type": "object",
+					"properties": {
+						"size": {
+							"type": "number"
+						}
+					},
+					"required": [
+						"size"
+					],
+					"additionalProperties": false
+				},
+				"settings": {
+					"$ref": "#/definitions/PlayerSettings"
+				}
+			},
+			"required": [
+				"pockets",
+				"height",
+				"location",
+				"locationHistory",
+				"settings"
+			],
+			"additionalProperties": false
+		},
+		"Stack": {
+			"type": "object",
+			"properties": {
+				"item": {
+					"$ref": "#/definitions/Item"
+				},
+				"quantity": {
+					"type": "number"
+				}
+			},
+			"required": [
+				"item",
+				"quantity"
+			],
+			"additionalProperties": false
+		},
+		"Item": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"id",
+				"name"
+			],
+			"additionalProperties": false
+		},
+		"Place": {
+			"type": "object",
+			"properties": {
+				"id": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"links": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Link"
+					}
+				},
+				"items": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/Stack"
+					}
+				},
+				"settings": {
+					"$ref": "#/definitions/PlaceSettings"
+				},
+				"text": {
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			},
+			"required": [
+				"id",
+				"name",
+				"links",
+				"items",
+				"settings",
+				"text"
+			],
+			"additionalProperties": false
+		},
+		"Link": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string"
+				},
+				"settings": {
+					"$ref": "#/definitions/LinkSettings"
+				},
+				"place": {
+					"$ref": "#/definitions/Place"
+				}
+			},
+			"required": [
+				"name",
+				"settings",
+				"place"
+			],
+			"additionalProperties": false
+		},
+		"LinkSettings": {
+			"type": "object",
+			"properties": {
+				"locked": {
+					"type": "boolean"
+				},
+				"key": {
+					"$ref": "#/definitions/Item"
+				}
+			},
+			"required": [
+				"locked",
+				"key"
+			],
+			"additionalProperties": false
+		},
+		"PlaceSettings": {
+			"type": "object",
+			"properties": {
+				"lit": {
+					"type": "boolean"
+				},
+				"isGame": {
+					"type": "boolean"
+				},
+				"isLocked": {
+					"type": "boolean"
+				},
+				"passiveKey": {
+					"$ref": "#/definitions/Item"
+				}
+			},
+			"additionalProperties": false
+		},
+		"PlayerSettings": {
+			"type": "object",
+			"additionalProperties": false
+		},
+		"CommandSet": {
+			"type": "object",
+			"properties": {
+				"move": {
+					"type": "string"
+				},
+				"observe": {
+					"type": "string"
+				},
+				"inventory": {
+					"type": "string"
+				},
+				"take": {
+					"type": "string"
+				},
+				"drop": {
+					"type": "string"
+				},
+				"perceive": {
+					"type": "string"
+				},
+				"help": {
+					"type": "string"
+				},
+				"use": {
+					"type": "string"
+				}
+			},
+			"required": [
+				"move",
+				"observe",
+				"inventory",
+				"take",
+				"drop",
+				"perceive",
+				"help",
+				"use"
+			],
+			"additionalProperties": false
+		}
+	}
+}
