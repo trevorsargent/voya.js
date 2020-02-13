@@ -1,73 +1,62 @@
 import { sanitize } from './lib/operative'
+import { ActionType, Action } from './lib/types'
 
-export const type = {
-  EMPTY: Symbol('empty'),
-  HELP: Symbol('help'),
-  OBSERVE: Symbol('observe'),
-  INVENTORY: Symbol('inventory'),
-  ITEMS: Symbol('stock'),
-  EXCHANGE: Symbol('exchange'),
-  MOVE: Symbol('move'),
-  TAKE: Symbol('take'),
-  DROP: Symbol('drop'),
-  ERROR: Symbol('error')
-}
-
-export const build = string => {
+export const build = (string: string): Action => {
   if (string === '') {
     return {
-      type: type.EMPTY
+      type: ActionType.EMPTY
     }
   }
   if (string.indexOf('help') > -1) {
     return {
-      type: type.HELP
+      type: ActionType.HELP
     }
   }
   if (string.indexOf('look around') > -1) {
     return {
-      type: type.OBSERVE
+      type: ActionType.OBSERVE
     }
   }
   if (string.indexOf('pockets') > -1) {
     return {
-      type: type.INVENTORY
+      type: ActionType.INVENTORY
     }
   }
   if (string.indexOf('items') > -1) {
     return {
-      type: type.ITEMS
+      type: ActionType.ITEMS
     }
   }
   if (string.indexOf('walk') > -1) {
     string = sanitize('walk')(string)
     return {
-      type: type.MOVE,
+      type: ActionType.MOVE,
       subject: string
     }
   }
   if (string.indexOf('take') > -1) {
     string = sanitize('take')(string)
     return {
-      type: type.TAKE,
+      type: ActionType.TAKE,
       subject: string
     }
   }
   if (string.indexOf('drop') > -1) {
     string = sanitize('drop')(string)
     return {
-      type: type.DROP,
+      type: ActionType.DROP,
       subject: string
     }
   }
   if (string.indexOf('exchange') > -1) {
     string = sanitize('exchange')(string)
     return {
-      type: type.EXCHANGE,
+      type: ActionType.EXCHANGE,
       subject: string
     }
   }
   return {
-    type: type.ERROR
+    type: ActionType.ERROR
   }
 }
+

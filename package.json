@@ -23,13 +23,19 @@
   },
   "homepage": "https://github.com/trevorsargent/voya.js#readme",
   "devDependencies": {
-    "cssnano": "^4.0.3",
+    "cssnano": "^4.1.10",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "highland": "^2.13.0"
+    "highland": "^2.13.5",
+    "parcel-bundler": "^1.12.4",
+    "rxjs": "^6.5.4",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "@types/highland": "^2.12.9"
   }
 }

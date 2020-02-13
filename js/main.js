@@ -1,4 +1,4 @@
-import { input$, output$ } from './engine.js'
+import { input$, output$ } from './engine'
 // import state from './state.js'
 // import { sanitize } from './lib/operative.js';
 
