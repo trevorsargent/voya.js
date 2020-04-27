@@ -1,11 +1,13 @@
 type ID = string
 
 export interface Rom {
+  output: string;
   settings: RomSettings
-  defaultPlayer: Player
+  player: Player
   places: Place[]
   items: Item[]
   commands: CommandSet
+  messages: MessageSet
 }
 
 export interface CommandSet {
@@ -17,6 +19,10 @@ export interface CommandSet {
   perceive: string
   help: string
   use: string
+}
+
+export interface MessageSet {
+
 }
 
 export interface Messages {
@@ -44,23 +50,12 @@ export interface RomSettings {
   prepend?: string
 }
 
-export enum ActionType {
-  EMPTY,
-  HELP,
-  OBSERVE,
-  INVENTORY,
-  ITEMS,
-  EXCHANGE,
-  MOVE,
-  TAKE,
-  DROP,
-  ERROR,
-}
 
-export interface Action {
-  type: ActionType,
-  subject?: string
-}
+
+// export interface Action {
+//   type: ActionType,
+//   subject?: string
+// }
 
 export interface Place {
   id: ID;
@@ -98,6 +93,11 @@ export interface LinkSettings {
 export interface Player {
   pockets: Stack[]
   height: number
+  /**
+   * The player's starting location
+   *
+   * @TJS-type string
+   */
   location: Place
   locationHistory: Set<Place>
   settings: PlayerSettings
@@ -109,9 +109,12 @@ export interface PlayerSettings {
 
 export interface Stack {
   /**
-     * @TJS-type ID
-     */
+   * @TJS-type string
+   */
   item: Item,
+  /**
+   * @minimum 0
+   */
   quantity: number
 }
 

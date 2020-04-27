@@ -1,0 +1,54 @@
+{
+	"settings": {
+		"prepend": ">>",
+		"title": "Mock"
+	},
+	"commands": {
+		"help": "help",
+		"drop": "drop",
+		"inventory": "pockets",
+		"move": "walk",
+		"observe": "look",
+		"take": "take",
+		"use": "use",
+		"perceive": "items"
+	},
+	"items": [
+		{
+			"id": "knife",
+			"name": "knife"
+		}
+	],
+	"places": [
+		{
+			"id": "parking-lot",
+			"name": "parking Lot",
+			"items": [
+				{
+					"item": "knife",
+					"quantity": 1
+				}
+			],
+			"settings": {},
+			"links": [
+				{
+					"name": "gate",
+					"settings": {},
+					"place": {}
+				}
+			]
+		}
+	],
+	"output": "Welcome to the feast",
+	"player": {
+		"height": 180,
+		"location": "parking-lot",
+		"pockets": [
+			{
+				"item": "knife",
+				"quantity": 1
+			}
+		],
+		"settings": {}
+	}
+}

@@ -1,4 +1,4 @@
-import { Place ,Player} from "./types"
+import { Place, Player } from "./types"
 
 // returns whether a player can currently see
 export const canSee = (player: Player) => {
@@ -16,7 +16,7 @@ export const canSee = (player: Player) => {
 
 // returns whether a place is accessabel from another place
 export const locationIsAccessable = (current: Place, dest: Place): boolean => {
-  return current.connections.some(con => con.place.name === dest.name)
+  return current.links.some(con => con.place.name === dest.name)
 }
 
 export const hasPassiveAccess = (dest: Place, player: Player) => {

@@ -1,73 +1,24 @@
-import { messages, commands, defaultPlayer, places, settings } from '../roms/carnival.json'
 import { locationIsAccessable, hasPassiveAccess } from './lib/logic'
 import { findPlaceFromName, hashHasItems, setAdd, setRemove } from './lib/operative'
-import { describeNeighborhood, glue, addArticle, templateString, describeSet } from './lib/narative'
+import { describeNeighborhood, addArticle, describeSet } from './lib/narative'
 import { Player, Place, Item } from './lib/types.js'
+import { Model } from './engine'
 
-let player: Player = {
-  location: {} as Place,
-  height: defaultPlayer.height as number,
-  pockets: defaultPlayer.pockets,
-  settings: {
-    lamps: []
-  },
-  locationHistory: new Set<Place>()
+export const describePlayerLocation = () => (model: Model) => {
+  return describeNeighborhood(model.player.location)
 }
 
-export const welcome = () => {
-  return messages.welcomeText
+export const inventory = () => (model: Model): string => {
+  return describeSet(model.player.pockets)
 }
 
-export const describePlayerLocation = () => {
-  return describeNeighborhood(player.location, places)
+export const items = () => (model: Model) => {
+  return describeSet(model.player.location.items)
 }
 
-export const help = () => {
-  return messages.helpText
-}
-
-export const inventory = () => {
-  return describeSet(player.pockets)
-}
-
-export const items = () => {
-  player.location.items = player.location.items || {}
-  if (hashHasItems(player.location.items)) {
-    return describeSet(player.location.items)
-  }
-  return messages.itemsError
-}
-
-export const describeNewPlayerLocation = () => {
-  if (player.locationHistory.has(player.location)) {
-    if (player.location) {
-      return player.location.text[0]
-    }
-  }
-  return ''
-}
-
-export const move = (place: Place) => {
-  let neededPassiveKey = false
-  if (!locationIsAccessable(player.location, place)) {
-    return messages.moveError
-  }
-
-  player.locationHistory.add(player.location)
-
-  player.location = place
-  return glue(
-    messages.moveMessage + place.name,
-    describePlayerLocation(),
-    describeNewPlayerLocation()
-  )
-}
-
-export const drop = (item: Item) => {
-  if (player.pockets.find(stack => stack.item.id === item.id)) {
-    setRemove(player.pockets, item)
-    setAdd(player.location.items, item)
-    return messages.dropSuccess + addArticle(item.name)
+export const drop = (item: Item) => (model: Model) => {
+  if (model.player.pockets.find(stack => stack.item.id === item.id)) {
+    return model.messages.dropSuccess + addArticle(item.name)
   }
   return messages.dropError + addArticle(item.name)
 }

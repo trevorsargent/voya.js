@@ -1,6 +1,5 @@
 import { input$, output$ } from './engine'
-// import state from './state.js'
-// import { sanitize } from './lib/operative.js';
+
 
 const commandLine = document.getElementById('command_line')
 const form = document.getElementById('form')
@@ -37,13 +36,13 @@ form.onsubmit = (e) => {
   let input = getCommandLineValue()
 
   // send input to engine
-  input$.write(input)
+  input$.next(input)
 
   // set command line empty
   setCommandLineValue('')
 }
 
-output$.each(x => {
+output$.forEach(x => {
   // print the output
   logText(x)
 

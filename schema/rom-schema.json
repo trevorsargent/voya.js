@@ -5,10 +5,13 @@
 		"Rom": {
 			"type": "object",
 			"properties": {
+				"output": {
+					"type": "string"
+				},
 				"settings": {
 					"$ref": "#/definitions/RomSettings"
 				},
-				"defaultPlayer": {
+				"player": {
 					"$ref": "#/definitions/Player"
 				},
 				"places": {
@@ -28,8 +31,9 @@
 				}
 			},
 			"required": [
+				"output",
 				"settings",
-				"defaultPlayer",
+				"player",
 				"places",
 				"items",
 				"commands"
