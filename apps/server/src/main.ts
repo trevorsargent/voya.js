@@ -7,7 +7,7 @@ const id = 'no'
  * @param  {ID} id
  * @returns Place
  */
-const place = (id: ID): Place => {
+const place = (id: ID, agent: Person): Place => {
   const rng = seedrandom(id)
   const exists = rBool(rng, 0.5)
 
@@ -16,11 +16,31 @@ const place = (id: ID): Place => {
   }
 }
 
-interface Place {
+const person = (id: ID): Person => {
+  return {}
+}
+
+abstract class Place {
   exists: boolean
 }
 
-/** @description Boolean flag with a percentage probability.
+abstract class Person {
+  disposition: () => Disposition
+}
+
+abstract class Disposition {
+  joy: number
+  trust: number
+  fear: number
+  surprise: number
+  sadness: number
+  disgust: number
+  anger: number
+  anticipation: number
+}
+
+/**
+ * @description Boolean flag with a percentage probability.
  * @param {seedrandom.prng} rng RNG
  * @param {number} p probability of truth
  * @return {boolean}
@@ -42,4 +62,4 @@ const rVal = (rng: seedrandom.prng, min: number, max: number): number => {
 
 type ID = string
 
-console.log(place(id))
+console.log(place(id, {}))
