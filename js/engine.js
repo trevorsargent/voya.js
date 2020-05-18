@@ -1,5 +1,8 @@
 // Made by, and copyright, @trevorsargent 2017
 
+import rom from '../roms/carnival.json'
+
+let data = rom
 // p rints a line of text to the screen
 function println (line) {
   'use strict'
@@ -297,55 +300,22 @@ function processInput (input, data) {
   return data
 }
 
-window.onload = function () {
-  let data = {}
-  let inputHistory = []
+let inputHistory = []
 
-  getJSON('roms/carnival.json', function (err, json) {
-    if (err !== null) {
-      window.alert('Something went wrong: ' + err)
-    } else {
-      data = json
-      data.player.currentLocation = applyPlaceDefaults(data.places[data.player.settings.startingPlace], data.defaults)
-      printWelcome(data.messages.welcomeText)
-      document.getElementById('image').src = data.settings['background-url']
-      document.title.innerHTML = data.settings.title
-      document.getElementById('logo').innerHTML = data.settings.title
-      // on pressing enter after providing a command
-      document.getElementById('prepend').innerHTML = data.settings.prepend
-    }
+document.getElementById('form').onsubmit = function () {
+  let input = document.getElementById('command_line').value
+  console.log(input)
+  input = input.trim()
+
+  inputHistory.push(input)
+  data = processInput(input, data)
+  line()
+  window.scrollBy({
+    top: 100, // could be negative value
+    left: 0,
+    behavior: 'smooth'
   })
 
-  document.getElementById('form').onsubmit = function () {
-    let input = document.getElementById('command_line').value
-    console.log(input)
-    input = input.trim()
-
-    inputHistory.push(input)
-    data = processInput(input, data)
-
-    line()
-    window.scrollBy({
-      top: 100, // could be negative value
-      left: 0,
-      behavior: 'smooth'
-    })
-
-    document.getElementById('command_line').value = ''
-  }
+  document.getElementById('command_line').value = ''
 }
 
-var getJSON = function (url, callback) {
-  var xhr = new window.XMLHttpRequest()
-  xhr.open('GET', url, true)
-  xhr.responseType = 'json'
-  xhr.onload = function () {
-    var status = xhr.status
-    if (status === 200) {
-      callback(null, xhr.response)
-    } else {
-      callback(status)
-    }
-  }
-  xhr.send()
-}

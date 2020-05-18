@@ -4,6 +4,7 @@
   "description": "a javascript text-adventure engine",
   "main": "index.html",
   "scripts": {
+    "build": "parcel index.html -d public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
