@@ -23,7 +23,7 @@
   "homepage": "https://github.com/trevorsargent/voya.js#readme",
   "dependencies": {
     "buffer": "^5.7.1",
-    "cssnano": "^4.1.11",
+    "cssnano": "^5.1.14",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.26.0",
