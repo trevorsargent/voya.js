@@ -3,3 +3,5 @@ js/ga-script.js
 node_modules/
 .cache
 .serve
+.parcel-cache
+dist
