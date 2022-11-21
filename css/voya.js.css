@@ -37,16 +37,31 @@ body{
 	position: fixed;
 	top:auto;
 	bottom: 0;
-	right: 75px;
-	left: 75px;
-	padding: 17px 0;
-  border-top: 1px solid white;
-  backdrop-filter: blur(10px);
-  background: rgba(0,0,0,.6);
+	right: 0;
+	left: 0;
+	padding-top: 100px;
+  /* backdrop-filter: blur(5px); */
+  background: linear-gradient(transparent 0%,   rgba(0,0,0,.8) 100%);
 }
+
+#form-box .container {
+	display: flex;
+	align-items: center;
+	margin: 0 75px;
+	padding: 17px 4px;
+	border-top: #eee 1px solid;
+	flex-grow: 1;
+}
+
+
 
 form{
 	flex-grow: 1;
+	margin: 0;
+}
+
+#prepend {
+	margin: 0;
 }
 
 input{
@@ -58,7 +73,7 @@ input{
 	letter-spacing: 1px;
 	background: none;
 	border: none;
-	font-size: 14px;
+	font-size:  14px;
 	margin: 0;
 }
 

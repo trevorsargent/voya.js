@@ -1,12 +1,17 @@
 import { input$, output$ } from './engine.js'
 // import state from './state.js'
 // import { sanitize } from './lib/operative.js';
+import {settings} from '../roms/carnival.json';
 
 const commandLine = document.getElementById('command_line')
 const form = document.getElementById('form')
 const log = document.getElementById('console')
+const pre = document.getElementById("prepend")
+const image = document.getElementById('image')
 
-window.input = input$
+image.src = settings['background-url'];
+
+pre.innerText = settings.prepend;
 
 const getCommandLineValue = () => {
   return commandLine.value.trim().toLowerCase()
