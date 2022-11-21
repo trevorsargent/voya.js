@@ -35,7 +35,7 @@
     "useItem": "use"
   },
   "messages": {
-    "helpText": "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]",
+    "helpText": "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]\n- exchange [item]",
     "visibilityError": "it's kinda dark... you can't really see.",
     "moveMessage": "you walk to the ",
     "moveError": "that's not a place you can walk from here!",
