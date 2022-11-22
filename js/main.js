@@ -1,57 +1,62 @@
-import { input$, output$ } from './engine.js'
+import { input$, output$ } from "./engine.js";
 // import state from './state.js'
 // import { sanitize } from './lib/operative.js';
-import {settings} from '../roms/carnival.json';
+import { settings } from "../roms/carnival.json";
+import { sendCommand } from "./client";
 
-const commandLine = document.getElementById('command_line')
-const form = document.getElementById('form')
-const log = document.getElementById('console')
-const pre = document.getElementById("prepend")
-const image = document.getElementById('image')
+const commandLine = document.getElementById("command_line");
+const form = document.getElementById("form");
+const log = document.getElementById("console");
+const pre = document.getElementById("prepend");
+const image = document.getElementById("image");
 
-image.src = settings['background-url'];
+image.src = settings["background-url"];
 
 pre.innerText = settings.prepend;
 
+sendCommand("ping").then((x) => {
+  output$.write(x);
+});
+
 const getCommandLineValue = () => {
-  return commandLine.value.trim().toLowerCase()
-}
+  return commandLine.value.trim().toLowerCase();
+};
 
 const setCommandLineValue = (text) => {
-  commandLine.value = text
-}
+  commandLine.value = text;
+};
 
-const logText = x => {
-  let p = document.createElement('p')
-  p.innerText = x
-  log.appendChild(p)
-}
+const logText = (x) => {
+  let p = document.createElement("p");
+  p.innerText = x;
+  log.appendChild(p);
+};
 
 const smoothScrollWindow = (px) => {
   window.scrollBy({
     top: px, // could be negative value
     left: 0,
-    behavior: 'smooth'
-  })
-}
+    behavior: "smooth",
+  });
+};
 
 form.onsubmit = (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
   // get input
-  let input = getCommandLineValue()
+  let input = getCommandLineValue();
 
   // send input to engine
-  input$.write(input)
+  input$.write(input);
 
   // set command line empty
-  setCommandLineValue('')
-}
+  setCommandLineValue("");
+};
 
-output$.each(x => {
+output$.each((x) => {
   // print the output
-  logText(x)
+  logText(x);
 
   // scroll the window up to accomodate for new text
-  smoothScrollWindow(500)
-})
+  smoothScrollWindow(500);
+});
