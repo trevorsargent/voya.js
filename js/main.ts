@@ -2,7 +2,13 @@ import { input$, output$ } from "./engine.js";
 import { settings } from "../roms/carnival.json";
 import { sendCommand } from "./client";
 import Pusher from "pusher-js";
-import { Channels, Events, BroadcastMessage } from "../lib/pusher.core";
+import {
+  Channels,
+  Events,
+  BroadcastMessage,
+  KEY,
+  CLUSTER,
+} from "../lib/pusher.core";
 
 const commandLine = document.getElementById("command_line");
 const form = document.getElementById("form");
@@ -19,13 +25,7 @@ if (pre) {
   pre.innerText = settings.prepend;
 }
 
-if (!process.env.PUSHER_APP_KEY) {
-  throw new Error("NEED PUSHER KEY");
-}
-
-var pusher = new Pusher(process.env.PUSHER_APP_KEY, {
-  cluster: process.env.PUSHER_APP_CLUSTER,
-});
+var pusher = new Pusher(KEY, { cluster: CLUSTER });
 
 var channel = pusher.subscribe(Channels.BROADCAST);
 channel.bind(Events.MESSAGE, function (data: BroadcastMessage) {
