@@ -1,18 +1,22 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { broadcast } from "../lib/pusher.server";
 
-export default function handler(
+export default async function handler(
   request: VercelRequest,
-  response: VercelResponse,
+  response: VercelResponse
 ) {
   // pages/api/[name].ts -> /api/lee
   // req.query.name -> "lee"\
 
-  const res: CommandResponse  = {
-    message: "hello"
-  }
- return response.end(JSON.stringify(res))
+  const res: CommandResponse = {
+    message: "hello",
+  };
+
+  await broadcast("Someone Connected");
+
+  return response.end(JSON.stringify(res));
 }
 
 export interface CommandResponse {
-    message: string
+  message: string;
 }
