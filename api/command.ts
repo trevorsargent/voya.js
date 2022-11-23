@@ -1,22 +1,31 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { broadcast } from "../lib/pusher.server";
+import { build } from "../lib/engine/actions";
+import { act } from "../lib/engine/engine";
+import { sanitizeBasic } from "../lib/engine/operative";
 
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse
 ) {
-  // pages/api/[name].ts -> /api/lee
-  // req.query.name -> "lee"\
+  const body: CommandRequest = JSON.parse(request.body);
+
+  const sanitized = sanitizeBasic(body.command);
+
+  const action = build(sanitized);
+
+  const reply = act(action);
 
   const res: CommandResponse = {
-    message: "hello",
+    message: reply,
   };
-
-  await broadcast("Someone Connected");
 
   return response.end(JSON.stringify(res));
 }
 
 export interface CommandResponse {
   message: string;
+}
+
+export interface CommandRequest {
+  command: string;
 }

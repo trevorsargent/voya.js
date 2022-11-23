@@ -1,6 +1,5 @@
-import { input$, output$ } from "./engine.js";
 import { settings } from "../roms/carnival.json";
-import { sendCommand } from "./client";
+import { sendCommand } from "../lib/client";
 import Pusher from "pusher-js";
 import {
   Channels,
@@ -8,7 +7,8 @@ import {
   BroadcastMessage,
   KEY,
   CLUSTER,
-} from "../lib/pusher.core";
+} from "../lib/pusher/core";
+import { prepend } from "../lib/engine/narative";
 
 const commandLine = document.getElementById("command_line");
 const form = document.getElementById("form");
@@ -25,16 +25,25 @@ if (pre) {
   pre.innerText = settings.prepend;
 }
 
-var pusher = new Pusher(KEY, { cluster: CLUSTER });
+// var user = prompt("who's there?");
+
+var pusher = new Pusher(KEY, {
+  cluster: CLUSTER,
+  userAuthentication: {
+    endpoint: "/api/auth",
+    transport: "ajax",
+    // params: { username: user },
+  },
+});
 
 var channel = pusher.subscribe(Channels.BROADCAST);
 channel.bind(Events.MESSAGE, function (data: BroadcastMessage) {
-  output$.write(data.message);
+  writeLine(data.message);
 });
 
-sendCommand("ping").then((x) => {
-  output$.write(x);
-});
+// pusher.signin();
+
+sendCommand("welcome").then((x) => writeLine(x));
 
 const getCommandLineValue = () => {
   if (commandLine) {
@@ -64,25 +73,26 @@ const smoothScrollWindow = (px) => {
   });
 };
 
+const writeLine = (string) => {
+  logText(string);
+  smoothScrollWindow(500);
+};
+
 if (form) {
-  form.onsubmit = (e) => {
+  form.onsubmit = async (e) => {
     e.preventDefault();
 
-    // get input
     let input = getCommandLineValue();
 
-    // send input to engine
-    input$.write(input);
+    if (input.length === 0) {
+      return;
+    }
 
-    // set command line empty
+    writeLine(prepend(settings.prepend)(input));
     setCommandLineValue("");
+
+    const res = await sendCommand(input);
+
+    writeLine(res);
   };
 }
-
-output$.each((x) => {
-  // print the output
-  logText(x);
-
-  // scroll the window up to accomodate for new text
-  smoothScrollWindow(500);
-});
