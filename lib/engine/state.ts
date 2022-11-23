@@ -7,70 +7,83 @@ import {
   templateString,
 } from "./narative"
 import {
-  findPlaceFromName,
   hashRemove,
   hashAdd,
   hashHasItems,
+  findPlaceFromName,
 } from "./operative"
 import { locationIsAccessable, hasPassiveAccess } from "./logic"
 import { Place } from "../world/place"
 import { Player } from "../world/player"
+import { getPlayer, query, savePlayer } from "../surreal/engine.client"
+import { getClient } from "../surreal/surreal.client"
+import { Result } from "surrealdb.js"
 
-const places: Record<string, Place> = JSON.places
+const places: Record<string, Place> = JSON.places as unknown as Record<
+  string,
+  Place
+>
 const messages: Record<string, string> = JSON.messages
 
-let player: Player = {
-  ...JSON.defaultPlayer,
-  currentLocation: findPlaceFromName(
-    JSON.defaultPlayer.settings.startingPlace,
-    places
-  )!,
-  locationHistory: [],
-}
+const PLAYER_ID = "player:0"
 
 export const welcome = () => {
   return messages.welcomeText
 }
 
-export const describePlayerLocation = () => {
-  return describeNeighborhood(player.currentLocation, places)
+export const describePlayerLocation = async () => {
+  return describeNeighborhood()
 }
 
 export const help = () => {
   return messages.helpText
 }
 
-export const inventory = () => {
+export const inventory = async () => {
+  const player = await getPlayer(PLAYER_ID)
+
   return describeHash(player.pockets)
 }
 
-export const items = (): string => {
-  if (!player.currentLocation?.items) return messages.itemsError
-  if (!hashHasItems(player.currentLocation.items)) return messages.itemsError
-  return describeHash(player.currentLocation.items)
+export const items = async (): Promise<string> => {
+  const player = await getPlayer(PLAYER_ID)
+
+  const loc = findPlaceFromName(player.currentLocation, places)
+
+  if (!loc?.items) return messages.itemsError
+  if (!hashHasItems(loc.items)) return messages.itemsError
+  return describeHash(loc.items)
 }
 
-export const describeNewPlayerLocation = (): string => {
-  if (!player.locationHistory.find((p) => p == player.currentLocation?.name))
-    return ""
+export const describeNewPlayerLocation = async (): Promise<string> => {
+  const player = await getPlayer(PLAYER_ID)
 
-  return player.currentLocation?.messages?.newText || ""
+  const loc = findPlaceFromName(player.currentLocation, places)
+
+  if (!player.locationHistory.find((p) => p == loc?.name)) return ""
+
+  return loc?.messages?.newText || ""
 }
 
-export const move = (placeName?: string): string => {
+export const move = async (placeName?: string): Promise<string> => {
   if (!placeName) {
     return messages.moveError
   }
   let neededPassiveKey = false
-  const place = findPlaceFromName(placeName, places)
+  const player = await getPlayer(PLAYER_ID)
+  const place = await query<Place>(
+    `SELECT * FROM place WHERE name = '${placeName}'`
+  )
 
-  if (!place) {
+  const loc = await query<Place>("SELECT currentLocation.* from player:0")
+
+  if (!place || !loc) {
     return messages.moveError
   }
 
-  if (!locationIsAccessable(places, player.currentLocation, place)) {
-    return messages.moveError
-  }
+  // if (!locationIsAccessable(places, loc, place)) {
+  //   return messages.moveError
+  // }
 
   if (place.settings?.passiveKey) {
     if (hasPassiveAccess(place, player)) {
@@ -80,51 +93,75 @@ export const move = (placeName?: string): string => {
     }
   }
 
-  player.locationHistory.push(player.currentLocation.name)
+  player.locationHistory.push(player.currentLocation)
 
-  player.currentLocation = place
+  player.currentLocation = place.id
+
+  await savePlayer(player)
   return glue(
     neededPassiveKey ? place.messages?.passiveKeySuccess ?? "" : "",
     messages.moveMessage + place.name,
-    describePlayerLocation(),
-    describeNewPlayerLocation()
+    await describePlayerLocation(),
+    await describeNewPlayerLocation()
   )
 }
 
-export const drop = (item?: string) => {
+export const drop = async (item?: string) => {
   if (!item) {
     return messages.dropError + "nothing"
   }
-  player.currentLocation.items = player.currentLocation.items || {}
+  const player = await getPlayer(PLAYER_ID)
+
+  const loc = findPlaceFromName(player.currentLocation, places)
+  if (!loc) {
+    return "cant drop here"
+  }
+
   if (item in player.pockets) {
     hashRemove(player.pockets, item)
-    hashAdd(player.currentLocation.items, item)
+    // TODO: not persisted currently
+    hashAdd(loc.items!, item)
+    await savePlayer(player)
     return messages.dropSuccess + addArticle(item)
   }
   return messages.dropError + addArticle(item)
 }
 
-export const take = (item?: string) => {
+export const take = async (item?: string) => {
   if (!item) {
     return messages.takeError
   }
-  player.currentLocation.items = player.currentLocation.items || {}
-  if (item in player.currentLocation.items) {
+  const player = await getPlayer(PLAYER_ID)
+  const loc = findPlaceFromName(player.currentLocation, places)
+
+  if (!loc) {
+    return messages.takeError
+  }
+  if (item in loc.items!) {
     hashAdd(player.pockets, item)
-    hashRemove(player.currentLocation.items, item)
+    hashRemove(loc.items!, item)
+    await savePlayer(player)
     return messages.takeSuccess + addArticle(item)
   }
   return messages.takeError + addArticle(item)
 }
 
-export const exchange = (item?: string) => {
+export const exchange = async (item?: string) => {
   if (!item) {
     return messages.exchangeFailure
   }
-  if (item in player.currentLocation.exchanges) {
-    const newItem = player.currentLocation.exchanges[item]
+  const player = await getPlayer(PLAYER_ID)
+
+  const loc = findPlaceFromName(player.currentLocation, places)
+
+  if (!loc) {
+    return messages.exchangeFailure
+  }
+  if (item in loc.exchanges) {
+    const newItem = loc.exchanges[item]
     hashAdd(player.pockets, newItem)
     hashRemove(player.pockets, item)
+    await savePlayer(player)
     return templateString(messages.exchangeSuccess, item, newItem)
   }
   return messages.exchangeFailure
@@ -134,6 +171,23 @@ export const inputError = () => {
   return messages.commandInvalid
 }
 
-export const unlock = () => {
-  player.currentLocation.isLocked = false
+export const canSee = (player: Player) => {
+  const loc = findPlaceFromName(player.currentLocation, places)
+
+  if (!loc) {
+    return messages.exchangeFailure
+  }
+
+  if (!loc) {
+    return messages.takeError
+  }
+  if (loc.settings?.isLit) {
+    return true
+  }
+  for (let e in player.settings.lamps) {
+    if (player.pockets[e] > 0) {
+      return true
+    }
+  }
+  return false
 }

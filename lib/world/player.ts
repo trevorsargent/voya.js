@@ -1,12 +1,13 @@
-import { Place } from "./place"
+import Surreal from "surrealdb.js"
 
 export interface Player {
-  currentLocation: Place
+  id: string
+  currentLocation: string
   locationHistory: string[]
   pockets: Record<string, number>
   height: number
   settings: {
-    startingPlace: string
     lamps?: string[]
   }
+  [index: string]: unknown
 }

@@ -14,7 +14,7 @@ export default async function handler(
 
   const action = build(sanitized)
 
-  const reply = act(action)
+  const reply = await act(action)
 
   const res: CommandResponse = {
     message: reply,

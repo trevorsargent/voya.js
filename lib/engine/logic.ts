@@ -2,17 +2,6 @@ import { Place } from "../world/place"
 import { Player } from "../world/player"
 
 // returns whether a player can currently see
-export const canSee = (player: Player) => {
-  if (player?.currentLocation?.settings?.isLit) {
-    return true
-  }
-  for (let e in player.settings.lamps) {
-    if (player.pockets[e] > 0) {
-      return true
-    }
-  }
-  return false
-}
 
 // returns whether a place is accessabel from another place
 export const locationIsAccessable = (

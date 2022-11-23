@@ -1,4 +1,5 @@
 export interface Place {
+  id: string
   name: string
   items?: Record<string, number>
   ahead?: string

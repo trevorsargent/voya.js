@@ -1,7 +1,7 @@
 import * as State from "./state"
 import { Action, ActionType } from "./actions"
 
-export const act = (action: Action): string => {
+export const act = async (action: Action): Promise<string> => {
   switch (action.type) {
     case ActionType.EMPTY:
       return ""
