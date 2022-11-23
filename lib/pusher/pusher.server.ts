@@ -1,13 +1,13 @@
-import Pusher from "pusher";
-import { BroadcastMessage, Channels, Events } from "./pusher.core";
+import Pusher from "pusher"
+import { BroadcastMessage, Channels, Events } from "./pusher.core"
 
 export async function broadcast(message: string) {
   const msg: BroadcastMessage = {
     message,
     date: new Date(),
-  };
+  }
 
-  await pusher.trigger(Channels.BROADCAST, Events.MESSAGE, msg);
+  await pusher.trigger(Channels.BROADCAST, Events.MESSAGE, msg)
 }
 
 export const pusher = new Pusher({
@@ -16,4 +16,4 @@ export const pusher = new Pusher({
   secret: process.env.PUSHER_APP_SECRET!,
   cluster: process.env.PUSHER_APP_CLUSTER!,
   useTLS: true,
-});
+})

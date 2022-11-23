@@ -1,17 +1,22 @@
-import Surreal from "surrealdb.js";
+// @ts-nocheck
+import Surreal, { ScopeAuth } from "surrealdb.js"
 
-const { DB_HOST, DB_PORT, DB_USER, DB_PSWD } = process.env;
+const { DB_HOST, DB_PORT, DB_USER, DB_PSWD } = process.env
+
+let db: Surreal
 
 export const getClient = async (): Promise<Surreal> => {
-  const path = `ws://${DB_HOST}:${DB_PORT}/rpc`;
-  const db = new Surreal(path);
+  const path = `ws://${DB_HOST}:${DB_PORT}/rpc`
 
-  await db.signin({
-    user: DB_USER,
-    pass: DB_PSWD,
-  });
+  if (!db) {
+    db = new Surreal(path)
 
-  await db.use("voya", "voya");
+    await db.signin({
+      user: DB_USER,
+      pass: DB_PSWD,
+    })
 
-  return db;
-};
+    await db.use("voya", "voya")
+  }
+  return db
+}

@@ -1,10 +1,13 @@
+import { Place } from "../world/place"
+import { Player } from "../world/player"
+
 // returns whether a player can currently see
-export const canSee = player => {
-  if (player.currentLocation.settings.islit) {
+export const canSee = (player: Player) => {
+  if (player?.currentLocation?.settings?.isLit) {
     return true
   }
   for (let e in player.settings.lamps) {
-    if (player.pockets[player.settings.lamps[e]]) {
+    if (player.pockets[e] > 0) {
       return true
     }
   }
@@ -12,31 +15,38 @@ export const canSee = player => {
 }
 
 // returns whether a place is accessabel from another place
-export const locationIsAccessable = (places, current, dest) => {
+export const locationIsAccessable = (
+  places: Record<string, Place>,
+  current: Place,
+  dest: Place
+) => {
   if (dest === undefined) {
     return false
   }
-  if (places[current.ahead] === dest) {
+  if (current.ahead && places[current.ahead] === dest) {
     return true
   }
-  if (places[current.behind] === dest) {
+  if (current.behind && places[current.behind] === dest) {
     return true
   }
-  if (places[current.right] === dest) {
+  if (current.right && places[current.right] === dest) {
     return true
   }
-  if (places[current.left] === dest) {
+  if (current.left && places[current.left] === dest) {
     return true
   }
-  if (places[current.above] === dest) {
+  if (current.above && places[current.above] === dest) {
     return true
   }
-  if (places[current.below] === dest) {
+  if (current.below && places[current.below] === dest) {
     return true
   }
   return false
 }
 
-export const hasPassiveAccess = (dest, player) => {
-  return dest.settings.passiveKey in player.pockets
+export const hasPassiveAccess = (dest: Place, player: Player): boolean => {
+  if (!dest.settings?.passiveKey) {
+    return true
+  }
+  return player.pockets[dest.settings?.passiveKey] > 0
 }

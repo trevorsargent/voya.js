@@ -1,39 +1,39 @@
-import * as State from "./state";
-import { Action, ActionType } from "./actions";
+import * as State from "./state"
+import { Action, ActionType } from "./actions"
 
 export const act = (action: Action): string => {
   switch (action.type) {
     case ActionType.EMPTY:
-      return "";
+      return ""
 
     case ActionType.HELP:
-      return State.help();
+      return State.help()
 
     case ActionType.OBSERVE:
-      return State.describePlayerLocation();
+      return State.describePlayerLocation()
 
     case ActionType.INVENTORY:
-      return State.inventory();
+      return State.inventory()
 
     case ActionType.ITEMS:
-      return State.items();
+      return State.items()
 
     case ActionType.MOVE:
-      return State.move(action.subject);
+      return State.move(action.subject)
 
     case ActionType.TAKE:
-      return State.take(action.subject);
+      return State.take(action.subject)
 
     case ActionType.DROP:
-      return State.drop(action.subject);
+      return State.drop(action.subject)
 
     case ActionType.EXCHANGE:
-      return State.exchange(action.subject);
+      return State.exchange(action.subject)
 
     case ActionType.ERROR:
-      return State.inputError();
+      return State.inputError()
 
     case ActionType.WELCOME:
-      return State.welcome();
+      return State.welcome()
   }
-};
+}
