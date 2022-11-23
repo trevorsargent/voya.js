@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { build } from "../lib/engine/actions";
 import { act } from "../lib/engine/engine";
 import { sanitizeBasic } from "../lib/engine/operative";
+import { getClient } from "../lib/surreal/surreal.client";
 
 export default async function handler(
   request: VercelRequest,
@@ -18,6 +19,8 @@ export default async function handler(
   const res: CommandResponse = {
     message: reply,
   };
+
+  await getClient();
 
   return response.end(JSON.stringify(res));
 }

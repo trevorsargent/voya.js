@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import Pusher from "pusher";
-import { broadcast, pusher } from "../lib/pusher/server";
+import { broadcast, pusher } from "../lib/pusher/pusher.server";
 
 export default async function handler(
   request: VercelRequest,

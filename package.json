@@ -24,7 +24,8 @@
   "homepage": "https://github.com/trevorsargent/voya.js#readme",
   "dependencies": {
     "pusher": "^5.1.1-beta",
-    "pusher-js": "^7.5.0"
+    "pusher-js": "^7.5.0",
+    "surrealdb.js": "^0.5.0"
   },
   "devDependencies": {
     "@vercel/node": "^2.6.4",

@@ -1,5 +1,5 @@
 import Pusher from "pusher";
-import { BroadcastMessage, Channels, Events } from "./core";
+import { BroadcastMessage, Channels, Events } from "./pusher.core";
 
 export async function broadcast(message: string) {
   const msg: BroadcastMessage = {

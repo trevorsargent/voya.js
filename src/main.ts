@@ -7,7 +7,7 @@ import {
   BroadcastMessage,
   KEY,
   CLUSTER,
-} from "../lib/pusher/core";
+} from "../lib/pusher/pusher.core";
 import { prepend } from "../lib/engine/narative";
 
 const commandLine = document.getElementById("command_line");
@@ -29,6 +29,7 @@ if (pre) {
 
 var pusher = new Pusher(KEY, {
   cluster: CLUSTER,
+  enabledTransports: ["ws", "wss", "xhr_streaming", "xhr_polling"],
   userAuthentication: {
     endpoint: "/api/auth",
     transport: "ajax",
