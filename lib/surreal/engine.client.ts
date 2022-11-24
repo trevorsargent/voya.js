@@ -16,7 +16,7 @@ export const getPlayerById = async (id: string): Promise<Player> => {
 
 export const getPlayerWithFullLocation = async (
   id: string
-): Promise<Player & { loc: Place }> => {
+): Promise<Player & { loc?: Place }> => {
   const player = await query<Player & { loc: Place }>(
     `SELECT *, currentLocation.* as loc FROM ${id}`
   )
@@ -27,13 +27,16 @@ export const getPlayerWithFullLocation = async (
 export const getPlayerByUserName = async (
   username: string
 ): Promise<Player> => {
-  console.log(username)
   const player = await query<Player>(
     `SELECT * FROM player WHERE username = ${username}`
   )
   if (!player) throw new Error("Player Not Found")
 
   return player
+}
+
+export const savePlace = async (place: Place) => {
+  await (await getClient()).update(place.id, place)
 }
 
 export const query = async <T>(string: string): Promise<T | undefined> => {

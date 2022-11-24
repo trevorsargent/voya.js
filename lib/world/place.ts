@@ -1,7 +1,7 @@
 export interface Place {
   id: string
   name: string
-  items?: Record<string, number>
+  objects?: Record<string, number>
   ahead?: string
   behind?: string
   left?: string
@@ -27,4 +27,6 @@ export interface Place {
     rideText?: string
     playText?: string
   }
+
+  [index: string]: unknown
 }

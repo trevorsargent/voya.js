@@ -6,12 +6,7 @@ import {
   addArticle,
   templateString,
 } from "./narative"
-import {
-  hashRemove,
-  hashAdd,
-  hashHasItems,
-  findPlaceFromName,
-} from "./operative"
+import { hashRemove, hashAdd, hashHasItems } from "./operative"
 import { locationIsAccessable, hasPassiveAccess } from "./logic"
 import { Place } from "../world/place"
 import { Player } from "../world/player"
@@ -19,13 +14,10 @@ import {
   getPlayerById,
   getPlayerWithFullLocation,
   query,
+  savePlace,
   savePlayer,
 } from "../surreal/engine.client"
 
-const places: Record<string, Place> = JSON.places as unknown as Record<
-  string,
-  Place
->
 const messages: Record<string, string> = JSON.messages
 
 const PLAYER_ID = "player:0"
@@ -49,19 +41,15 @@ export const inventory = async () => {
 }
 
 export const items = async (): Promise<string> => {
-  const player = await getPlayerById(PLAYER_ID)
-
-  const loc = findPlaceFromName(player.currentLocation, places)
-
-  if (!loc?.items) return messages.itemsError
-  if (!hashHasItems(loc.items)) return messages.itemsError
-  return describeHash(loc.items)
+  const { loc } = await getPlayerWithFullLocation(PLAYER_ID)
+  if (!loc?.objects) return messages.itemsError
+  if (!hashHasItems(loc.objects)) return messages.itemsError
+  return describeHash(loc.objects)
 }
 
 export const describeNewPlayerLocation = async (): Promise<string> => {
-  const player = await getPlayerById(PLAYER_ID)
-
-  const loc = findPlaceFromName(player.currentLocation, places)
+  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const { loc } = player
 
   if (!player.locationHistory.find((p) => p == loc?.name)) return ""
 
@@ -69,7 +57,6 @@ export const describeNewPlayerLocation = async (): Promise<string> => {
 }
 
 export const move = async (placeName?: string): Promise<string> => {
-  console.log("name", placeName)
   if (!placeName) {
     return messages.moveError
   }
@@ -112,17 +99,19 @@ export const drop = async (item?: string) => {
   if (!item) {
     return messages.dropError + "nothing"
   }
-  const player = await getPlayerById(PLAYER_ID)
 
-  const loc = findPlaceFromName(player.currentLocation, places)
+  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const { loc } = player
+  delete player.loc
+
   if (!loc) {
     return "cant drop here"
   }
 
-  if (item in player.pockets) {
+  if (player.pockets[item] > 0) {
     hashRemove(player.pockets, item)
-    // TODO: not persisted currently
-    hashAdd(loc.items!, item)
+    hashAdd(loc.objects!, item)
+    await savePlace(loc)
     await savePlayer(player)
     return messages.dropSuccess + addArticle(item)
   }
@@ -133,16 +122,18 @@ export const take = async (item?: string) => {
   if (!item) {
     return messages.takeError
   }
-  const player = await getPlayerById(PLAYER_ID)
-  const loc = findPlaceFromName(player.currentLocation, places)
+  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const { loc } = player
+  delete player.loc
 
   if (!loc) {
     return messages.takeError
   }
-  if (item in loc.items!) {
+  if (loc.objects && loc.objects[item] > 0) {
     hashAdd(player.pockets, item)
-    hashRemove(loc.items!, item)
+    hashRemove(loc.objects!, item)
     await savePlayer(player)
+    await savePlace(loc)
     return messages.takeSuccess + addArticle(item)
   }
   return messages.takeError + addArticle(item)
@@ -152,14 +143,15 @@ export const exchange = async (item?: string) => {
   if (!item) {
     return messages.exchangeFailure
   }
-  const player = await getPlayerById(PLAYER_ID)
 
-  const loc = findPlaceFromName(player.currentLocation, places)
+  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const { loc } = player
+  delete player.loc
 
   if (!loc) {
     return messages.exchangeFailure
   }
-  if (item in loc.exchanges) {
+  if (loc.exchanges && loc.exchanges[item] !== undefined) {
     const newItem = loc.exchanges[item]
     hashAdd(player.pockets, newItem)
     hashRemove(player.pockets, item)
@@ -173,8 +165,8 @@ export const inputError = () => {
   return messages.commandInvalid
 }
 
-export const canSee = (player: Player) => {
-  const loc = findPlaceFromName(player.currentLocation, places)
+export const canSee = async (player: Player) => {
+  const { loc } = await getPlayerWithFullLocation(PLAYER_ID)
 
   if (!loc) {
     return messages.exchangeFailure
