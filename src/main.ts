@@ -1,99 +1,51 @@
 import { settings } from "../roms/carnival.json"
 import { sendCommand } from "../lib/client"
-import Pusher from "pusher-js"
-import {
-  Channels,
-  Events,
-  BroadcastMessage,
-  KEY,
-  CLUSTER,
-} from "../lib/pusher/pusher.core"
-import { prepend } from "../lib/engine/narative"
+import { FillableForm, InputManager } from "../lib/input/input.manager"
+import { InputComponent } from "../lib/components/input.component"
+import { ConsoleComponent } from "../lib/components/console.component"
 
-const commandLine = document.getElementById("command_line")
-const form = document.getElementById("form")
+const commandLine = document.getElementById("command_line") as HTMLInputElement
 const log = document.getElementById("console")
 const pre = document.getElementById("prepend")
 const image = document.getElementById("image")
 
-if (image) {
-  const src = settings["background-url"]
-  ;(image as HTMLImageElement).src = src
+if (!image) {
+  throw new Error("Need Log Output")
 }
 
-if (pre) {
-  pre.innerText = settings.prepend
+if (!log) {
+  throw new Error("Need Log Output")
 }
 
-// var user = prompt("who's there?");
-
-var pusher = new Pusher(KEY, {
-  cluster: CLUSTER,
-  enabledTransports: ["ws", "wss", "xhr_streaming", "xhr_polling"],
-  userAuthentication: {
-    endpoint: "/api/auth",
-    transport: "ajax",
-    // params: { username: user },
-  },
-})
-
-var channel = pusher.subscribe(Channels.BROADCAST)
-channel.bind(Events.MESSAGE, function (data: BroadcastMessage) {
-  writeLine(data.message)
-})
-
-// pusher.signin();
-
-sendCommand("welcome").then((x) => writeLine(x))
-
-const getCommandLineValue = () => {
-  if (commandLine) {
-    return (commandLine as HTMLInputElement).value.trim().toLowerCase()
-  }
+if (!pre) {
+  throw new Error("Need Prompt Prepend Object")
 }
 
-const setCommandLineValue = (text: string) => {
-  if (commandLine) {
-    ;(commandLine as HTMLInputElement).value = text
-  }
+if (!commandLine) {
+  throw new Error("Need Prompt Command Line Object")
 }
 
-const logText = (x: string) => {
-  let p = document.createElement("p")
-  p.innerText = x
-  if (log) {
-    log.appendChild(p)
-  }
-}
+const src = settings["background-url"]
+;(image as HTMLImageElement).src = src
 
-const smoothScrollWindow = (px: number) => {
-  window.scrollBy({
-    top: px, // could be negative value
-    left: 0,
-    behavior: "smooth",
-  })
-}
+var output = new ConsoleComponent(log)
 
-const writeLine = (string: string) => {
-  logText(string)
-  smoothScrollWindow(500)
-}
-
-if (form) {
-  form.onsubmit = async (e) => {
-    e.preventDefault()
-
-    let input = getCommandLineValue()
-
-    if (!input || input.length === 0) {
-      return
+const inputManager = new InputManager(
+  (text) => sendCommand(text).then((x) => output.WriteLine(x)),
+  output.WriteLine.bind(output),
+  ({ prompt, placeholder }) => {
+    if (pre) {
+      pre.innerText = `${prompt} >>`
+      commandLine.placeholder = placeholder ?? ""
     }
-
-    writeLine(prepend(settings.prepend)(input))
-    setCommandLineValue("")
-
-    const res = await sendCommand(input)
-
-    writeLine(res)
   }
-}
+)
+
+new InputComponent(commandLine, pre, inputManager, {
+  defaultPlaceholder: "type a command... ('help' if you're stuck)",
+  promptPrepend: settings.prepend,
+})
+
+sendCommand("welcome").then((x) => {
+  output.WriteLine(x)
+})

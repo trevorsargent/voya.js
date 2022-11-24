@@ -15,9 +15,12 @@ import {
 import { locationIsAccessable, hasPassiveAccess } from "./logic"
 import { Place } from "../world/place"
 import { Player } from "../world/player"
-import { getPlayer, query, savePlayer } from "../surreal/engine.client"
-import { getClient } from "../surreal/surreal.client"
-import { Result } from "surrealdb.js"
+import {
+  getPlayerById,
+  getPlayerWithFullLocation,
+  query,
+  savePlayer,
+} from "../surreal/engine.client"
 
 const places: Record<string, Place> = JSON.places as unknown as Record<
   string,
@@ -40,13 +43,13 @@ export const help = () => {
 }
 
 export const inventory = async () => {
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
 
   return describeHash(player.pockets)
 }
 
 export const items = async (): Promise<string> => {
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
 
   const loc = findPlaceFromName(player.currentLocation, places)
 
@@ -56,7 +59,7 @@ export const items = async (): Promise<string> => {
 }
 
 export const describeNewPlayerLocation = async (): Promise<string> => {
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
 
   const loc = findPlaceFromName(player.currentLocation, places)
 
@@ -66,24 +69,23 @@ export const describeNewPlayerLocation = async (): Promise<string> => {
 }
 
 export const move = async (placeName?: string): Promise<string> => {
+  console.log("name", placeName)
   if (!placeName) {
     return messages.moveError
   }
   let neededPassiveKey = false
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerWithFullLocation(PLAYER_ID)
   const place = await query<Place>(
     `SELECT * FROM place WHERE name = '${placeName}'`
   )
 
-  const loc = await query<Place>("SELECT currentLocation.* from player:0")
-
-  if (!place || !loc) {
+  if (!place || !player.loc) {
     return messages.moveError
   }
 
-  // if (!locationIsAccessable(places, loc, place)) {
-  //   return messages.moveError
-  // }
+  if (!locationIsAccessable(player.loc, place)) {
+    return messages.moveError
+  }
 
   if (place.settings?.passiveKey) {
     if (hasPassiveAccess(place, player)) {
@@ -110,7 +112,7 @@ export const drop = async (item?: string) => {
   if (!item) {
     return messages.dropError + "nothing"
   }
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
 
   const loc = findPlaceFromName(player.currentLocation, places)
   if (!loc) {
@@ -131,7 +133,7 @@ export const take = async (item?: string) => {
   if (!item) {
     return messages.takeError
   }
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
   const loc = findPlaceFromName(player.currentLocation, places)
 
   if (!loc) {
@@ -150,7 +152,7 @@ export const exchange = async (item?: string) => {
   if (!item) {
     return messages.exchangeFailure
   }
-  const player = await getPlayer(PLAYER_ID)
+  const player = await getPlayerById(PLAYER_ID)
 
   const loc = findPlaceFromName(player.currentLocation, places)
 
