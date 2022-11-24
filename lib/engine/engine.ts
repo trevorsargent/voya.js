@@ -1,5 +1,16 @@
-import * as State from "./state"
-import { Action, ActionType } from "./actions"
+import {
+  describePlayerLocation,
+  drop,
+  exchange,
+  help,
+  inputError,
+  inventory,
+  items,
+  move,
+  take,
+  welcome,
+} from "./state"
+import { type Action, ActionType } from "./actions"
 
 export const act = async (action: Action): Promise<string> => {
   switch (action.type) {
@@ -7,33 +18,33 @@ export const act = async (action: Action): Promise<string> => {
       return ""
 
     case ActionType.HELP:
-      return State.help()
+      return help()
 
     case ActionType.OBSERVE:
-      return State.describePlayerLocation()
+      return describePlayerLocation()
 
     case ActionType.INVENTORY:
-      return State.inventory()
+      return inventory()
 
     case ActionType.ITEMS:
-      return State.items()
+      return items()
 
     case ActionType.MOVE:
-      return State.move(action.subject)
+      return move(action.subject)
 
     case ActionType.TAKE:
-      return State.take(action.subject)
+      return take(action.subject)
 
     case ActionType.DROP:
-      return State.drop(action.subject)
+      return drop(action.subject)
 
     case ActionType.EXCHANGE:
-      return State.exchange(action.subject)
+      return exchange(action.subject)
 
     case ActionType.ERROR:
-      return State.inputError()
+      return inputError()
 
     case ActionType.WELCOME:
-      return State.welcome()
+      return welcome()
   }
 }
