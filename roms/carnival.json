@@ -45,7 +45,7 @@
     "dropError": "you dont have ",
     "exchangeSuccess": "you exchange $INPUT0 for $INPUT1",
     "exchangeFailure": "there's no exchange for that",
-    "welcomeText": "-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n\n there are lots of fun things here\n enjoy yourself. we demand it."
+    "welcomeText": "\n\n\n\n\n\n\n\n-----------------------------\n  | welcome to the carnival!! | \n ----------------------------- \n\n there are lots of fun things here\n enjoy yourself. we demand it."
   },
   "places": {
     "parkingLot": {
