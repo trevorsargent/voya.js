@@ -8,33 +8,6 @@ export const savePlayer = async (player: Player) => {
   return db.update(player.id, player)
 }
 
-export const getPlayerById = async (id: string): Promise<Player> => {
-  const player = await query<Player>(`SELECT * FROM ${id}`)
-  if (!player) throw new Error("Player Not Found")
-  return player
-}
-
-export const getPlayerWithFullLocation = async (
-  id: string
-): Promise<Player & { loc?: Place }> => {
-  const player = await query<Player & { loc: Place }>(
-    `SELECT *, currentLocation.* as loc FROM ${id}`
-  )
-  if (!player) throw new Error("Player Not Found")
-  return player
-}
-
-export const getPlayerByUserName = async (
-  username: string
-): Promise<Player> => {
-  const player = await query<Player>(
-    `SELECT * FROM player WHERE username = ${username}`
-  )
-  if (!player) throw new Error("Player Not Found")
-
-  return player
-}
-
 export const savePlace = async (place: Place) => {
   await (await getClient()).update(place.id, place)
 }

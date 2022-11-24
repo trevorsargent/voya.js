@@ -1,6 +1,3 @@
-// easily remove a particular word from a string
-
-import { getClient } from "../surreal/surreal.client"
 import { Place } from "../world/place"
 
 export const sanitize = (string: string) => (input: string) => {

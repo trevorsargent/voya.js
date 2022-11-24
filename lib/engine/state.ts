@@ -1,22 +1,20 @@
 import JSON from "../../roms/carnival.json"
 import {
-  describeNeighborhood,
   describeHash,
   glue,
   addArticle,
   templateString,
-} from "./narative"
+} from "../utils/string.utils"
 import { hashRemove, hashAdd, hashHasItems } from "./operative"
-import { locationIsAccessable, hasPassiveAccess } from "./logic"
+import { locationIsAccessable, hasPassiveAccess } from "../utils/place.utils"
 import { Place } from "../world/place"
 import { Player } from "../world/player"
+import { query, savePlace, savePlayer } from "../surreal/engine.client"
+import { describeNeighborhood } from "../queries/neighborhood.queries"
 import {
   getPlayerById,
   getPlayerWithFullLocation,
-  query,
-  savePlace,
-  savePlayer,
-} from "../surreal/engine.client"
+} from "../queries/place.queries"
 
 const messages: Record<string, string> = JSON.messages
 
