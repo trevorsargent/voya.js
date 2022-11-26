@@ -89,6 +89,7 @@ body{
 
 #prepend {
 	margin: 0;
+	white-space: nowrap;
 }
 
 input{

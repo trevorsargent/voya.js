@@ -10,9 +10,13 @@ import {
   take,
   welcome,
 } from "./state"
-import { type Action, ActionType } from "./actions"
 
-export const act = async (action: Action): Promise<string> => {
+import { Action, ActionType } from "./actions"
+
+export const act = async (
+  action: Action,
+  playerId?: string
+): Promise<string> => {
   switch (action.type) {
     case ActionType.EMPTY:
       return ""
@@ -21,30 +25,54 @@ export const act = async (action: Action): Promise<string> => {
       return help()
 
     case ActionType.OBSERVE:
-      return describePlayerLocation()
+      if (!playerId) {
+        return "login required"
+      }
+      return describePlayerLocation(playerId)
 
     case ActionType.INVENTORY:
-      return inventory()
+      if (!playerId) {
+        return "login required"
+      }
+      return inventory(playerId)
 
     case ActionType.ITEMS:
-      return items()
+      if (!playerId) {
+        return "login required"
+      }
+      return items(playerId)
 
     case ActionType.MOVE:
-      return move(action.subject)
+      if (!playerId) {
+        return "login required"
+      }
+      return move(playerId, action.subject)
 
     case ActionType.TAKE:
-      return take(action.subject)
+      if (!playerId) {
+        return "login required"
+      }
+      return take(playerId, action.subject)
 
     case ActionType.DROP:
-      return drop(action.subject)
+      if (!playerId) {
+        return "login required"
+      }
+      return drop(playerId, action.subject)
 
     case ActionType.EXCHANGE:
-      return exchange(action.subject)
+      if (!playerId) {
+        return "login required"
+      }
+      return exchange(playerId, action.subject)
 
     case ActionType.ERROR:
       return inputError()
 
     case ActionType.WELCOME:
+      if (!playerId) {
+        return "login required"
+      }
       return welcome()
   }
 }

@@ -1,52 +1,51 @@
 import JSON from "../../roms/carnival.json"
+import type { Place } from "../world/place"
 import {
   describeHash,
   glue,
   addArticle,
   templateString,
 } from "../utils/string.utils"
-import { hashRemove, hashAdd, hashHasItems } from "./operative"
+import { recordRemove, recordAdd, recordHasKeys } from "../utils/record.utils"
 import { locationIsAccessable, hasPassiveAccess } from "../utils/place.utils"
-import { Place } from "../world/place"
-import { Player } from "../world/player"
 import { query, savePlace, savePlayer } from "../surreal/engine.client"
 import { describeNeighborhood } from "../queries/neighborhood.queries"
 import {
   getPlayerById,
   getPlayerWithFullLocation,
-} from "../queries/place.queries"
+} from "../queries/player.queries"
 
 const messages: Record<string, string> = JSON.messages
-
-const PLAYER_ID = "player:0"
 
 export const welcome = () => {
   return messages.welcomeText
 }
 
-export const describePlayerLocation = async () => {
-  return describeNeighborhood()
+export const describePlayerLocation = async (playerId: string) => {
+  return describeNeighborhood(playerId)
 }
 
 export const help = () => {
   return messages.helpText
 }
 
-export const inventory = async () => {
-  const player = await getPlayerById(PLAYER_ID)
+export const inventory = async (playerId: string) => {
+  const player = await getPlayerById(playerId)
 
   return describeHash(player.pockets)
 }
 
-export const items = async (): Promise<string> => {
-  const { loc } = await getPlayerWithFullLocation(PLAYER_ID)
+export const items = async (playerId: string): Promise<string> => {
+  const { loc } = await getPlayerWithFullLocation(playerId)
   if (!loc?.objects) return messages.itemsError
-  if (!hashHasItems(loc.objects)) return messages.itemsError
+  if (!recordHasKeys(loc.objects)) return messages.itemsError
   return describeHash(loc.objects)
 }
 
-export const describeNewPlayerLocation = async (): Promise<string> => {
-  const player = await getPlayerWithFullLocation(PLAYER_ID)
+export const describeNewPlayerLocation = async (
+  playerId: string
+): Promise<string> => {
+  const player = await getPlayerWithFullLocation(playerId)
   const { loc } = player
 
   if (!player.locationHistory.find((p) => p == loc?.name)) return ""
@@ -54,12 +53,15 @@ export const describeNewPlayerLocation = async (): Promise<string> => {
   return loc?.messages?.newText || ""
 }
 
-export const move = async (placeName?: string): Promise<string> => {
+export const move = async (
+  playerId: string,
+  placeName?: string
+): Promise<string> => {
   if (!placeName) {
     return messages.moveError
   }
   let neededPassiveKey = false
-  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const player = await getPlayerWithFullLocation(playerId)
   const place = await query<Place>(
     `SELECT * FROM place WHERE name = '${placeName}'`
   )
@@ -88,17 +90,17 @@ export const move = async (placeName?: string): Promise<string> => {
   return glue(
     neededPassiveKey ? place.messages?.passiveKeySuccess ?? "" : "",
     messages.moveMessage + place.name,
-    await describePlayerLocation(),
-    await describeNewPlayerLocation()
+    await describePlayerLocation(playerId),
+    await describeNewPlayerLocation(playerId)
   )
 }
 
-export const drop = async (item?: string) => {
+export const drop = async (playerId: string, item?: string) => {
   if (!item) {
     return messages.dropError + "nothing"
   }
 
-  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const player = await getPlayerWithFullLocation(playerId)
   const { loc } = player
   delete player.loc
 
@@ -107,8 +109,8 @@ export const drop = async (item?: string) => {
   }
 
   if (player.pockets[item] > 0) {
-    hashRemove(player.pockets, item)
-    hashAdd(loc.objects!, item)
+    recordRemove(player.pockets, item)
+    recordAdd(loc.objects!, item)
     await savePlace(loc)
     await savePlayer(player)
     return messages.dropSuccess + addArticle(item)
@@ -116,11 +118,11 @@ export const drop = async (item?: string) => {
   return messages.dropError + addArticle(item)
 }
 
-export const take = async (item?: string) => {
+export const take = async (playerId: string, item?: string) => {
   if (!item) {
     return messages.takeError
   }
-  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const player = await getPlayerWithFullLocation(playerId)
   const { loc } = player
   delete player.loc
 
@@ -128,8 +130,8 @@ export const take = async (item?: string) => {
     return messages.takeError
   }
   if (loc.objects && loc.objects[item] > 0) {
-    hashAdd(player.pockets, item)
-    hashRemove(loc.objects!, item)
+    recordAdd(player.pockets, item)
+    recordRemove(loc.objects!, item)
     await savePlayer(player)
     await savePlace(loc)
     return messages.takeSuccess + addArticle(item)
@@ -137,12 +139,12 @@ export const take = async (item?: string) => {
   return messages.takeError + addArticle(item)
 }
 
-export const exchange = async (item?: string) => {
+export const exchange = async (playerId: string, item?: string) => {
   if (!item) {
     return messages.exchangeFailure
   }
 
-  const player = await getPlayerWithFullLocation(PLAYER_ID)
+  const player = await getPlayerWithFullLocation(playerId)
   const { loc } = player
   delete player.loc
 
@@ -151,8 +153,8 @@ export const exchange = async (item?: string) => {
   }
   if (loc.exchanges && loc.exchanges[item] !== undefined) {
     const newItem = loc.exchanges[item]
-    hashAdd(player.pockets, newItem)
-    hashRemove(player.pockets, item)
+    recordAdd(player.pockets, newItem)
+    recordRemove(player.pockets, item)
     await savePlayer(player)
     return templateString(messages.exchangeSuccess, item, newItem)
   }
@@ -163,9 +165,9 @@ export const inputError = () => {
   return messages.commandInvalid
 }
 
-export const canSee = async (player: Player) => {
-  const { loc } = await getPlayerWithFullLocation(PLAYER_ID)
-
+export const canSee = async (playerId: string) => {
+  const player = await getPlayerWithFullLocation(playerId)
+  const { loc } = player
   if (!loc) {
     return messages.exchangeFailure
   }

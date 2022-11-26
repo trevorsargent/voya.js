@@ -1,6 +1,8 @@
 import { query } from "../surreal/engine.client"
 
-export const describeNeighborhood = async (): Promise<string> => {
+export const describeNeighborhood = async (
+  playerId: string
+): Promise<string> => {
   var place = await query<{
     left: string
     right: string
@@ -8,7 +10,7 @@ export const describeNeighborhood = async (): Promise<string> => {
     behind: string
     name: string
   }>(
-    "SELECT currentLocation.name as name, currentLocation.ahead.name as ahead, currentLocation.right.name as right, currentLocation.left.name as left, currentLocation.behind.name as behind FROM player:0"
+    `SELECT currentLocation.name as name, currentLocation.ahead.name as ahead, currentLocation.right.name as right, currentLocation.left.name as left, currentLocation.behind.name as behind FROM ${playerId}`
   )
 
   if (!place) {

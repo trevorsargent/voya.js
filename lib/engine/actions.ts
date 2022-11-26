@@ -1,4 +1,4 @@
-import { sanitize } from "./operative"
+import { sanitize } from "../utils/string.utils"
 
 export enum ActionType {
   EMPTY = "empty",

@@ -28,3 +28,12 @@ export const getPlayerByUserName = async (
 
   return player
 }
+
+export const getPlayerIdByUserName = async (
+  username: string
+): Promise<{ id: string; username: string } | undefined> => {
+  const player = await query<{ id: string; username: string }>(
+    `SELECT id,username FROM player WHERE username = '${username}'`
+  )
+  return player
+}
