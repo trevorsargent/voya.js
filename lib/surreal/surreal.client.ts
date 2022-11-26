@@ -1,5 +1,5 @@
 // @ts-nocheck
-import Surreal, { ScopeAuth } from "surrealdb.js"
+import Surreal from "surrealdb.js"
 
 const { DB_HOST, DB_PORT, DB_USER, DB_PSWD } = process.env
 
@@ -19,4 +19,10 @@ export const getClient = async (): Promise<Surreal> => {
     await db.use("voya", "voya")
   }
   return db
+}
+
+export const query = async <T>(string: string): Promise<T | undefined> => {
+  const c = await getClient()
+  const x = await c.query<Result<T[]>[]>(string)
+  return x.shift()?.result?.shift()
 }

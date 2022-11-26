@@ -1,4 +1,4 @@
-import { query } from "../surreal/engine.client"
+import { query } from "../surreal/surreal.client"
 
 export const describeNeighborhood = async (
   playerId: string

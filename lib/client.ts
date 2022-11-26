@@ -4,10 +4,6 @@ export async function sendCommand(
   username: string | null,
   command: string
 ): Promise<string> {
-  if (!username) {
-    return "you must be logged in to do that"
-  }
-
   return fetch(`/api/command`, {
     method: "POST",
     body: JSON.stringify({ command, username } as CommandRequest),

@@ -32,7 +32,7 @@ const src = settings["background-url"]
 
 ;(image as HTMLImageElement).src = src
 
-var output = new ConsoleComponent(log)
+const output = new ConsoleComponent(log)
 
 const inputManager = new InputManager(
   (text: string) => {

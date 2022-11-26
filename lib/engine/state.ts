@@ -1,5 +1,5 @@
 import JSON from "../../roms/carnival.json"
-import type { Place } from "../world/place"
+import type { Place } from "../models/place"
 import {
   describeHash,
   glue,
@@ -8,12 +8,13 @@ import {
 } from "../utils/string.utils"
 import { recordRemove, recordAdd, recordHasKeys } from "../utils/record.utils"
 import { locationIsAccessable, hasPassiveAccess } from "../utils/place.utils"
-import { query, savePlace, savePlayer } from "../surreal/engine.client"
 import { describeNeighborhood } from "../queries/neighborhood.queries"
 import {
   getPlayerById,
   getPlayerWithFullLocation,
 } from "../queries/player.queries"
+import { query } from "../surreal/surreal.client"
+import { savePlace, savePlayer } from "../mutations/save.mutations"
 
 const messages: Record<string, string> = JSON.messages
 

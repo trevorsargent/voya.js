@@ -1,5 +1,5 @@
 import { FormOf } from "../input/input.manager"
-import { Player } from "../world/player"
+import { Player } from "../models/player"
 
 export const loginForm: FormOf<Pick<Player, "username">> = {
   title: "who's playing?",

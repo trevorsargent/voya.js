@@ -1,6 +1,6 @@
-import { query } from "../surreal/engine.client"
-import { Place } from "../world/place"
-import { Player } from "../world/player"
+import { Place } from "../models/place"
+import { Player } from "../models/player"
+import { query } from "../surreal/surreal.client"
 
 export const getPlayerById = async (id: string): Promise<Player> => {
   const player = await query<Player>(`SELECT * FROM ${id}`)

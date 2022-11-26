@@ -1,5 +1,5 @@
-import { Place } from "../world/place"
-import { Player } from "../world/player"
+import { Place } from "../models/place"
+import { Player } from "../models/player"
 
 // returns whether a player can currently see
 
