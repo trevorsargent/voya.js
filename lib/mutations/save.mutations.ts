@@ -4,10 +4,10 @@ import { Player } from "../models/player"
 
 export const savePlayer = async (player: Player) => {
   var db = await getClient()
-  return db.update<Player>(player.id, player)
+  return db.update<Omit<Player, "id">>(player.id, player)
 }
 
-export const savePlace = async (place: Place) => {
+export const savePlace = async (place: Place): Promise<Place> => {
   const db = await getClient()
-  return await db.update<Place>(place.id, place)
+  return await db.update<Omit<Place, "id">>(place.id, place)
 }

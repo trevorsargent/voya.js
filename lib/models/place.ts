@@ -27,6 +27,4 @@ export interface Place {
     rideText?: string
     playText?: string
   }
-
-  [index: string]: unknown
 }

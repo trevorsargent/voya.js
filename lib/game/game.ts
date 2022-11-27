@@ -1,4 +1,4 @@
-import { sendCommand } from "../api/api.client"
+import { sendCommand, signin, signup } from "../api/api.client"
 import { ConsoleComponent } from "../components/console.component"
 import { InputComponent } from "../components/input.component"
 import { settings } from "../../roms/carnival.json"
@@ -16,27 +16,43 @@ export class Game {
     this.processInput("login")
   }
 
-  private intercept: {
-    [index: string]: (input: string) => void
-  } = {
-    login: (_: string) => {
-      const welcome = () =>
-        sendCommand(this.auth.username, "welcome").then((x) => {
-          this.output.WriteLine(x)
-        })
+  welcome = () =>
+    sendCommand(this.auth.playerId, "welcome").then((x) => {
+      this.output.WriteLine(x)
+    })
 
-      if (this.auth.username) {
-        welcome()
+  private intercept = {
+    login: (_: string) => {
+      if (this.auth.playerId) {
+        this.welcome()
         return
       }
 
       this.fillForm(loginForm, (res) => {
-        this.auth.setAuth(res.username)
-        welcome()
+        signin(res.username).then((r) => {
+          this.output.WriteLine(r.message)
+          if (r.success) {
+            this.auth.setAuth(r.playerId)
+          }
+          this.intercept.login(_)
+        })
       })
     },
     logout: (_: string) => {
       this.auth.logout()
+    },
+    signup: (_: string) => {
+      this.fillForm(loginForm, (res) => {
+        signup(res.username).then((r) => {
+          this.output.WriteLine(r.message)
+          if (r.success) {
+            this.auth.setAuth(r.playerId)
+            this.intercept.login(_)
+          } else {
+            this.intercept.signup(_)
+          }
+        })
+      })
     },
   }
 
@@ -53,8 +69,9 @@ export class Game {
 
   async processInput(inputText: string) {
     // intercept messages to the server
-    const intercept = this.intercept[inputText]
-    if (intercept) {
+
+    if (Object.hasOwn(this.intercept, inputText)) {
+      const intercept = Reflect.get(this.intercept, inputText)
       return intercept(inputText)
     }
 
@@ -73,7 +90,7 @@ export class Game {
 
     // otherwise send the input to the console, and process the command on the server
     this.output.WriteLine(settings.prepend, inputText)
-    return sendCommand(this.auth.username, inputText)
+    return sendCommand(this.auth.playerId, inputText)
       .catch((e) => e.message)
       .then((x) => this.output.WriteLine(x))
   }

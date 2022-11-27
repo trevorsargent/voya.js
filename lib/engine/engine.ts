@@ -10,7 +10,7 @@ import { items } from "./queries/items"
 
 export const processAction = async (
   action: Action,
-  playerId?: string
+  playerId: string | null
 ): Promise<string> => {
   switch (action.type) {
     case ActionType.EMPTY:

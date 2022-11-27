@@ -1,5 +1,5 @@
 export interface AuthStore {
-  username: string | null
-  setAuth: (username: string) => void
+  playerId: string | null
+  setAuth: (playerId: string) => void
   logout: () => void
 }

@@ -1,5 +1,3 @@
-import Surreal from "surrealdb.js"
-
 export interface Player {
   id: string
   username: string
@@ -10,5 +8,4 @@ export interface Player {
   settings: {
     lamps?: string[]
   }
-  [index: string]: unknown
 }

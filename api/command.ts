@@ -2,7 +2,6 @@ import type { VercelRequest, VercelResponse } from "@vercel/node"
 import { build } from "../lib/utils/action.utils"
 import { processAction } from "../lib/engine/engine"
 import { sanitizeBasic } from "../lib/utils/string.utils"
-import { getPlayerIdByUserName } from "../lib/queries/player.queries"
 
 export default async function handler(
   request: VercelRequest,
@@ -11,13 +10,11 @@ export default async function handler(
   const body: CommandRequest = JSON.parse(request.body)
 
   const sanitized = sanitizeBasic(body.command)
-  const username = body.username
-
-  const player = username ? await getPlayerIdByUserName(username) : null
+  const playerId = body.playerId
 
   const action = build(sanitized)
 
-  const reply = await processAction(action, player?.id)
+  const reply = await processAction(action, playerId)
 
   const res: CommandResponse = {
     message: reply,
@@ -32,5 +29,5 @@ export interface CommandResponse {
 
 export interface CommandRequest {
   command: string
-  username?: string
+  playerId: string | null
 }

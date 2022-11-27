@@ -1,24 +1,24 @@
 import { AuthStore } from "./model.auth"
 
 export class LocalStorageAuth implements AuthStore {
-  private LS_USER_KEY = "voya-js-username"
-  private _username: string | null
+  private PLAYER_ID_KEY = "voya-js-playerid"
+  private _playerId: string | null
 
-  get username() {
-    this._username = this._username ?? localStorage.getItem(this.LS_USER_KEY)
-    return this._username
+  get playerId() {
+    this._playerId = this._playerId ?? localStorage.getItem(this.PLAYER_ID_KEY)
+    return this._playerId
   }
 
-  setAuth(username: string): void {
-    this._username = username
-    localStorage
+  setAuth(playerId: string): void {
+    this._playerId = playerId
+    localStorage.setItem(this.PLAYER_ID_KEY, playerId)
   }
   logout() {
-    this._username = null
-    localStorage.removeItem(this.LS_USER_KEY)
+    this._playerId = null
+    localStorage.removeItem(this.PLAYER_ID_KEY)
   }
 
   constructor() {
-    this._username = this.username
+    this._playerId = this.playerId
   }
 }
