@@ -1,6 +1,31 @@
 body{
 	margin: 0;
 	background: black;
+	animation: flicker 1s ease-in-out alternate infinite;
+}
+
+@keyframes flicker {
+
+	from {
+		text-shadow: 0px 0px 10px #9ff;
+	}
+
+	to {
+		text-shadow: 0px 0px 8px #9ff;
+	}
+}
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	background-image: url('/assets/scanlines.jpg');
+	background-size: cover;
+	transform: scale(2, 1);
+	mix-blend-mode: color-dodge;
+	opacity: .1;
+	filter: brightness(3) blur(2px) ;
+	z-index: 0;
 }
 
 #image{
@@ -9,6 +34,7 @@ body{
 	object-fit: cover;
 	position: fixed;
 	z-index: -2;
+	filter: blur(1px) ;
 }
 
 .background{
@@ -22,7 +48,6 @@ body{
 .wrapper{
 	color: #eee;
 	font-size: 14px;
-	text-shadow:0px 0px 5px #777;
 	font-family: monospace;
 	letter-spacing: 1px;
 	padding: 25px 75px;
@@ -40,8 +65,17 @@ body{
 	right: 0;
 	left: 0;
 	padding-top: 100px;
+	background:  linear-gradient(transparent 0%,rgba(0, 0, 0, 1) 90%);
   /* backdrop-filter: blur(5px); */
-  background: linear-gradient(transparent 0%,   rgba(0,0,0,.8) 100%);
+}
+
+#top-fade {
+	position: fixed;
+	top: 0; 
+	left: 0;
+	right: 0;
+	height: 100px;
+	background: linear-gradient( rgba(0,0,0,.65) 0%, transparent 90%);
 }
 
 #form-box .container {
@@ -53,15 +87,9 @@ body{
 	flex-grow: 1;
 }
 
-
-
-form{
-	flex-grow: 1;
-	margin: 0;
-}
-
 #prepend {
 	margin: 0;
+	white-space: nowrap;
 }
 
 input{
@@ -69,7 +97,6 @@ input{
 	padding-left: 1.5ex;
 	font-family: monospace;
 	color: #eee;
-	text-shadow:0px 0px 5px #777;
 	letter-spacing: 1px;
 	background: none;
 	border: none;
@@ -85,24 +112,18 @@ input:focus{
 
 input::-webkit-input-placeholder { /* WebKit, Blink, Edge */
 	color: #eee;
-	text-shadow: 0px 0px 5px #777;
 	opacity: .4;
 }
 input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
 	color: #eee;
-	text-shadow: 0px 0px 5px #777;
 	opacity: .4;
-   opacity:  1;
 }
 input::-moz-placeholder { /* Mozilla Firefox 19+ */
 	color: #eee;
-	text-shadow: 0px 0px 5px #777;
 	opacity: .4;
-   opacity:  1;
 }
 input:-ms-input-placeholder { /* Internet Explorer 10-11 */
 	color: #eee;
-	text-shadow: 0px 0px 5px #777;
 	opacity: .4;
 }
 

@@ -2,7 +2,8 @@
   "settings": {
     "title": "Carnival",
     "background-url": "https://images.unsplash.com/photo-1473382778285-d06fba31f996",
-    "prepend": ">>"
+    "prepend": ">>",
+    "startingPlace": "parking lot"
   },
   "defaultPlayer": {
     "height": 172,
@@ -15,13 +16,7 @@
       "lamp": 1
     },
     "settings": {
-      "startingPlace": "parking lot",
-      "lamps": [
-        "flashlight",
-        "torch",
-        "lamp",
-        "lantern"
-      ]
+      "lamps": ["flashlight", "torch", "lamp", "lantern"]
     }
   },
   "commands": {
@@ -122,7 +117,7 @@
       "name": "tilt-a-whirl",
       "behind": "lawn",
       "settings": {
-        "isRide": "true"
+        "isRide": true
       },
       "messages": {
         "rideText": "wheeee!  wheeeeeee!!!!!  \n wow that's a lot of fun. don't do that too many times or you'll get sick"

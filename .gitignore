@@ -5,3 +5,4 @@ node_modules/
 .serve
 .parcel-cache
 dist/
+.vercel
