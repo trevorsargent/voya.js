@@ -17,7 +17,11 @@ export const processAction = async (
       return ""
 
     case ActionType.HELP:
-      return messages.helpText
+      if (playerId != null) {
+        return messages.helpText
+      } else {
+        return messages.unAuthHelpText
+      }
 
     case ActionType.OBSERVE:
       if (!playerId) {

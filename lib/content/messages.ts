@@ -1,6 +1,7 @@
 export const messages = {
+  unAuthHelpText: "- login\n- signup",
   helpText:
-    "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]\n- exchange [item]",
+    "- look around\n- walk (to) [place]\n- pockets\n- items\n- take [item]\n- drop [item]\n- exchange [item]\n- logout",
   visibilityError: "it's kinda dark... you can't really see.",
   moveMessage: "you walk to the ",
   moveError: "that's not a place you can walk from here!",
