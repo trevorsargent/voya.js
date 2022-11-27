@@ -1,4 +1,4 @@
-import type { CommandRequest, CommandResponse } from "../api/command"
+import type { CommandRequest, CommandResponse } from "../../api/command"
 
 export async function sendCommand(
   username: string | null,

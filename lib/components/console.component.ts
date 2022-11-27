@@ -9,8 +9,8 @@ export class ConsoleComponent {
     }
   }
 
-  WriteLine(text: string) {
-    this.logText(text)
+  WriteLine(...text: string[]) {
+    this.logText(text.join(" "))
     this.smoothScrollWindow(500)
   }
 

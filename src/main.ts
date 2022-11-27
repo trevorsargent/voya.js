@@ -1,5 +1,5 @@
 import { settings } from "../roms/carnival.json"
-import { sendCommand } from "../lib/client"
+import { sendCommand } from "../lib/api/api.client"
 import { InputManager } from "../lib/input/input.manager"
 import { InputComponent } from "../lib/components/input.component"
 import { ConsoleComponent } from "../lib/components/console.component"
@@ -36,6 +36,7 @@ const output = new ConsoleComponent(log)
 
 const inputManager = new InputManager(
   (text: string) => {
+    output.WriteLine(settings.prepend, text)
     return sendCommand(username, text)
       .catch((e) => e.message)
       .then((x) => output.WriteLine(x))
