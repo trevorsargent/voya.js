@@ -1,23 +1,5 @@
-import { sanitize } from "../utils/string.utils"
-
-export enum ActionType {
-  EMPTY = "empty",
-  HELP = "help",
-  OBSERVE = "observe",
-  INVENTORY = "inventory",
-  ITEMS = "stock",
-  EXCHANGE = "exchange",
-  MOVE = "move",
-  TAKE = "take",
-  DROP = "drop",
-  ERROR = "error",
-  WELCOME = "welcome",
-}
-
-export interface Action {
-  type: ActionType
-  subject?: string
-}
+import { Action, ActionType } from "../models/action"
+import { sanitize } from "./string.utils"
 
 export const build = (string: string): Action => {
   if (string === "") {

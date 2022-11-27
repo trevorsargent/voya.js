@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node"
-import { build } from "../lib/engine/actions"
-import { act } from "../lib/engine/engine"
+import { build } from "../lib/utils/action.utils"
+import { processAction } from "../lib/engine/engine"
 import { sanitizeBasic } from "../lib/utils/string.utils"
 import { getPlayerIdByUserName } from "../lib/queries/player.queries"
 
@@ -17,7 +17,7 @@ export default async function handler(
 
   const action = build(sanitized)
 
-  const reply = await act(action, player?.id)
+  const reply = await processAction(action, player?.id)
 
   const res: CommandResponse = {
     message: reply,

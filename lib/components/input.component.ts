@@ -1,10 +1,9 @@
-import { InputManager } from "../input/input.manager"
+import { PromptInfo } from "../game/game"
 
 export class InputComponent {
   constructor(
     private input: HTMLInputElement,
     private prompt: HTMLElement,
-    manager: InputManager,
     private options: {
       promptPrepend: string
       defaultPlaceholder: string
@@ -13,35 +12,31 @@ export class InputComponent {
     input.addEventListener("change", async (e) => {
       const text = (e.target as HTMLInputElement)?.value
       this.clearInput()
-      await manager.input(text)
+      if (this.inputFunc) {
+        this.inputFunc(text)
+      }
     })
 
-    manager.onReset(() => {
-      this.resetPrompt()
-      this.resetPlaceholder()
-    })
-
-    this.resetPlaceholder()
     this.resetPrompt()
   }
+
+  private inputFunc?: (text: string) => void
 
   clearInput() {
     this.input.value = ""
   }
 
-  setPrompt(text: string) {
-    this.prompt.innerText = `${text} ${this.options.promptPrepend}`
+  setPrompt(text: PromptInfo) {
+    this.prompt.innerText = `${text.prompt} ${this.options.promptPrepend}`
+    this.input.placeholder = text.placeholder ?? this.options.defaultPlaceholder
   }
 
-  setPlaceholder(text: string) {
-    this.input.placeholder = text
+  onInput(inputFunc: (text: string) => void) {
+    this.inputFunc = inputFunc
   }
 
-  private resetPrompt() {
+  resetPrompt() {
     this.prompt.innerText = this.options.promptPrepend
-  }
-
-  private resetPlaceholder() {
     this.input.placeholder = this.options.defaultPlaceholder
   }
 }

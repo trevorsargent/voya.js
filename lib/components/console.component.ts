@@ -1,5 +1,10 @@
+import { settings } from "../../roms/carnival.json"
+
 export class ConsoleComponent {
-  constructor(private console: HTMLElement) {}
+  constructor(private console: HTMLElement, private image: HTMLImageElement) {
+    const src = settings["background-url"]
+    image.src = src
+  }
 
   logText(x: string) {
     let p = document.createElement("p")

@@ -1,16 +1,13 @@
 import { settings } from "../roms/carnival.json"
-import { sendCommand } from "../lib/api/api.client"
-import { InputManager } from "../lib/input/input.manager"
+import { Game } from "../lib/game/game"
 import { InputComponent } from "../lib/components/input.component"
 import { ConsoleComponent } from "../lib/components/console.component"
-import { loginForm } from "../lib/forms/login.form"
+import { LocalStorageAuth } from "../lib/auth/localstorage.auth"
 
 const commandLine = document.getElementById("command_line") as HTMLInputElement
 const log = document.getElementById("console")
 const pre = document.getElementById("prepend")
-const image = document.getElementById("image")
-
-let username: string | null = null
+const image = document.getElementById("image") as HTMLImageElement
 
 if (!image) {
   throw new Error("Need Log Output")
@@ -28,43 +25,13 @@ if (!commandLine) {
   throw new Error("Need Prompt Command Line Object")
 }
 
-const src = settings["background-url"]
+const output = new ConsoleComponent(log, image)
 
-;(image as HTMLImageElement).src = src
-
-const output = new ConsoleComponent(log)
-
-const inputManager = new InputManager(
-  (text: string) => {
-    output.WriteLine(settings.prepend, text)
-    return sendCommand(username, text)
-      .catch((e) => e.message)
-      .then((x) => output.WriteLine(x))
-  },
-  output.WriteLine.bind(output),
-  ({ prompt, placeholder }) => {
-    if (pre) {
-      pre.innerText = `${prompt} >>`
-      commandLine.placeholder = placeholder ?? ""
-    }
-  },
-  {
-    login: (_: string) => {
-      inputManager.fillForm(loginForm, (res) => {
-        username = res.username
-        sendCommand(username, "welcome").then((x) => {
-          output.WriteLine(x)
-        })
-      })
-    },
-  }
-)
-
-new InputComponent(commandLine, pre, inputManager, {
+const input = new InputComponent(commandLine, pre, {
   defaultPlaceholder: "type a command... ('help' if you're stuck)",
   promptPrepend: settings.prepend,
 })
 
-output.WriteLine("\n\n\n\n\n\n\n")
+const auth = new LocalStorageAuth()
 
-inputManager.input("login")
+new Game(input, output, auth)

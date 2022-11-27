@@ -1,19 +1,14 @@
-import {
-  describePlayerLocation,
-  drop,
-  exchange,
-  help,
-  inputError,
-  inventory,
-  items,
-  move,
-  take,
-  welcome,
-} from "./state"
+import { messages } from "../content/messages"
+import { Action, ActionType } from "../models/action"
+import { drop } from "./actions/drop"
+import { exchange } from "./actions/exchange"
+import { move } from "./actions/move"
+import { take } from "./actions/take"
+import { describePlayerLocation } from "./queries/descrivePlayerLocation"
+import { inventory } from "./queries/inventory"
+import { items } from "./queries/items"
 
-import { Action, ActionType } from "./actions"
-
-export const act = async (
+export const processAction = async (
   action: Action,
   playerId?: string
 ): Promise<string> => {
@@ -22,7 +17,7 @@ export const act = async (
       return ""
 
     case ActionType.HELP:
-      return help()
+      return messages.helpText
 
     case ActionType.OBSERVE:
       if (!playerId) {
@@ -67,12 +62,12 @@ export const act = async (
       return exchange(playerId, action.subject)
 
     case ActionType.ERROR:
-      return inputError()
+      return messages.commandInvalid
 
     case ActionType.WELCOME:
       if (!playerId) {
         return "login required"
       }
-      return welcome()
+      return messages.welcomeText
   }
 }
