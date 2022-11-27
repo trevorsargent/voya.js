@@ -1,4 +1,4 @@
-import { settings } from "../../roms/carnival.json"
+import { settings } from "../content/settings"
 
 export class ConsoleComponent {
   constructor(private console: HTMLElement, private image: HTMLImageElement) {

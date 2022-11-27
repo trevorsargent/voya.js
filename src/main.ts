@@ -1,8 +1,8 @@
-import { settings } from "../roms/carnival.json"
 import { GameManager } from "../lib/runtime/game.manager"
 import { InputComponent } from "../lib/components/input.component"
 import { ConsoleComponent } from "../lib/components/console.component"
 import { LocalStorageAuth } from "../lib/auth/localstorage.auth"
+import { settings } from "../lib/content/settings"
 
 const commandLine = document.getElementById("command_line") as HTMLInputElement
 const log = document.getElementById("console")

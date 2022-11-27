@@ -1,11 +1,11 @@
 import { sendCommand, signin, signup } from "../api/api.client"
 import { ConsoleComponent } from "../components/console.component"
 import { InputComponent } from "../components/input.component"
-import { settings } from "../../roms/carnival.json"
 import { loginForm } from "../forms/login.form"
 import { AuthStore } from "../auth/model.auth"
 import { confirmForm } from "../forms/confim.form"
 import { FormManager, FormOf } from "./form.manager"
+import { settings } from "../content/settings"
 
 export class GameManager {
   constructor(
