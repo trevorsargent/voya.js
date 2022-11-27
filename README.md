@@ -1,78 +1,103 @@
-# [Voya.js](http://trevorsargent.cf/voya.js)
+# [Voya.js](http://voya-js-sl.vercel.app/)
 
-Voya is a text based, interactive fiction adventure game engine.
+Hi there. If by any chance you've come across this project before, you'll know that it has had many, many iterations.
 
-[lineweight.github.io/voya.js](http://lineweight.cf/voya.js)
+Currently, it's a MOSTBIFS (Multiplayer Online Serverless Text-based Interactive Fiction Sandbox Game). the history, and roadmap are listed below, as well as some ~~thoughts~~ feelings about the goals of this thing overall.
 
-## Roadmap
+## History
 
-[Full roadmap](https://github.com/lineweight/voya.js/projects/1) is available, but here are the highlights
+---
 
- - [x] transition to functional programming style (mostly done on this, please [open an issue](https://github.com/trevorsargent/voya.js/issues/new) if there are any elements you see need fixing #### i'm still learning a lot...)   
- - [x] implement 'hand-held' light sources, and the necessity thereof
- - [ ] support multiple lines of 'look around' text, to add to story, and customizable settings for its display
- - [x] re-introduce locking mechanisms on locations, and keys on the player
- - [x] support custom commands titles - a game could retitle the 'walk' command to 'swim' or 'fly' or simply 'go'... etc.
+This is one of my longest running projects. I started almost 10 years ago as a way to learn javascript. I was in college, and had taken my first programming class or 2, and was curious to try my hand at the web. I used it to learn Streams with highland js (and later rxjs), I started a branch to rewrite the gui in Elm, there's a halfbaked version of it in actix-web floating around somewhere... you get the idea.
 
-## Carnival
+As I worked on it over and over, it also started to change form a bit. It originally started as basic interactive fiction, the story of a creepy carnival with some spooky locations, and sinister scenes. I'm not much of a story-writer, so the plot never develpped that much, and over the years I've enlisted various people to help out, but it's always during a huge refactor or something and their data never quite made it in.
 
-Carnival is the test scenario for Voya.js at the moment.
+The more I build, I became less interested in writing the content, and wanted to allow others to create the content. The first step in that direction was moving the content to a 'rom' json file that the engine was able to 'play'. Felt appropriate given the aesthetic...
 
-you're dropped off in the parking lot of what looks to be a very sad carnival.  enter if you want, but there's not much else around.  go on. explore. we'll wait for you. for a little while at least.
+As I grew artistically, and developed more skills, I started dreaming more and more about what it could be. I started asking questions like "what kinds of stories are enabled (in a good way) by the various storytelling formats available? What would it mean to make a game/experience/thing that progresses from a text based interface to a 2d, and then 3d environment, incorporating more and more immersive elements as it progresses. How could the story change? among other things.
 
-scenarios are interchangeable and customizable, and of course open to any and all who wish to write one. implementation for external files is coming soon. See the file description below (or study the `/roms` to write your own)
+Originally, that idea felt like a separate project from this one. But quickly I realized that it was all related to the same research. If building that multi-media-platform experience was my next research, then _this_ was was the perfect test bed for letting that playout.
 
-## Gamefiles
+This code had sat dormant for a while. I'd touch on it every once in a while, but with little major change. It underwent a few really good manglings as I (in a pandemic brain-fog) attempted a typescript port, and failed miserably several times. Until just recently in late 2022, I came back to it with a fresh mind, some (much) better typescript knowlegde (if I dare say so myself...), and started barreling forward towards the most recent, and arguably largest
 
-Gamefiles are set up in JSON. The gameplay is outlined in a series of objects, which are described below.
+## Identity Shift
 
-### Settings
+---
 
-#### title:   
-The title of the game! This is displayed in the title bar of the browser, and in the bottom right hand corner of the prompt.
+There were a few major tentpole features that I wanted to include in the new incarnation of this thing, whatever it is we're making. For starteres, there wasn't a way to
 
-#### background-url:   
-A path to an image for the background of the game.
+### 1: Save Progress
 
-#### prepend:
-1-3 characters that are displayed at the prompt, and in the transcript to indicate player input.
+until now, this was a short-lived transient browser experience. It definitely needed some sort of persistance across sessions. this comes hand in hand of course with some sort of
 
-### Player
-#### name: string   
-The character's name. At this point, mostly for the developer's enjoyment and creative delight.
-#### age: int   
-The character's age.
-#### height: int   
-The character's height.
-#### pockets: object   
-This is the mechanism that is used for the character's inventory. The objects that the player starts the game with are defined here in a hash with string:int associations. The object names should be singular, plurals are automatically calculated.
+### 2. Multiplayer Mechanism
 
-### Commands
+Hand in hand with ability to save your progress would come some kind of player id system. Sure we could do an old-school level-code type deal, but it would make it more personal as we investigated the much more complex topic of
 
-The list of available commands is set, that is, there is a limited number of actions possible inside the engine. The defaults are listed in parentheses,
+### 3. Sandbox Mode
 
-#### move
-The command to move your main character from place to place. `to` will automatically be consumed, e.g. if the command is `walk [...]`, then `walk to [...]` will also work.
+I wanted to solve the content-creation problem once and for all, by fully releasing the power of world-creation into the hands of the users. The people moving about this virtual space should be empowered to create objects and spaces, design interactions and encounters, and just generally sing the world into being as they moved through it. This is the least formed idea as it stands, but I'm pretty dedicated to figuring out how this is going to work. Finding ways to design and model user-generated interactions is going to be pretty challengin. But I think it will be really powerful if we figure it out. It's gonna get that much more complicated too as we get to
 
-The argument to this command can either be the name of a location that is adjacent to the player's current location, or a direction (`forward`, `backward`, `left`, `right`, `up`, or `down`)
+### 4. Graphics
 
-#### observe
-Generates, and displays a description of the surrounding locations, and displays the `newText` of the location if the location has not been visited before.
+This one is the most self-contradictory. I'm interested in bringing the multiple levels of visual engagement into it. It could start as changing the background image per picture, and evolve into a more complete 2d and 3d environment, perhaps even on an indevidual basis as players level up? I'm really not sure. I'd love some help figuring it out.
 
-#### takeInventory
-Produces a list of items in the player's `pockets`
+Please feel free to [discuss](https://github.com/trevorsargent/voya.js/discussions) ways this could come together. I'll keep pluggin away at this, but there's alwasys room for ideas :)
 
-#### gainItem
-moves and item from the player's current location into their `pockets`.
+## Goals / ~~Thoughts~~ ~~Feelings~~ IDK
 
-#### loseItem
-Moves an item from the player's pockets to their current location. Items persist in locations.
+---
 
-#### perceiveItems
-Generates and displays a list of the items in the player's current location.
+More Soon....
 
-#### help
-displays the `helpText`
+## Technologies / Services
 
-#### useItem
-Allows the player to "use" an item. If the location is/has an `exchange`, the `use` will allow the player to make that exchange.
+---
+
+### Current Stack
+
+In keeping with this being a research project, the technologies are picked kind of for their own sake, as well as for their aptitude for this kind of project.
+
+#### [Typescript](https://www.typescriptlang.org/)
+
+Duh
+
+#### [Vercel](https://vercel.com/docs)
+
+These guys have been doing really cool work for a while. They bought up svelte (a fav project of mine, and a real candidate for a gui for this...) not too long ago, and their cloud functions seem to do a good job.
+
+#### [SurrealDB](https://surrealdb.com/)
+
+this... is amazing. The work Tobie and Jaime are doing on this is incredible. I'm really excited to be building with it, and i'm looking forward to experimenting with query generation for `surealQL` and contributing to type safe (as much as we get in TS) queries with their database.
+
+#### [Pusher](https://pusher.com/)
+
+this one is mostly out of necessity... I'd be curious to perhaps write a lightweight version of this for this project's sole use at some point, but they are here for us now as we grow.
+
+#### [Linode](https://linode.com)
+
+I mean, do I really even have to say anything? Right now they're hosting our surreal db instnace, and I'm sure more things will come.
+
+### Possible Additions
+
+#### [TRPC](https://trpc.io/)
+
+not represented yet, but kinda next up on the docket for more complicated interactions.
+
+#### [Svelte/Kit](https://svelte.dev/)
+
+I mentioned it above, but it's worth considering.. especially as this thing grows.
+
+## Contributing
+
+---
+
+please do, if you like! We got a `.prettierrc` and an `.nvmrc` file to help keep ya on track. You'll need to connect to vercel in order to run their cli, and if you do, I can authorise you to use the dev environment's variables which is kinda slick.
+
+## House Keeping
+
+---
+
+a bit of house keeping... If you're playing and you notice a problem, please do [make an issue](https://github.com/trevorsargent/voya.js/issues/new/choose). There's a template - the more info you can provide the better. If you're comfortable sharing you're userId, that makes debugging even easier.
+
+Let's keep discusssion of potential features and ideas for modification to the [Discussions](https://github.com/trevorsargent/voya.js/discussions) section until they become actionable code changes to help keep the backlog in check.
