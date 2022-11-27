@@ -1,4 +1,4 @@
-import { PromptInfo } from "../game/game"
+import { PromptInfo } from "../runtime/game.manager"
 
 export class InputComponent {
   constructor(
