@@ -1,4 +1,3 @@
-import { sendCommand, signin, signup } from "../api/api.client"
 import { ConsoleComponent } from "../components/console.component"
 import { InputComponent } from "../components/input.component"
 import { loginForm } from "../forms/login.form"
@@ -6,6 +5,7 @@ import { AuthStore } from "../auth/model.auth"
 import { confirmForm } from "../forms/confim.form"
 import { FormManager, FormOf } from "./form.manager"
 import { settings } from "../content/settings"
+import { client } from "../trpc/trpc.client"
 
 export class GameManager {
   constructor(
@@ -19,9 +19,11 @@ export class GameManager {
   }
 
   private welcome = () =>
-    sendCommand(this.auth.playerId, "welcome").then((x) => {
-      this.output.WriteLine(x)
-    })
+    client.command
+      .mutate({ command: "welcome", playerId: this.auth.playerId })
+      .then((x) => {
+        this.output.WriteLine(x.reply)
+      })
 
   private intercept = {
     login: async (): Promise<void> => {
@@ -31,7 +33,7 @@ export class GameManager {
       }
 
       const loginInfo = await this.fillForm(loginForm)
-      const signInResponse = await signin(loginInfo.username)
+      const signInResponse = await client.auth.login.mutate(loginInfo)
       this.output.WriteLine(signInResponse.message)
       if (signInResponse.success) {
         this.auth.setAuth(signInResponse.playerId)
@@ -53,7 +55,10 @@ export class GameManager {
     signup: async (username: string | null) => {
       const uname = username ?? (await this.fillForm(loginForm)).username
 
-      const signUpResponse = await signup(uname)
+      const signUpResponse = await client.auth.signup.mutate({
+        username: uname,
+      })
+
       this.output.WriteLine(signUpResponse.message)
       if (signUpResponse.success) {
         this.auth.setAuth(signUpResponse.playerId)
@@ -96,8 +101,8 @@ export class GameManager {
 
     // otherwise send the input to the console, and process the command on the server
     this.output.WriteLine(settings.prepend, inputText)
-    return sendCommand(this.auth.playerId, inputText)
-      .catch((e) => e.message)
-      .then((x) => this.output.WriteLine(x))
+    await client.command
+      .mutate({ command: inputText, playerId: this.auth.playerId })
+      .then((x) => this.output.WriteLine(x.reply))
   }
 }
