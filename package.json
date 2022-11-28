@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:server": "vercel dev",
     "start:client": "parcel",
-    "start": "npm-run-all --parallel start:server start:client"
+    "start": "npm-run-all --parallel start:server start:client",
+    "publish": "parcel build"
   },
   "repository": {
     "type": "git",
