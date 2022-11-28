@@ -82,7 +82,7 @@ I mean, do I really even have to say anything? Right now they're hosting our sur
 
 #### [TRPC](https://trpc.io/)
 
-not represented yet, but kinda next up on the docket for more complicated interactions.
+handles type safety in the api with the serverless functions.
 
 #### [Svelte/Kit](https://svelte.dev/)
 
