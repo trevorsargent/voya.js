@@ -39,7 +39,7 @@
     "next": "^13.0.5",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.8.0",
-    "vercel": "^28.5.6"
+    "vercel": "^28.15.3"
   },
   "overrides": {
     "@vercel/node": {
